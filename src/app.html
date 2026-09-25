@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapa de Mercado · Inteligência</title>
+<meta name="description" content="Inteligência de mercado solar para integradores — dados públicos ANEEL e IBGE.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root{
+  --c-app-bg:#f7f4ef;--c-card:#fff;--c-ink:#16130f;--c-text-soft:#6e6a62;--c-faint-label:#9a938a;
+  --c-border:#ece6de;--c-border-input:#e6e0d8;--c-divider-a:#f2ede6;--c-divider-b:#f4efe8;
+  --c-orange:#ff6a00;--c-orange-dark:#e25c00;--c-tile-icon:#fff1e7;--c-hover-tile:#fff4ea;--c-hover:#fff6ef;
+  --c-badge-blue-bg:#e9f1fb;--c-badge-blue-text:#2d6fb8;--c-danger:#d64545;--c-ok:#1f8a4c;--c-ok-bg:#e8f5ee;
+  --ramp-1:#ff6a00;--ramp-2:#ff8a33;--ramp-3:#ffa866;--ramp-4:#ffc299;--ramp-5:#ffdcc4;
+  --f-sora:"Sora",system-ui,sans-serif;--f-man:"Manrope",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--c-app-bg);color:var(--c-ink);font-family:var(--f-man);-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+b,strong{font-weight:800}
+.hidden{display:none!important}
+
+/* ---------- Picker ---------- */
+.picker{min-height:100vh;background:#16130f;display:flex;align-items:center;justify-content:center;padding:24px 16px;position:relative;overflow:hidden}
+.picker .glow{position:absolute;width:520px;height:520px;right:-160px;top:-200px;border-radius:50%;background:radial-gradient(circle,#ff6a0055,transparent 65%);filter:blur(10px)}
+.pcard{position:relative;background:#fff;border-radius:22px;padding:40px;width:100%;max-width:520px;box-shadow:0 30px 80px #0006}
+.logo{display:inline-block;background:#16130f;color:#fff;font-family:var(--f-sora);font-weight:800;font-size:18px;padding:10px 14px;border-radius:10px;letter-spacing:-.01em}
+.logo span,.hlogo span{color:var(--c-orange)}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--c-orange);text-transform:uppercase;margin:26px 0 8px}
+.ptitle{font-family:var(--f-sora);font-size:26px;line-height:1.18;margin:0 0 12px;letter-spacing:-.02em}
+.ptitle em{font-style:normal;color:var(--c-orange)}
+.psub{color:var(--c-text-soft);font-size:14px;line-height:1.6;margin:0 0 24px}
+.flabel{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--c-faint-label);margin-bottom:8px;display:block}
+.inp{width:100%;height:50px;border:1.5px solid var(--c-border-input);border-radius:12px;padding:0 16px;font:600 15px var(--f-man);color:var(--c-ink);outline:none;background:#fff}
+.inp:focus{border-color:var(--c-orange)}
+.sugg{position:absolute;left:0;right:0;top:calc(100% + 6px);background:#fff;border:1px solid var(--c-border-input);border-radius:12px;box-shadow:0 16px 38px #00000029;padding:6px;z-index:60;max-height:320px;overflow:auto}
+.sugg div{padding:10px 12px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;display:flex;align-items:center;gap:10px}
+.sugg div:hover,.sugg div.on{background:var(--c-hover)}
+.sugg i{width:7px;height:7px;border-radius:50%;background:var(--c-orange);flex:none}
+.sugg small{margin-left:auto;color:var(--c-faint-label);font-weight:700;font-size:12px}
+.prow{display:flex;gap:14px;align-items:center;margin-top:18px;flex-wrap:wrap}
+.chip{border:1.5px solid var(--c-border-input);background:#fff;border-radius:999px;padding:7px 13px;font-weight:700;font-size:13px;cursor:pointer;color:var(--c-ink)}
+.chip.on{background:var(--c-orange);border-color:var(--c-orange);color:#fff}
+.pactions{display:flex;justify-content:space-between;align-items:center;margin-top:30px;gap:12px;flex-wrap:wrap}
+.linkbtn{background:none;border:0;color:var(--c-orange);font-weight:700;font-size:13px;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:0}
+.cta{background:linear-gradient(90deg,#f34524,#f06c1b);color:#fff;border:0;border-radius:12px;height:52px;padding:0 26px;font:800 15px var(--f-man);cursor:pointer;box-shadow:0 10px 24px #f0501f40}
+.perr{color:var(--c-danger);font-size:13px;font-weight:600;margin-top:8px;min-height:18px}
+
+/* ---------- Header ---------- */
+.header{background:#fff;border-bottom:1px solid var(--c-border);min-height:64px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:30}
+.hleft{display:flex;align-items:center;gap:18px;min-width:0}
+.hlogo{font-family:var(--f-sora);font-weight:800;font-size:17px}
+.hdiv{width:1px;height:22px;background:var(--c-border-input)}
+.crumb{font-weight:600;font-size:14px;color:var(--c-text-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crumb b{color:var(--c-orange)}
+.hright{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.hbtn{height:40px;border:1.5px solid var(--c-border-input);background:#fff;border-radius:10px;padding:0 13px;display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:800;font-size:13px;color:var(--c-ink);white-space:nowrap}
+.hbtn:hover{border-color:var(--c-orange)}
+.hbtn small{font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--c-faint-label);font-weight:700}
+.hsearch{position:relative}
+.hsearch input{height:40px;width:250px;border:1.5px solid var(--c-border-input);border-radius:10px;padding:0 12px 0 34px;font:600 13px var(--f-man);outline:none}
+.hsearch input:focus{border-color:var(--c-orange)}
+.hsearch svg{position:absolute;left:11px;top:12px}
+.hsearch .sugg{top:46px}
+
+/* ---------- Layout ---------- */
+.body{display:flex;height:calc(100vh - 64px)}
+.left{flex:0 0 46%;min-width:0;display:flex;flex-direction:column;border-right:1px solid var(--c-border)}
+.mapwrap{flex:0 0 46%;position:relative;min-height:0}
+#map{position:absolute;inset:0;background:#eef0f2}
+.radiusbar{position:absolute;left:12px;right:12px;bottom:12px;z-index:500;background:#fff;border:1px solid var(--c-border);border-radius:14px;padding:10px 14px;box-shadow:0 10px 26px #0000001f;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.radiusbar .rlab{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--c-faint-label)}
+.radiusbar .rval{font-family:var(--f-sora);font-weight:800;font-size:18px;color:var(--c-orange);min-width:78px}
+.radiusbar input[type=range]{flex:1;min-width:140px}
+.rquick{display:flex;gap:6px}
+.rquick button{border:1.5px solid var(--c-border-input);background:#fff;border-radius:8px;padding:4px 8px;font-weight:800;font-size:11.5px;cursor:pointer}
+.rquick button.on{border-color:var(--c-orange);color:var(--c-orange-dark);background:var(--c-hover)}
+.rsel{height:30px;border:1.5px solid var(--c-border-input);border-radius:8px;font:700 12px var(--f-man);padding:0 6px;background:#fff}
+input[type=range]{accent-color:var(--c-orange);height:22px}
+.pane{flex:1;min-height:0;overflow-y:auto;background:#fff;padding:18px 20px 30px}
+.right{flex:1;min-width:0;overflow-y:auto;padding:14px 28px 60px;display:flex;flex-direction:column;gap:14px}
+
+/* ---------- Totals ---------- */
+.ttlrow{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.ttl{font-family:var(--f-sora);font-size:19px;font-weight:700;margin:0}
+.ttlsub{font-size:13px;color:var(--c-faint-label);font-weight:500;margin:4px 0 14px}
+.badge{background:var(--c-badge-blue-bg);color:var(--c-badge-blue-text);font-weight:800;font-size:11.5px;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.badge.or{background:var(--c-tile-icon);color:var(--c-orange-dark)}
+.badge.ok{background:var(--c-ok-bg);color:var(--c-ok)}
+.badge.bad{background:#fdecec;color:var(--c-danger)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;border-top:1px solid var(--c-divider-a);border-bottom:1px solid var(--c-divider-a);padding:14px 0}
+.kpi .kl{display:flex;align-items:center;gap:7px;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--c-faint-label)}
+.kpi .kl i{width:20px;height:20px;border-radius:6px;background:var(--c-tile-icon);display:inline-flex;align-items:center;justify-content:center;font-style:normal;color:var(--c-orange);font-size:11px;flex:none}
+.kpi .kv{font-family:var(--f-sora);font-weight:700;font-size:19px;margin-top:6px;white-space:nowrap}
+.kpi .ks{font-size:11.5px;color:var(--c-text-soft);font-weight:600;margin-top:2px}
+
+/* ---------- City table ---------- */
+.sect{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--c-faint-label);margin:18px 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tscroll{overflow-x:auto;margin:0 -4px;padding:0 4px}
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl th{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--c-faint-label);font-weight:800;text-align:right;padding:7px 6px;border-bottom:1px solid var(--c-border);cursor:pointer;white-space:nowrap;position:sticky;top:-18px;background:#fff;user-select:none}
+.tbl th:first-child,.tbl th:nth-child(2){text-align:left}
+.tbl th.sorted{color:var(--c-orange-dark)}
+.tbl td{padding:8px 6px;border-bottom:1px solid var(--c-divider-b);text-align:right;font-weight:700;white-space:nowrap}
+.tbl td:nth-child(2){text-align:left;white-space:normal}
+.tbl td:first-child{text-align:left;width:22px}
+.tbl tr.off td{opacity:.42}
+.tbl tr:hover td{background:var(--c-hover)}
+.tbl tr.sede td{background:#fff8f2}
+.cname{cursor:pointer;font-weight:800}
+.cname:hover{color:var(--c-orange-dark)}
+.cname small{color:var(--c-faint-label);font-weight:700;margin-left:3px}
+.tag{font-size:9px;font-weight:800;letter-spacing:.08em;border-radius:5px;padding:2px 5px;margin-left:6px;vertical-align:1px;text-transform:uppercase}
+.tag.sede{background:var(--c-tile-icon);color:var(--c-orange-dark)}
+.tag.ext{background:var(--c-badge-blue-bg);color:var(--c-badge-blue-text)}
+.scorebar{display:inline-block;width:38px;height:6px;border-radius:4px;background:var(--c-divider-a);vertical-align:middle;margin-right:6px;overflow:hidden}
+.scorebar b{display:block;height:100%;background:var(--c-orange)}
+.up{color:var(--c-ok)}.down{color:var(--c-danger)}
+input[type=checkbox]{accent-color:var(--c-orange);width:15px;height:15px;cursor:pointer}
+
+/* ---------- Cards ---------- */
+.card{background:#fff;border:1px solid var(--c-border);border-radius:18px;padding:20px 26px 22px}
+.chead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.cnum{font-family:var(--f-sora);color:var(--c-orange);font-size:13px;font-weight:800}
+.ctitle{font-family:var(--f-sora);font-size:18px;font-weight:700;margin:0}
+.info{display:inline-flex;width:17px;height:17px;border-radius:50%;border:1.5px solid #bbb;color:#999;font-size:10px;font-weight:800;align-items:center;justify-content:center;cursor:help;position:relative;top:-1px}
+.csub{font-size:13px;color:var(--c-faint-label);font-weight:500;margin:4px 0 16px;line-height:1.5}
+.csub strong{color:var(--c-orange-dark)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.stat{background:#fffdfb;border:1px solid var(--c-divider-a);border-radius:12px;padding:12px 14px}
+.stat .sl{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--c-faint-label)}
+.stat .sv{font-family:var(--f-sora);font-weight:700;font-size:20px;margin-top:5px}
+.stat .ss{font-size:11.5px;color:var(--c-text-soft);font-weight:600;margin-top:3px;line-height:1.4}
+.stat.hl{background:var(--c-hover);border-color:#ffe2d3}
+.stat.hl .sv{color:var(--c-orange-dark)}
+.insight{margin-top:14px;background:#16130f;color:#f4efe8;border-radius:12px;padding:12px 16px;font-size:13px;line-height:1.55;font-weight:500}
+.insight b{color:#ff9a4d}
+
+/* pitch */
+.pitch{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.pitch li{display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.55;color:#2c2721;font-weight:500}
+.pitch li>span:first-child{flex:none;width:26px;height:26px;border-radius:8px;background:var(--c-tile-icon);color:var(--c-orange);display:flex;align-items:center;justify-content:center;font-size:13px;margin-top:1px}
+.pitch b{color:var(--c-ink)}
+.btnrow{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.btn{height:36px;border-radius:10px;padding:0 14px;font-weight:800;font-size:12.5px;cursor:pointer;border:1.5px solid var(--c-border-input);background:#fff;color:var(--c-ink)}
+.btn.pri{background:var(--c-orange);border-color:var(--c-orange);color:#fff}
+.btn:hover{border-color:var(--c-orange)}
+
+/* bars */
+.vbars{display:flex;align-items:flex-end;gap:5px;height:170px;padding-top:20px}
+.vcol{flex:1;display:flex;flex-direction:column;align-items:center;min-width:0;height:100%}
+.vval{font-size:10.5px;font-weight:800;margin-bottom:4px;white-space:nowrap}
+.vtrack{flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center}
+.vbar{width:78%;max-width:34px;border-radius:5px 5px 2px 2px;background:var(--c-orange);min-height:3px;position:relative}
+.vbar.lag{background:repeating-linear-gradient(135deg,#ffc299 0 4px,#ffe2d3 4px 8px)}
+.vbar.old{background:#b84a00}
+.vbar.mid{background:var(--c-orange)}
+.vbar.new{background:#ffb27a}
+.vlab{font-size:10px;color:var(--c-faint-label);font-weight:700;margin-top:6px;white-space:nowrap}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;font-weight:700;color:var(--c-text-soft);margin-top:12px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.tabs{display:inline-flex;background:var(--c-divider-b);border-radius:10px;padding:3px;gap:2px;margin-left:auto}
+.tabs button{border:0;background:none;padding:6px 11px;border-radius:8px;font-weight:800;font-size:12px;cursor:pointer;color:var(--c-text-soft)}
+.tabs button.on{background:#fff;color:var(--c-ink);box-shadow:0 1px 4px #0000001a}
+
+.hbars{display:flex;flex-direction:column;gap:9px}
+.hrow{display:grid;grid-template-columns:120px 1fr 74px;align-items:center;gap:12px;font-size:13px;font-weight:700}
+.hrow .hl{text-align:right;color:var(--c-text-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.htrack{height:16px;background:var(--c-divider-b);border-radius:6px;overflow:hidden}
+.hfill{height:100%;border-radius:6px;background:var(--c-orange)}
+.hrow .hv{font-weight:800}
+.hrow .hv small{color:var(--c-faint-label);font-weight:700;margin-left:4px}
+
+/* rings */
+.rings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.ringc{border:1px solid var(--c-divider-a);border-radius:14px;padding:14px;text-align:center}
+.ring{width:106px;height:106px;border-radius:50%;margin:4px auto 10px;display:flex;align-items:center;justify-content:center}
+.ring>div{width:80px;height:80px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring b{font-family:var(--f-sora);font-size:19px}
+.ring small{font-size:9.5px;color:var(--c-faint-label);font-weight:800;letter-spacing:.05em}
+.ringc h4{margin:0;font-family:var(--f-sora);font-size:14px}
+.ringc p{margin:6px 0 0;font-size:12px;color:var(--c-text-soft);font-weight:600;line-height:1.45}
+.ringc p b{color:var(--c-orange-dark)}
+
+/* calc */
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.slider{margin-bottom:14px}
+.slider .top{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;color:var(--c-text-soft);margin-bottom:4px}
+.slider .top b{color:var(--c-ink);font-family:var(--f-sora)}
+.slider input{width:100%}
+.numin{width:100%;height:40px;border:1.5px solid var(--c-border-input);border-radius:10px;padding:0 12px;font:700 14px var(--f-man);outline:none}
+.numin:focus{border-color:var(--c-orange)}
+.bigout{background:linear-gradient(135deg,#16130f,#2b1f14);border-radius:16px;padding:18px 20px;color:#fff}
+.bigout .bl{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:#c9b8a6}
+.bigout .bv{font-family:var(--f-sora);font-size:30px;font-weight:800;color:#ff8a33;margin:4px 0 2px}
+.bigout .bs{font-size:12.5px;color:#e8ddd2;font-weight:600}
+.outgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.outgrid .stat{background:#fff}
+
+/* table big */
+.ltbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.ltbl th{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--c-faint-label);font-weight:800;text-align:left;padding:7px 8px;border-bottom:1px solid var(--c-border)}
+.ltbl td{padding:8px;border-bottom:1px solid var(--c-divider-b);font-weight:600}
+.ltbl td.r,.ltbl th.r{text-align:right}
+.ltbl td b{font-weight:800}
+.foot{font-size:11.5px;color:var(--c-faint-label);line-height:1.6;padding:6px 4px 0}
+.foot b{color:var(--c-text-soft)}
+.empty{color:var(--c-faint-label);font-size:13px;font-weight:600;padding:10px 0}
+
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#16130f;color:#fff;border-radius:12px;padding:12px 18px;font-weight:700;font-size:13px;opacity:0;transition:.25s;z-index:999;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%)}
+
+.leaflet-container{font-family:var(--f-man)}
+.lpop b{font-family:var(--f-sora)}
+.lpop .pg{display:grid;grid-template-columns:auto auto;gap:2px 12px;margin:6px 0 8px;font-size:12px}
+.lpop .pg span{color:#9a938a;font-weight:700}
+.lpop button{border:0;background:#ff6a00;color:#fff;border-radius:8px;padding:6px 10px;font-weight:800;font-size:11.5px;cursor:pointer;margin-right:4px}
+.lpop button.sec{background:#f4efe8;color:#16130f}
+
+@media (max-width:1100px){
+  .body{flex-direction:column;height:auto}
+  .left{flex:none;border-right:0}
+  .mapwrap{flex:none;height:420px}
+  .pane{overflow:visible}
+  .right{overflow:visible;padding:16px}
+  .hsearch input{width:190px}
+}
+@media (max-width:700px){
+  .header{padding:10px 16px;flex-wrap:wrap}
+  .hright{width:100%}
+  .hsearch{flex:1 1 100%}.hsearch input{width:100%}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .grid2,.calc,.rings,.grid3,.outgrid{grid-template-columns:1fr}
+  .card{padding:18px 16px}
+  .pcard{padding:28px 20px}
+  .hrow{grid-template-columns:90px 1fr 60px}
+  .tbl th:nth-child(6),.tbl td:nth-child(6),.tbl th:nth-child(8),.tbl td:nth-child(8){display:none}
+  .pane{padding:16px}
+}
+@media print{
+  .header .hright,.radiusbar,.btnrow,.tabs,.no-print{display:none!important}
+  .body{display:block;height:auto}
+  .left,.right{overflow:visible;display:block}
+  .mapwrap{height:360px}
+  .card{break-inside:avoid;margin-bottom:12px}
+  .pane{overflow:visible}
+  body{background:#fff}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ PICKER ============ -->
+<div class="picker" id="picker">
+  <div class="glow"></div>
+  <div class="pcard">
+    <div class="logo">solar<span>Z</span></div>
+    <p class="eyebrow">Mapa de Mercado · Inteligência</p>
+    <h1 class="ptitle">O mercado solar da sua região, <em>pronto para a reunião.</em></h1>
+    <p class="psub">Escolha a cidade do integrador e o raio. A ferramenta puxa sozinha as cidades vizinhas com demanda e monta a base instalada, o ritmo de novas usinas, a idade da base, o espaço de mercado e o potencial de receita de pós-venda.</p>
+    <label class="flabel" for="pickInp">Cidade</label>
+    <div style="position:relative">
+      <input class="inp" id="pickInp" autocomplete="off" placeholder="Digite 3 letras… ex.: jatai, ribeirao, feira">
+      <div class="sugg hidden" id="pickSugg"></div>
+    </div>
+    <div class="perr" id="pickErr"></div>
+    <label class="flabel" style="margin-top:6px">Raio de vizinhança</label>
+    <div class="prow" id="pickRadius"></div>
+    <div class="pactions">
+      <button class="linkbtn" id="pickExample">Usar cidade de exemplo</button>
+      <button class="cta" id="pickGo">Ver o mercado &nbsp;→</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DASHBOARD ============ -->
+<div id="dash" class="hidden">
+  <header class="header">
+    <div class="hleft">
+      <div class="hlogo">solar<span>Z</span></div>
+      <div class="hdiv"></div>
+      <div class="crumb" id="crumb"></div>
+    </div>
+    <div class="hright">
+      <div class="hsearch">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9a938a" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="addInp" placeholder="Adicionar cidade ao mapa" autocomplete="off">
+        <div class="sugg hidden" id="addSugg"></div>
+      </div>
+      <button class="hbtn" id="btnLink" title="Copia um link que já abre nesta cidade, raio e seleção">Copiar link</button>
+      <button class="hbtn" id="btnPrint" title="Salvar em PDF para enviar ao integrador">PDF</button>
+      <button class="hbtn" id="btnNew">Nova consulta</button>
+    </div>
+  </header>
+  <div class="body">
+    <div class="left">
+      <div class="mapwrap">
+        <div id="map"></div>
+        <div class="radiusbar">
+          <div><div class="rlab">Raio</div><div class="rval" id="rVal">50 km</div></div>
+          <input type="range" id="rRange" min="0" max="250" step="5" value="50" aria-label="Raio em km">
+          <div class="rquick" id="rQuick"></div>
+          <div><div class="rlab">Mín. usinas</div>
+            <select class="rsel" id="minN"><option value="1">1+</option><option value="10">10+</option><option value="50">50+</option><option value="200">200+</option><option value="1000">1.000+</option></select>
+          </div>
+        </div>
+      </div>
+      <div class="pane" id="pane"></div>
+    </div>
+    <div class="right" id="right"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script type="application/json" id="data">__DATA__</script>
+<script>
+(function(){
+"use strict";
+const D = JSON.parse(document.getElementById('data').textContent);
+const R = D.rows, M = D.months, ST = D.stable, Y0 = D.y0, NY = 2026 - Y0 + 1;
+const CLASSES = ['Residencial','Comercial','Rural','Industrial','Outros'];
+const RAMP = ['#FF6A00','#FF8A33','#FFA866','#FFC299','#FFDCC4'];
+const TIERS = ['Até 5 kW','5 – 10 kW','10 – 15 kW','15 – 20 kW','Acima de 20 kW'];
+const MODS = ['Própria UC','Autoconsumo remoto','Compartilhada','Condomínio'];
+const MODMAP = {Gera:'Própria UC',Auto:'Autoconsumo remoto',Comp:'Compartilhada','Cond':'Condomínio'};
+const MES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+// Horas de sol pleno médias anuais por UF (estimativa, Atlas Brasileiro de Energia Solar 2017)
+const HSP = {AC:4.6,AL:5.4,AM:4.5,AP:4.8,BA:5.5,CE:5.6,DF:5.4,ES:5.0,GO:5.5,MA:5.2,MG:5.4,MS:5.3,MT:5.2,PA:4.9,PB:5.6,PE:5.6,PI:5.7,PR:4.8,RJ:4.9,RN:5.7,RO:4.7,RR:4.9,RS:4.6,SC:4.5,SE:5.4,SP:5.0,TO:5.4};
+const PR = 0.78, TAX = 1.30, OLD_YEAR = 2022;
+
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const nf = new Intl.NumberFormat('pt-BR');
+const fmt = v => nf.format(Math.round(v || 0));
+const fmt1 = v => (v||0).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});
+const pct = (v,d=1) => (v==null||!isFinite(v)) ? '—' : (v*100).toLocaleString('pt-BR',{maximumFractionDigits:d,minimumFractionDigits:v*100<10&&d?1:0})+'%';
+const kwF = v => v >= 1000 ? fmt1(v/1000)+' MW' : fmt(v)+' kW';
+const kwpF = v => v >= 1000 ? fmt1(v/1000)+' MWp' : fmt(v)+' kWp';
+function money(v){ v=v||0; const a=Math.abs(v);
+  if(a>=1e9) return 'R$ '+(v/1e9).toLocaleString('pt-BR',{maximumFractionDigits:1})+' bi';
+  if(a>=1e6) return 'R$ '+(v/1e6).toLocaleString('pt-BR',{maximumFractionDigits:1})+' mi';
+  if(a>=1e4) return 'R$ '+(v/1e3).toLocaleString('pt-BR',{maximumFractionDigits:0})+' mil';
+  return 'R$ '+fmt(v); }
+const moneyFull = v => 'R$ '+fmt(v);
+const mLabel = s => { const [y,m]=s.split('-'); return MES[+m-1]+'/'+y.slice(2); };
+const grow = g => g==null ? '<span>—</span>' : `<span class="${g>=0?'up':'down'}">${g>=0?'▲':'▼'} ${pct(Math.abs(g),0)}</span>`;
+const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sum = (a,i,j) => { let s=0; for(let k=Math.max(0,i);k<=j;k++) s+=a[k]||0; return s; };
+function toast(t){ const el=$('toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toast._t); toast._t=setTimeout(()=>el.classList.remove('on'),2200); }
+const byIbge = new Map();
+R.forEach((r,i)=>{ r.k = norm(r[1]); r.ku = r.k+' '+r[2].toLowerCase(); byIbge.set(r[0],i); });
+function hav(a,b){ const t=Math.PI/180, dLa=(b[3]-a[3])*t, dLo=(b[4]-a[4])*t;
+  const x=Math.sin(dLa/2)**2+Math.cos(a[3]*t)*Math.cos(b[3]*t)*Math.sin(dLo/2)**2; return 12742*Math.asin(Math.sqrt(x)); }
+
+/* ---------- per-city metrics ---------- */
+function met(r){
+  if(r._m) return r._m;
+  const a=r[12];
+  const z={n:0,kw:0,c:[0,0,0,0,0],ck:[0,0,0,0,0],t:[0,0,0,0,0],y:new Array(NY).fill(0),m:new Array(M.length).fill(0),mk:new Array(M.length).fill(0),mod:[0,0,0,0],pj:0,ga:0,gak:0,mini:0,ucs:0,dist:[],top:[]};
+  if(a){ [z.n,z.kw,z.c,z.ck,z.t,z.y,z.m,z.mk,z.mod,z.pj,z.ga,z.gak,z.mini,z.ucs,z.dist,z.top]=a; }
+  z.pop=r[5]; z.dom=r[6]; z.casa=r[7]; z.casaP=r[8]; z.pib=r[9]; z.emp=r[10]; z.agro=r[11];
+  z.w12=sum(z.m,ST-11,ST); z.p12=sum(z.m,ST-23,ST-12); z.kw12=sum(z.mk,ST-11,ST);
+  z.ritmo=z.w12/12; z.growth=z.p12>=12 ? z.w12/z.p12-1 : null;
+  z.old=sum(z.y,0,OLD_YEAR-Y0);
+  z.hsp=HSP[r[2]]||5;
+  z.gen=z.kw*z.hsp*30*PR; // kWh/mês
+  const d0=z.dist[0]; z.tar=d0 && D.dists[d0[0]][2] ? D.dists[d0[0]][2] : 850; // R$/MWh sem impostos
+  z.econ=z.gen*z.tar/1000*TAX;
+  z.semSolar=Math.max(0,z.casaP-z.c[0]);
+  r._m=z; return z;
+}
+function aggregate(list){
+  const A={n:0,kw:0,c:[0,0,0,0,0],ck:[0,0,0,0,0],t:[0,0,0,0,0],y:new Array(NY).fill(0),m:new Array(M.length).fill(0),mk:new Array(M.length).fill(0),mod:[0,0,0,0],pj:0,ga:0,gak:0,mini:0,ucs:0,pop:0,dom:0,casa:0,casaP:0,pib:0,emp:0,agro:0,gen:0,econ:0,semSolar:0,old:0,w12:0,p12:0,kw12:0,dist:new Map(),top:[]};
+  for(const r of list){ const z=met(r);
+    for(const k of ['n','kw','pj','ga','gak','mini','ucs','pop','dom','casa','casaP','pib','emp','agro','gen','econ','semSolar','old','w12','p12','kw12']) A[k]+=z[k];
+    for(const k of ['c','ck','t','y','m','mk','mod']) z[k].forEach((v,i)=>A[k][i]+=v);
+    for(const [di,n] of z.dist) A.dist.set(di,(A.dist.get(di)||0)+n);
+    for(const t of z.top) A.top.push([...t,r]);
+  }
+  A.ritmo=A.w12/12; A.growth=A.p12>=12?A.w12/A.p12-1:null;
+  A.tarMed = A.gen ? (A.econ/TAX*1000/A.gen) : 850;
+  return A;
+}
+
+/* ---------- state ---------- */
+const S = { sel:null, radius:50, minN:1, ex:new Set(), extra:new Set(), sort:'score', dir:-1,
+  calc:{cap:5, ticket:35, clean:250, cleanPct:30, price:3000, intU:'', intM:''}, tl:'m' };
+try{ const c=JSON.parse(localStorage.getItem('mm2calc')||'null'); if(c) Object.assign(S.calc,c); }catch(e){}
+function saveCalc(){ try{ localStorage.setItem('mm2calc',JSON.stringify(S.calc)); }catch(e){} }
+
+function region(){
+  const s=R[S.sel], out=[], seen=new Set();
+  for(const r of R){
+    if(r===s){ out.push({r,d:0,sede:true}); seen.add(r); continue; }
+    if(Math.abs(r[3]-s[3])>S.radius/100+0.5) continue;
+    const d=hav(s,r);
+    if(d<=S.radius && met(r).n>=S.minN){ out.push({r,d}); seen.add(r); }
+  }
+  for(const ib of S.extra){ const r=R[byIbge.get(ib)]; if(r && !seen.has(r)){ out.push({r,d:hav(s,r),extra:true}); seen.add(r);} }
+  out.forEach(o=>o.on = o.sede || !S.ex.has(o.r[0]));
+  // opportunity score (relative to region)
+  const on=out.filter(o=>o.on);
+  const mx=k=>Math.max(1e-9,...on.map(o=>k(met(o.r))));
+  const mN=mx(z=>z.n), mR=mx(z=>z.ritmo), mS=mx(z=>z.semSolar);
+  for(const o of out){ const z=met(o.r);
+    const g=z.growth==null?0.33:Math.min(1,Math.max(0,(z.growth+0.5)/1.5));
+    o.score=Math.round(100*(0.35*Math.sqrt(z.n/mN)+0.25*Math.sqrt(z.ritmo/mR)+0.15*g+0.25*Math.sqrt(z.semSolar/mS)));
+  }
+  return out;
+}
+
+/* ---------- search ---------- */
+function search(q,lim=8){
+  q=norm(q); if(q.length<2) return [];
+  const parts=q.split(' '), last=parts[parts.length-1];
+  const uf = last.length===2 && parts.length>1 ? last : null;
+  const qq = uf ? parts.slice(0,-1).join(' ') : q;
+  const a=[],b=[];
+  for(const r of R){
+    if(uf && r[2].toLowerCase()!==uf) continue;
+    if(r.k.startsWith(qq)) a.push(r); else if(r.k.includes(qq)) b.push(r);
+  }
+  const key=r=>-(met(r).n);
+  a.sort((x,y)=>key(x)-key(y)); b.sort((x,y)=>key(x)-key(y));
+  return a.concat(b).slice(0,lim);
+}
+function wireSearch(inp,box,onPick){
+  let items=[],idx=-1;
+  const draw=()=>{ if(!items.length){ box.classList.add('hidden'); return; }
+    box.innerHTML=items.map((r,i)=>`<div data-i="${i}" class="${i===idx?'on':''}"><i></i>${esc(r[1])}, ${r[2]}<small>${fmt(met(r).n)} usinas</small></div>`).join('');
+    box.classList.remove('hidden'); };
+  inp.addEventListener('input',()=>{ items=search(inp.value); idx=items.length?0:-1; draw(); });
+  inp.addEventListener('keydown',e=>{
+    if(e.key==='ArrowDown'){ idx=Math.min(items.length-1,idx+1); draw(); e.preventDefault(); }
+    else if(e.key==='ArrowUp'){ idx=Math.max(0,idx-1); draw(); e.preventDefault(); }
+    else if(e.key==='Enter'){ if(items[idx]){ onPick(items[idx]); box.classList.add('hidden'); } e.preventDefault(); }
+    else if(e.key==='Escape'){ box.classList.add('hidden'); }
+  });
+  box.addEventListener('mousedown',e=>{ const d=e.target.closest('[data-i]'); if(d){ onPick(items[+d.dataset.i]); box.classList.add('hidden'); e.preventDefault(); } });
+  inp.addEventListener('blur',()=>setTimeout(()=>box.classList.add('hidden'),150));
+  inp.addEventListener('focus',()=>{ if(items.length) draw(); });
+}
+
+/* ---------- picker ---------- */
+let pickSel=null;
+const RADII=[0,25,50,100,150];
+function drawPickRadius(){ $('pickRadius').innerHTML=RADII.map(v=>`<button class="chip ${S.radius===v?'on':''}" data-r="${v}">${v?v+' km':'Só a cidade'}</button>`).join(''); }
+$('pickRadius').addEventListener('click',e=>{ const b=e.target.closest('[data-r]'); if(b){ S.radius=+b.dataset.r; drawPickRadius(); } });
+wireSearch($('pickInp'),$('pickSugg'),r=>{ pickSel=r; $('pickInp').value=`${r[1]}, ${r[2]}`; $('pickErr').textContent=''; });
+$('pickInp').addEventListener('input',()=>{ pickSel=null; });
+$('pickExample').onclick=()=>{ pickSel=R[byIbge.get(5211909)]; $('pickInp').value=`${pickSel[1]}, ${pickSel[2]}`; };
+$('pickGo').onclick=()=>{
+  if(!pickSel){ const s=search($('pickInp').value,1); if(s.length) pickSel=s[0]; }
+  if(!pickSel){ $('pickErr').textContent='Selecione uma cidade da lista.'; return; }
+  openCity(pickSel);
+};
+
+function openCity(r){
+  S.sel=byIbge.get(r[0]); S.ex.clear(); S.extra.clear();
+  $('picker').classList.add('hidden'); $('dash').classList.remove('hidden');
+  $('rRange').value=S.radius; $('minN').value=String(S.minN);
+  initMap(); render(true); writeHash();
+}
+
+/* ---------- hash (link pronto p/ reunião) ---------- */
+function writeHash(){
+  if(S.sel==null) return;
+  const p=new URLSearchParams({c:R[S.sel][0],r:S.radius,n:S.minN});
+  if(S.extra.size) p.set('x',[...S.extra].join('.'));
+  if(S.ex.size) p.set('o',[...S.ex].join('.'));
+  history.replaceState(null,'','#'+p.toString());
+}
+function readHash(){
+  const p=new URLSearchParams(location.hash.slice(1)); const c=+p.get('c');
+  if(!c || !byIbge.has(c)) return false;
+  S.radius=Math.min(250,Math.max(0,+p.get('r')||50)); S.minN=+p.get('n')||1;
+  const r=R[byIbge.get(c)];
+  S.sel=byIbge.get(c);
+  $('picker').classList.add('hidden'); $('dash').classList.remove('hidden');
+  (p.get('x')||'').split('.').filter(Boolean).forEach(v=>S.extra.add(+v));
+  (p.get('o')||'').split('.').filter(Boolean).forEach(v=>S.ex.add(+v));
+  $('rRange').value=S.radius; $('minN').value=String(S.minN);
+  initMap(); render(true); return true;
+}
+
+/* ---------- map ---------- */
+let map, lyr, circle;
+function initMap(){
+  if(map){ setTimeout(()=>map.invalidateSize(),50); return; }
+  if(typeof L==='undefined'){ $('map').innerHTML='<div class="empty" style="padding:20px">Mapa indisponível sem internet — os dados abaixo funcionam normalmente.</div>'; return; }
+  map=L.map('map',{zoomControl:true,attributionControl:true,preferCanvas:true}).setView([-15,-50],5);
+  const osm=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(map);
+  let tErr=0; osm.on('tileerror',()=>{ if(++tErr===4){ map.removeLayer(osm); L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'© Esri · OpenStreetMap'}).addTo(map); } });
+  lyr=L.layerGroup().addTo(map);
+}
+function drawMap(list,fit){
+  if(!map) return;
+  lyr.clearLayers();
+  const s=R[S.sel];
+  if(circle) circle.remove();
+  if(S.radius>0) circle=L.circle([s[3],s[4]],{radius:S.radius*1000,color:'#ff6a00',weight:1.5,dashArray:'6 6',fillColor:'#ff6a00',fillOpacity:.04,interactive:false}).addTo(map);
+  // cidades próximas fora da seleção (cinza, clicáveis p/ adicionar)
+  const inSet=new Set(list.map(o=>o.r));
+  const ext=S.radius*1.5+40;
+  for(const r of R){
+    if(inSet.has(r) || Math.abs(r[3]-s[3])>ext/100+0.5) continue;
+    const z=met(r); if(!z.n) continue;
+    const d=hav(s,r); if(d>ext) continue;
+    L.circleMarker([r[3],r[4]],{radius:Math.max(3,Math.min(14,Math.sqrt(z.n)/3)),color:'#b8b1a6',weight:1,fillColor:'#dcd5ca',fillOpacity:.6})
+      .bindPopup(()=>popHtml(r,d,'out')).addTo(lyr);
+  }
+  const mxN=Math.max(1,...list.map(o=>met(o.r).n));
+  for(const o of list){
+    const z=met(o.r); const rad=o.sede?11:Math.max(5,Math.min(22,4+18*Math.sqrt(z.n/mxN)));
+    L.circleMarker([o.r[3],o.r[4]],{radius:rad,color:o.sede?'#16130f':'#fff',weight:o.sede?3:1.5,fillColor:o.on?'#ff6a00':'#b8b1a6',fillOpacity:o.on?.85:.5})
+      .bindTooltip(`${esc(o.r[1])} · ${fmt(z.n)} usinas`,{direction:'top',offset:[0,-rad]})
+      .bindPopup(()=>popHtml(o.r,o.d,o.sede?'sede':(o.on?'on':'off'))).addTo(lyr);
+  }
+  if(fit){
+    if(circle) map.fitBounds(circle.getBounds(),{paddingTopLeft:[20,20],paddingBottomRight:[20,90]}); else map.setView([s[3],s[4]],11);
+  }
+}
+function popHtml(r,d,mode){
+  const z=met(r);
+  let btns='';
+  if(mode==='out') btns=`<button data-act="add" data-ib="${r[0]}">+ Adicionar</button>`;
+  if(mode==='on') btns=`<button class="sec" data-act="off" data-ib="${r[0]}">Remover</button>`;
+  if(mode==='off') btns=`<button data-act="on" data-ib="${r[0]}">Incluir</button>`;
+  if(mode!=='sede') btns+=`<button class="sec" data-act="sede" data-ib="${r[0]}">Tornar sede</button>`;
+  return `<div class="lpop"><b>${esc(r[1])}/${r[2]}</b> <span style="color:#9a938a;font-weight:700">· ${d?fmt(d)+' km':'sede'}</span>
+  <div class="pg"><span>Usinas</span><b>${fmt(z.n)}</b><span>Potência</span><b>${kwF(z.kw)}</b><span>Ritmo/mês</span><b>${fmt1(z.ritmo)}</b><span>Casas próprias</span><b>${fmt(z.casaP)}</b></div>${btns}</div>`;
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]'); if(!b) return;
+  const ib=+b.dataset.ib, act=b.dataset.act;
+  if(act==='add'){ S.extra.add(ib); S.ex.delete(ib); }
+  else if(act==='off'){ S.ex.add(ib); }
+  else if(act==='on'){ S.ex.delete(ib); }
+  else if(act==='sede'){ S.sel=byIbge.get(ib); S.ex.clear(); S.extra.clear(); if(map) map.closePopup(); render(true); writeHash(); return; }
+  else return;
+  if(map) map.closePopup(); render(false); writeHash();
+});
+
+/* ---------- controls ---------- */
+const QUICK=[0,25,50,100,150];
+function drawQuick(){ $('rQuick').innerHTML=QUICK.map(v=>`<button class="${S.radius===v?'on':''}" data-q="${v}">${v||'Só sede'}</button>`).join(''); }
+$('rQuick').addEventListener('click',e=>{ const b=e.target.closest('[data-q]'); if(!b) return; S.radius=+b.dataset.q; $('rRange').value=S.radius; render(true); writeHash(); });
+let rT;
+$('rRange').addEventListener('input',()=>{ S.radius=+$('rRange').value; $('rVal').textContent=S.radius?S.radius+' km':'Só sede'; clearTimeout(rT); rT=setTimeout(()=>{ render(false); writeHash(); },140); });
+$('rRange').addEventListener('change',()=>{ render(true); writeHash(); });
+$('minN').addEventListener('change',()=>{ S.minN=+$('minN').value; render(false); writeHash(); });
+wireSearch($('addInp'),$('addSugg'),r=>{ if(r[0]!==R[S.sel][0]){ S.extra.add(r[0]); S.ex.delete(r[0]); } $('addInp').value=''; render(false); writeHash(); toast(`${r[1]} adicionada`); });
+$('btnNew').onclick=()=>{ $('dash').classList.add('hidden'); $('picker').classList.remove('hidden'); history.replaceState(null,'',location.pathname); drawPickRadius(); $('pickInp').focus(); };
+$('btnPrint').onclick=()=>window.print();
+$('btnLink').onclick=()=>copy(location.href,'Link copiado — abre direto nesta análise');
+function copy(t,msg){
+  const done=()=>toast(msg);
+  if(navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t).then(done,()=>fallback());
+  else fallback();
+  function fallback(){ const ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); done();}catch(e){ toast('Não foi possível copiar'); } ta.remove(); }
+}
+
+/* ---------- render ---------- */
+let LIST=[], AG=null;
+function render(fit){
+  const list=region(); LIST=list;
+  const on=list.filter(o=>o.on).map(o=>o.r);
+  AG=aggregate(on);
+  const s=R[S.sel];
+  $('crumb').innerHTML=`Mapa de Mercado · <b>${esc(s[1])}/${s[2]}</b>${S.radius?` <span style="font-weight:600"> + raio ${S.radius} km</span>`:''}`;
+  $('rVal').textContent=S.radius?S.radius+' km':'Só sede'; drawQuick();
+  drawMap(list,fit);
+  renderPane(list);
+  renderCards(list);
+}
+
+function renderPane(list){
+  const A=AG, nOn=list.filter(o=>o.on).length;
+  const cols=[['score','Score'],['d','km'],['n','Usinas'],['kw','Potência'],['ritmo','Ritmo/mês'],['growth','Cresc. 12m'],['pen','Penetr. casas']];
+  const val=(o,k)=>{ const z=met(o.r); if(k==='d') return o.d; if(k==='score') return o.score; if(k==='pen') return z.casaP?z.c[0]/z.casaP:0; if(k==='name') return o.r.k; return z[k]==null?-9:z[k]; };
+  const rows=list.slice().sort((a,b)=>{ if(a.sede) return -1; if(b.sede) return 1; const x=val(a,S.sort),y=val(b,S.sort); return (x<y?-1:x>y?1:0)*S.dir; });
+  $('pane').innerHTML=`
+  <div class="ttlrow"><div><h2 class="ttl">Total da região</h2><p class="ttlsub">Soma das cidades marcadas ${S.radius?`no raio de ${S.radius} km`:''}</p></div>
+  <span class="badge">${nOn} ${nOn===1?'cidade':'cidades'}</span></div>
+  <div class="kpis">
+    <div class="kpi"><div class="kl"><i>⚡</i>Usinas</div><div class="kv">${fmt(A.n)}</div><div class="ks">${fmt(A.ucs)} UCs com crédito</div></div>
+    <div class="kpi"><div class="kl"><i>●</i>Potência</div><div class="kv">${kwF(A.kw)}</div><div class="ks">média ${fmt1(A.n?A.kw/A.n:0)} kW/usina</div></div>
+    <div class="kpi"><div class="kl"><i>⌂</i>Casas próprias</div><div class="kv">${fmt(A.casaP)}</div><div class="ks">${fmt(A.pop)} habitantes</div></div>
+    <div class="kpi"><div class="kl"><i>↗</i>Novas/mês</div><div class="kv">${fmt1(A.ritmo)}</div><div class="ks">${grow(A.growth)} vs 12m ant.</div></div>
+  </div>
+  <div class="sect"><span>Cidades na análise · clique no nome p/ ver no mapa</span><span style="letter-spacing:0;text-transform:none;font-weight:700">desmarque p/ tirar da soma</span></div>
+  <div class="tscroll"><table class="tbl"><thead><tr><th></th><th data-s="name">Cidade</th>${cols.map(([k,l])=>`<th data-s="${k}" class="${S.sort===k?'sorted':''}">${l}${S.sort===k?(S.dir<0?' ↓':' ↑'):''}</th>`).join('')}</tr></thead>
+  <tbody>${rows.map(o=>{ const z=met(o.r); return `<tr class="${o.on?'':'off'} ${o.sede?'sede':''}">
+    <td>${o.sede?'':`<input type="checkbox" data-t="${o.r[0]}" ${o.on?'checked':''}>`}</td>
+    <td><span class="cname" data-f="${o.r[0]}">${esc(o.r[1])}<small>${o.r[2]}</small></span>${o.sede?'<span class="tag sede">sede</span>':''}${o.extra?'<span class="tag ext">add</span>':''}</td>
+    <td><span class="scorebar"><b style="width:${o.score}%"></b></span>${o.score}</td>
+    <td>${o.sede?'—':fmt(o.d)}</td><td>${fmt(z.n)}</td><td>${kwF(z.kw)}</td><td>${fmt1(z.ritmo)}</td><td>${grow(z.growth)}</td><td>${z.casaP?pct(z.c[0]/z.casaP):'—'}</td></tr>`; }).join('')}
+  </tbody></table></div>
+  ${list.length<=1&&S.radius>0?'<p class="empty">Nenhuma cidade com usinas nesse raio — aumente o raio ou baixe o filtro de mínimo de usinas.</p>':''}`;
+}
+$('pane').addEventListener('click',e=>{
+  const th=e.target.closest('th[data-s]');
+  if(th){ const k=th.dataset.s; if(S.sort===k) S.dir*=-1; else { S.sort=k; S.dir=k==='d'||k==='name'?1:-1; } renderPane(LIST); return; }
+  const f=e.target.closest('[data-f]');
+  if(f && map){ const r=R[byIbge.get(+f.dataset.f)]; map.setView([r[3],r[4]],Math.max(map.getZoom(),10)); lyr.eachLayer(l=>{ const ll=l.getLatLng&&l.getLatLng(); if(ll&&ll.lat===r[3]&&ll.lng===r[4]) l.openPopup(); }); }
+});
+$('pane').addEventListener('change',e=>{
+  const c=e.target.closest('[data-t]'); if(!c) return;
+  const ib=+c.dataset.t; if(c.checked) S.ex.delete(ib); else S.ex.add(ib);
+  render(false); writeHash();
+});
+
+/* ---------- cards ---------- */
+function card(n,title,tip,sub,body,extraHead=''){
+  return `<section class="card"><div class="chead"><span class="cnum">${String(n).padStart(2,'0')}</span><h3 class="ctitle">${title}</h3>${tip?`<span class="info" title="${esc(tip)}">i</span>`:''}${extraHead}</div>${sub?`<p class="csub">${sub}</p>`:''}${body}</section>`;
+}
+function areaName(){ const s=R[S.sel]; const n=LIST.filter(o=>o.on).length; return n>1?`${s[1]} e região (${n} cidades)`:s[1]; }
+
+function pitchItems(){
+  const A=AG, s=R[S.sel], C=S.calc, stableLbl=mLabel(M[ST]);
+  const avgKw=A.n?A.kw/A.n:0, avgRes=A.c[0]?A.ck[0]/A.c[0]:avgKw;
+  const dayLoss=avgKw*met(s).hsp*PR*(A.tarMed/1000)*TAX;
+  const cli=Math.round(A.n*C.cap/100), mrr=cli*C.ticket;
+  const items=[];
+  items.push(['📍',`Em <b>${esc(areaName())}</b> já existem <b>${fmt(A.n)} usinas</b> conectadas, somando <b>${kwpF(A.kw)}</b>. Cada uma é um cliente que precisa de pós-venda.`]);
+  items.push(['↗',`Entram em média <b>${fmt1(A.ritmo)} novas usinas por mês</b> na região (${grow(A.growth)} vs. 12 meses anteriores) — contando você e todos os outros integradores. Base: 12 meses até ${stableLbl}.`]);
+  if(A.growth!=null && A.growth<=-0.15) items.push(['⚠',`A venda nova na região <b>caiu ${pct(-A.growth,0)}</b> em 12 meses. Com menos cliente novo, <b>a receita tem que vir da base instalada</b> — pós-venda, limpeza e expansão.`]);
+  else if(A.growth!=null && A.growth>=0.15) items.push(['🔥',`O mercado está <b>acelerando ${pct(A.growth,0)}</b> — mais usinas entrando por mês significa mais clientes para acompanhar. Quem estruturar o pós-venda agora sai na frente.`]);
+  if(A.n) items.push(['⏳',`<b>${fmt(A.old)} usinas (${pct(A.old/A.n,0)}) têm 4 anos ou mais</b> (conectadas até ${OLD_YEAR}, no boom antes da Lei 14.300). Muita empresa daquela época fechou — é onde está o <b>cliente órfão</b>.`]);
+  items.push(['☀',`A base gera ~<b>${fmt(A.gen/1000)} MWh/mês</b> ≈ <b>${money(A.econ)}/mês</b> de economia para os clientes. Uma usina média (${fmt1(avgKw)} kWp) parada custa ~<b>${moneyFull(dayLoss)} por dia</b> ao cliente — monitoramento se paga.`]);
+  items.push(['💰',`Com <b>${C.cap}% da base</b> num plano de <b>${moneyFull(C.ticket)}/mês</b>: <b>${fmt(cli)} clientes</b> e <b>${money(mrr)}/mês</b> de receita recorrente (${money(mrr*12)}/ano), sem depender de venda nova.`]);
+  if(A.casaP) items.push(['⌂',`Ainda há <b>${fmt(A.semSolar)} casas próprias sem solar</b> — penetração residencial de só <b>${pct(A.c[0]/A.casaP)}</b>. O mercado de venda nova está longe de saturar.`]);
+  const iu=+C.intU||0, im=+C.intM||0;
+  if(iu>0 && A.n) items.push(['🎯',`O integrador tem <b>${pct(iu/A.n)}</b> da base instalada da região — <b>${fmt(Math.max(0,A.n-iu))} usinas são de outros integradores</b>${im>0&&A.ritmo?` e ele faz <b>${pct(im/A.ritmo,0)}</b> das novas conexões/mês`:''}.`]);
+  const best=LIST.filter(o=>o.on&&!o.sede).sort((a,b)=>b.score-a.score)[0];
+  if(best) items.push(['★',`Vizinha com maior oportunidade: <b>${esc(best.r[1])}</b> (${fmt(best.d)} km) — ${fmt(met(best.r).n)} usinas, ${fmt1(met(best.r).ritmo)} novas/mês, score ${best.score}.`]);
+  return items;
+}
+
+function renderCards(list){
+  const A=AG, C=S.calc, stableLbl=mLabel(M[ST]);
+  const html=[];
+
+  // 01 Pitch
+  const items=pitchItems();
+  html.push(card(1,'Resumo para a reunião','Frases prontas geradas a partir dos dados. Ajuste a calculadora (card 04) e o share do integrador (card 05) que o texto acompanha.',
+    `Leia na reunião ou copie para mandar no WhatsApp depois. Tudo recalcula quando você mexe no raio ou nas cidades.`,
+    `<ul class="pitch">${items.map(([i,t])=>`<li><span>${i}</span><span>${t}</span></li>`).join('')}</ul>
+     <div class="btnrow"><button class="btn pri" id="cpPitch">Copiar resumo (WhatsApp)</button><button class="btn" id="cpTable">Copiar tabela de cidades</button></div>`));
+
+  // 02 Idade da base
+  const yrs=[]; for(let i=0;i<NY;i++) yrs.push({y:Y0+i,n:A.y[i]});
+  const ys=yrs.filter(o=>o.y>=2015); ys[0].n+=sum(A.y,0,2015-Y0-1); ys[0].lbl='≤15';
+  const mxY=Math.max(1,...ys.map(o=>o.n));
+  const cls=y=> y<=OLD_YEAR?'old':(y<=2024?'mid':'new');
+  const n23=A.y[2023-Y0]+A.y[2024-Y0], nNew=A.y[2025-Y0]+A.y[2026-Y0];
+  const idade=A.n?yrs.reduce((s,o)=>s+o.n*(2026.5-o.y-0.5),0)/A.n:0;
+  html.push(card(2,'Base instalada por ano — a mina de ouro parada','Ano de conexão/cadastro da usina na distribuidora (ANEEL). Usinas antigas tendem a estar sem acompanhamento do integrador original.',
+    `Quanto mais antiga a usina, maior a chance de estar <strong>sem assistência</strong> (integrador fechou, garantia de instalação vencida, sujeira e queda de performance).`,
+    `<div class="vbars">${ys.map(o=>`<div class="vcol" title="${o.y}: ${fmt(o.n)} usinas"><div class="vval">${o.n>=1000?fmt1(o.n/1000)+'k':fmt(o.n)}</div><div class="vtrack"><div class="vbar ${cls(o.y)}" style="height:${Math.max(2,o.n/mxY*100)}%"></div></div><div class="vlab">${o.lbl||("'"+String(o.y).slice(2))}</div></div>`).join('')}</div>
+     <div class="legend"><span><i style="background:#b84a00"></i>4+ anos (até ${OLD_YEAR})</span><span><i style="background:#ff6a00"></i>2–3 anos (2023–24)</span><span><i style="background:#ffb27a"></i>Recentes (2025–26)</span></div>
+     <div class="grid3" style="margin-top:14px">
+       <div class="stat hl"><div class="sl">Usinas com 4+ anos</div><div class="sv">${fmt(A.old)}</div><div class="ss">${A.n?pct(A.old/A.n,0):'—'} da base · alvo de resgate de órfãos</div></div>
+       <div class="stat"><div class="sl">2023 – 2024</div><div class="sv">${fmt(n23)}</div><div class="ss">entrando na fase de limpeza e revisão</div></div>
+       <div class="stat"><div class="sl">Idade média</div><div class="sv">${fmt1(idade)} anos</div><div class="ss">${fmt(nNew)} conectadas em 2025–26</div></div>
+     </div>
+     <div class="insight">💡 <b>Argumento:</b> “Dessas ${fmt(A.n)} usinas, ${fmt(A.old)} foram instaladas até ${OLD_YEAR}. Quantos desses clientes ainda têm alguém olhando a usina? Com o login do portal do inversor você traz esse cliente pra sua carteira — sem precisar falar com o integrador antigo.”</div>`));
+
+  // 03 Ritmo
+  const nM=24, off=M.length-nM, ms=M.slice(off), vals=A.m.slice(off), kws=A.mk.slice(off);
+  const mxM=Math.max(1,...vals);
+  const yearly=[]; for(let i=Math.max(0,2017-Y0);i<NY;i++) yearly.push({y:Y0+i,n:A.y[i]});
+  const mxYY=Math.max(1,...yearly.map(o=>o.n));
+  const bars = S.tl==='m'
+    ? `<div class="vbars">${ms.map((m,i)=>{ const lag=(i+off)>ST; return `<div class="vcol" title="${mLabel(m)}: ${fmt(vals[i])} usinas · ${kwF(kws[i])}${lag?' · ANEEL ainda atualizando':''}"><div class="vval" style="${lag?'color:#b8b1a6':''}">${fmt(vals[i])}</div><div class="vtrack"><div class="vbar ${lag?'lag':''}" style="height:${Math.max(2,vals[i]/mxM*100)}%"></div></div><div class="vlab">${i%2===(nM-1)%2?mLabel(m):''}</div></div>`; }).join('')}</div>
+       <div class="legend"><span><i style="background:#ff6a00"></i>Consolidado</span><span><i style="background:repeating-linear-gradient(135deg,#ffc299 0 3px,#ffe2d3 3px 6px)"></i>Meses recentes — a ANEEL ainda está registrando (vai subir)</span></div>`
+    : `<div class="vbars">${yearly.map(o=>`<div class="vcol" title="${o.y}: ${fmt(o.n)}"><div class="vval">${o.n>=1000?fmt1(o.n/1000)+'k':fmt(o.n)}</div><div class="vtrack"><div class="vbar ${o.y===2026?'lag':''}" style="height:${Math.max(2,o.n/mxYY*100)}%"></div></div><div class="vlab">${o.y}</div></div>`).join('')}</div>`;
+  html.push(card(3,'Ritmo de novas usinas','Média mensal calculada só com meses já consolidados na base da ANEEL (os últimos meses chegam com atraso de registro).',
+    `Fluxo mensal de conexões na região — seu e dos concorrentes. Média dos 12 meses até <strong>${stableLbl}</strong>.`,
+    `${bars}
+     <div class="grid3" style="margin-top:14px">
+      <div class="stat hl"><div class="sl">Novas usinas / mês</div><div class="sv">${fmt1(A.ritmo)}</div><div class="ss">${fmt(A.w12)} em 12 meses</div></div>
+      <div class="stat"><div class="sl">Crescimento</div><div class="sv">${grow(A.growth)}</div><div class="ss">12m vs 12m anteriores (${fmt(A.p12)})</div></div>
+      <div class="stat"><div class="sl">Mercado de venda nova / ano</div><div class="sv">${money(A.kw12*C.price)}</div><div class="ss">${kwpF(A.kw12)} × ${moneyFull(C.price)}/kWp</div></div>
+     </div>`,
+    `<div class="tabs"><button data-tl="m" class="${S.tl==='m'?'on':''}">24 meses</button><button data-tl="y" class="${S.tl==='y'?'on':''}">Por ano</button></div>`));
+
+  // 04 Calculadora
+  html.push(card(4,'Receita recorrente de pós-venda','Simulação: base instalada da região × % que o integrador consegue trazer para um plano de acompanhamento/monitoramento + limpeza.',
+    `Quanto o integrador fatura <strong>todo mês</strong> se transformar uma fatia da base da região em cliente de pós-venda.`,
+    `<div class="calc">
+      <div>
+        ${slider('cap','% da base captada',1,30,1,C.cap,v=>v+'%')}
+        ${slider('ticket','Plano mensal por usina',15,150,5,C.ticket,v=>'R$ '+v)}
+        ${slider('clean','Limpeza/revisão (R$ por visita/ano)',0,800,10,C.clean,v=>'R$ '+v)}
+        ${slider('cleanPct','% dos clientes que fazem limpeza no ano',0,100,5,C.cleanPct,v=>v+'%')}
+        ${slider('price','Preço médio de venda (R$/kWp)',1800,6000,100,C.price,v=>'R$ '+fmt(v))}
+      </div>
+      <div id="calcOut"></div>
+    </div>`));
+
+  // 05 Share do integrador
+  html.push(card(5,'Onde o integrador está nesse mercado','Pergunte na reunião e digite. O cálculo compara com a base e o fluxo da região selecionada.',
+    `Pergunte: <strong>“quantas usinas você já instalou?”</strong> e <strong>“quantas vende por mês?”</strong>`,
+    `<div class="grid2">
+      <div><label class="flabel">Usinas instaladas pelo integrador</label><input class="numin" id="intU" inputmode="numeric" placeholder="ex.: 500" value="${esc(C.intU)}"></div>
+      <div><label class="flabel">Vendas / mês do integrador</label><input class="numin" id="intM" inputmode="numeric" placeholder="ex.: 10" value="${esc(C.intM)}"></div>
+     </div><div id="shareOut" style="margin-top:14px"></div>`));
+
+  // 06 Espaço de mercado
+  const penR=A.casaP?A.c[0]/A.casaP:0, penC=A.emp?(A.c[1]+A.c[3])/A.emp:0, penA=A.agro?A.c[2]/A.agro:0;
+  const ring=(p,lab)=>{ const d=Math.min(100,p*100); return `<div class="ring" style="background:conic-gradient(#FF6A00 ${Math.max(d,0.6)*3.6}deg,#F2EAE0 0deg)"><div><b>${pct(p)}</b><small>${lab}</small></div></div>`; };
+  html.push(card(6,'Espaço de mercado (penetração)','Residencial: casas (inclui casa de vila/condomínio) próprias de algum morador — Censo 2022. Comercial/Industrial: unidades locais de empresas — IBGE CEMPRE 2021. Rural: estabelecimentos agropecuários — Censo Agro 2017.',
+    `Quanto do público que <strong>pode</strong> ter solar já tem. Quem mora em casa própria é o cliente residencial real — apartamento e aluguel ficam de fora.`,
+    `<div class="rings">
+      <div class="ringc"><h4>Residencial</h4>${ring(penR,'COM SOLAR')}<p><b>${fmt(A.semSolar)}</b> casas próprias sem solar<br>${fmt(A.c[0])} de ${fmt(A.casaP)}</p></div>
+      <div class="ringc"><h4>Comercial / Industrial</h4>${ring(penC,'COM SOLAR')}<p><b>${fmt(Math.max(0,A.emp-A.c[1]-A.c[3]))}</b> empresas sem solar<br>${fmt(A.c[1]+A.c[3])} de ${fmt(A.emp)}</p></div>
+      <div class="ringc"><h4>Rural</h4>${ring(penA,'COM SOLAR')}<p><b>${fmt(Math.max(0,A.agro-A.c[2]))}</b> propriedades sem solar<br>${fmt(A.c[2])} de ${fmt(A.agro)}</p></div>
+     </div>
+     <div class="grid3" style="margin-top:14px">
+      <div class="stat"><div class="sl">Domicílios ocupados</div><div class="sv">${fmt(A.dom)}</div><div class="ss">${A.dom?pct(A.casa/A.dom,0):'—'} são casas</div></div>
+      <div class="stat"><div class="sl">Usinas por mil hab.</div><div class="sv">${A.pop?fmt1(A.n/A.pop*1000):'—'}</div><div class="ss">Brasil ≈ ${fmt1(NAT.n/NAT.pop*1000)}</div></div>
+      <div class="stat"><div class="sl">PIB per capita</div><div class="sv">${A.pop?money(A.pib*1000/A.pop):'—'}</div><div class="ss">Brasil ≈ ${money(NAT.pib*1000/NAT.pop)} (IBGE 2023)</div></div>
+     </div>`));
+
+  // 07 Perfil
+  const mxC=Math.max(1,...A.c), mxT=Math.max(1,...A.t);
+  const modT=A.mod.reduce((a,b)=>a+b,0)||1;
+  html.push(card(7,'Perfil da base instalada','Classe de consumo, faixa de potência, tipo de titular, modalidade de compensação e grupo tarifário (ANEEL).',
+    `Para saber <strong>com quem</strong> o integrador vai falar: casa, comércio, agro, investidor ou média tensão.`,
+    `<div class="grid2">
+      <div><div class="sect" style="margin-top:0">Por classe</div><div class="hbars">${CLASSES.map((c,i)=>`<div class="hrow"><span class="hl">${c}</span><div class="htrack"><div class="hfill" style="width:${Math.max(1,A.c[i]/mxC*100)}%;background:${RAMP[i]}"></div></div><span class="hv">${fmt(A.c[i])}</span></div>`).join('')}</div></div>
+      <div><div class="sect" style="margin-top:0">Por potência</div><div class="hbars">${TIERS.map((c,i)=>`<div class="hrow"><span class="hl">${c}</span><div class="htrack"><div class="hfill" style="width:${Math.max(1,A.t[i]/mxT*100)}%;background:${RAMP[i]}"></div></div><span class="hv">${fmt(A.t[i])}</span></div>`).join('')}</div></div>
+     </div>
+     <div class="grid3" style="margin-top:16px">
+      <div class="stat"><div class="sl">Pessoa física / jurídica</div><div class="sv">${A.n?pct((A.n-A.pj)/A.n,0):'—'} <span style="font-size:13px;color:#9a938a">PF</span></div><div class="ss">${fmt(A.pj)} usinas de empresas (PJ)</div></div>
+      <div class="stat"><div class="sl">Autoconsumo remoto + compartilhada</div><div class="sv">${fmt(A.mod[1]+A.mod[2]+A.mod[3])}</div><div class="ss">${pct((A.mod[1]+A.mod[2]+A.mod[3])/modT,0)} · usinas de investidor/aluguel e fazendas solares</div></div>
+      <div class="stat"><div class="sl">Média tensão (Grupo A)</div><div class="sv">${fmt(A.ga)}</div><div class="ss">${kwF(A.gak)} · ${fmt(A.mini)} minigeração (&gt;75 kW) — contratos de O&amp;M</div></div>
+     </div>
+     <div class="grid3" style="margin-top:10px">
+      <div class="stat"><div class="sl">Média residencial</div><div class="sv">${fmt1(A.c[0]?A.ck[0]/A.c[0]:0)} kWp</div><div class="ss">ticket ≈ ${money((A.c[0]?A.ck[0]/A.c[0]:0)*C.price)}</div></div>
+      <div class="stat"><div class="sl">Média comercial</div><div class="sv">${fmt1(A.c[1]?A.ck[1]/A.c[1]:0)} kWp</div><div class="ss">ticket ≈ ${money((A.c[1]?A.ck[1]/A.c[1]:0)*C.price)}</div></div>
+      <div class="stat"><div class="sl">Média rural</div><div class="sv">${fmt1(A.c[2]?A.ck[2]/A.c[2]:0)} kWp</div><div class="ss">ticket ≈ ${money((A.c[2]?A.ck[2]/A.c[2]:0)*C.price)}</div></div>
+     </div>`));
+
+  // 08 Energia & distribuidora
+  const dl=[...A.dist.entries()].sort((a,b)=>b[1]-a[1]).slice(0,4);
+  const dT=dl.reduce((s,d)=>s+d[1],0)||1;
+  const avgKw=A.n?A.kw/A.n:0, hspR=A.kw?A.gen/(A.kw*30*PR):5;
+  const dayLoss=avgKw*hspR*PR*(A.tarMed/1000)*TAX;
+  html.push(card(8,'Energia, conta de luz e distribuidora','Geração estimada = kWp × horas de sol pleno da UF × 30 dias × 78% de performance. Tarifa B1 residencial convencional homologada pela ANEEL (TUSD+TE, sem impostos); economia estimada com ~30% de impostos.',
+    `Traduz a base em <strong>dinheiro do cliente</strong> — o argumento para cobrar monitoramento.`,
+    `<div class="grid3">
+      <div class="stat hl"><div class="sl">Economia gerada pela base</div><div class="sv">${money(A.econ)}/mês</div><div class="ss">${fmt(A.gen/1000)} MWh/mês estimados</div></div>
+      <div class="stat"><div class="sl">Usina média parada</div><div class="sv">${moneyFull(dayLoss)}/dia</div><div class="ss">${moneyFull(dayLoss*30)} por mês perdido (${fmt1(avgKw)} kWp)</div></div>
+      <div class="stat"><div class="sl">Se 5% da base parar</div><div class="sv">${money(A.econ*0.05)}/mês</div><div class="ss">${fmt(A.n*0.05)} usinas sem gerar e ninguém vendo</div></div>
+     </div>
+     <div class="sect">Distribuidora na região · tarifa B1 residencial (sem impostos)</div>
+     <div class="tscroll"><table class="ltbl"><thead><tr><th>Distribuidora</th><th class="r">Usinas</th><th class="r">Tarifa R$/kWh</th><th class="r">c/ impostos ≈</th></tr></thead><tbody>
+     ${dl.map(([di,n])=>{ const d=D.dists[di]; return `<tr><td><b>${esc(d[0])}</b> <span style="color:#9a938a">· ${esc(d[1])}</span></td><td class="r">${fmt(n)} <span style="color:#9a938a">(${pct(n/dT,0)})</span></td><td class="r">${d[2]?'R$ '+(d[2]/1000).toFixed(3).replace('.',','):'—'}</td><td class="r">${d[2]?'R$ '+(d[2]*TAX/1000).toFixed(2).replace('.',','):'—'}</td></tr>`; }).join('')}
+     </tbody></table></div>
+     <div class="insight">💡 <b>Argumento:</b> “A região economiza ${money(A.econ)} por mês com solar. Se só 5% dessas usinas estiverem paradas sem ninguém ver, são ${money(A.econ*0.05)} por mês jogados fora pelos clientes — e a primeira ligação vai ser pra você.”</div>`));
+
+  // 09 Ranking
+  const rk=list.filter(o=>o.on).sort((a,b)=>b.score-a.score).slice(0,12);
+  html.push(card(9,'Ranking de oportunidade na região','Score 0–100 relativo às cidades da região: 35% base instalada, 25% ritmo de novas usinas, 15% crescimento, 25% casas próprias sem solar.',
+    `Onde o integrador deve <strong>priorizar</strong> — base para pós-venda + fluxo de venda nova + espaço livre.`,
+    rk.length?`<div class="tscroll"><table class="ltbl"><thead><tr><th>#</th><th>Cidade</th><th class="r">km</th><th class="r">Usinas</th><th class="r">4+ anos</th><th class="r">Novas/mês</th><th class="r">Casas s/ solar</th><th class="r">Score</th></tr></thead><tbody>
+    ${rk.map((o,i)=>{ const z=met(o.r); return `<tr><td>${i+1}</td><td><b>${esc(o.r[1])}</b> <span style="color:#9a938a">${o.r[2]}</span>${o.sede?'<span class="tag sede">sede</span>':''}</td><td class="r">${o.sede?'—':fmt(o.d)}</td><td class="r">${fmt(z.n)}</td><td class="r">${fmt(z.old)}</td><td class="r">${fmt1(z.ritmo)} ${grow(z.growth)}</td><td class="r">${fmt(z.semSolar)}</td><td class="r"><span class="scorebar"><b style="width:${o.score}%"></b></span><b>${o.score}</b></td></tr>`; }).join('')}
+    </tbody></table></div>`:'<p class="empty">Sem cidades.</p>'));
+
+  // 10 Maiores PJ
+  const tops=A.top.slice().sort((a,b)=>b[1]-a[1]).slice(0,15);
+  html.push(card(10,'Maiores usinas de empresas na região','Titulares pessoa jurídica com usinas ≥ 20 kW, conforme cadastro público da ANEEL (as 6 maiores de cada cidade).',
+    `Lista de prospecção para <strong>contratos de O&amp;M, limpeza e monitoramento B2B</strong>.`,
+    tops.length?`<div class="tscroll"><table class="ltbl"><thead><tr><th>Titular</th><th>Cidade</th><th class="r">Potência</th><th>Classe</th><th class="r">Ano</th><th>Modalidade</th></tr></thead><tbody>
+    ${tops.map(t=>`<tr><td><b>${esc(t[0])}</b></td><td>${esc(t[6][1])}</td><td class="r">${kwF(t[1])}</td><td>${CLASSES[t[2]]}${t[4]&&t[4][0]==='A'?' <span class="tag ext">'+esc(t[4])+'</span>':''}</td><td class="r">${t[3]}</td><td>${MODMAP[t[5]]||'—'}</td></tr>`).join('')}
+    </tbody></table></div>`:'<p class="empty">Nenhuma usina PJ ≥ 20 kW nas cidades selecionadas.</p>'));
+
+  html.push(`<div class="foot"><b>Fontes:</b> ANEEL — Empreendimentos de Geração Distribuída (base de ${D.gen.split('-').reverse().join('/')}, conexões até ${mLabel(D.asOf)}; média mensal usa meses consolidados até ${stableLbl}) e Tarifas Homologadas das Distribuidoras · IBGE — Censo 2022 (população, domicílios por tipo e condição de ocupação), PIB dos Municípios 2023, CEMPRE 2021, Censo Agropecuário 2017. Geração e economia são estimativas. “Cliente órfão” é uma leitura estratégica da idade da base, não um dado da ANEEL.</div>`);
+
+  $('right').innerHTML=html.join('');
+  updateCalc(); updateShare();
+}
+
+function slider(k,label,min,max,step,v,f){
+  return `<div class="slider"><div class="top"><span>${label}</span><b id="sv_${k}">${f(v)}</b></div><input type="range" data-k="${k}" min="${min}" max="${max}" step="${step}" value="${v}"></div>`;
+}
+const SF={cap:v=>v+'%',ticket:v=>'R$ '+v,clean:v=>'R$ '+v,cleanPct:v=>v+'%',price:v=>'R$ '+fmt(v)};
+function updateCalc(){
+  const A=AG, C=S.calc, el=$('calcOut'); if(!el) return;
+  const cli=Math.round(A.n*C.cap/100), mrr=cli*C.ticket, clean=cli*C.cleanPct/100*C.clean, novas=A.ritmo*C.cap/100;
+  el.innerHTML=`<div class="bigout"><div class="bl">Receita recorrente mensal</div><div class="bv">${money(mrr)}</div><div class="bs">${fmt(cli)} clientes × ${moneyFull(C.ticket)} · ${money(mrr*12+clean)} por ano com limpeza</div></div>
+   <div class="outgrid">
+    <div class="stat"><div class="sl">Limpeza / revisão no ano</div><div class="sv">${money(clean)}</div><div class="ss">${fmt(cli*C.cleanPct/100)} visitas</div></div>
+    <div class="stat"><div class="sl">Cada 1% da base</div><div class="sv">${money(A.n/100*C.ticket)}/mês</div><div class="ss">${fmt(A.n/100)} usinas</div></div>
+    <div class="stat"><div class="sl">Só das usinas 4+ anos</div><div class="sv">${money(A.old*C.cap/100*C.ticket)}/mês</div><div class="ss">mesmo % aplicado aos órfãos potenciais</div></div>
+    <div class="stat"><div class="sl">Carteira cresce</div><div class="sv">+${fmt1(novas)}/mês</div><div class="ss">se ${C.cap}% das novas usinas entrarem no plano</div></div>
+   </div>`;
+}
+function updateShare(){
+  const A=AG, C=S.calc, el=$('shareOut'); if(!el) return;
+  const iu=+C.intU||0, im=+C.intM||0;
+  if(!iu && !im){ el.innerHTML='<p class="empty" style="padding:0">Preencha para ver a fatia do integrador e o tamanho do mercado que ainda não é dele.</p>'; return; }
+  el.innerHTML=`<div class="grid3">
+    <div class="stat hl"><div class="sl">Fatia da base</div><div class="sv">${A.n&&iu?pct(iu/A.n):'—'}</div><div class="ss">${fmt(Math.max(0,A.n-iu))} usinas de outros integradores</div></div>
+    <div class="stat"><div class="sl">Fatia das novas conexões</div><div class="sv">${A.ritmo&&im?pct(im/A.ritmo,0):'—'}</div><div class="ss">${fmt1(Math.max(0,A.ritmo-im))} usinas/mês vão para concorrentes</div></div>
+    <div class="stat"><div class="sl">Receita da própria base</div><div class="sv">${iu?money(iu*C.ticket*0.3):'—'}/mês</div><div class="ss">30% da carteira dele no plano de ${moneyFull(C.ticket)}</div></div>
+  </div>`;
+}
+$('right').addEventListener('input',e=>{
+  const s=e.target.closest('input[type=range][data-k]');
+  if(s){ const k=s.dataset.k; S.calc[k]=+s.value; $('sv_'+k).textContent=SF[k](+s.value); updateCalc(); refreshPitch(); saveCalc(); return; }
+  if(e.target.id==='intU'||e.target.id==='intM'){ S.calc[e.target.id]=e.target.value.replace(/\D/g,''); updateShare(); refreshPitch(); saveCalc(); }
+});
+$('right').addEventListener('change',e=>{ if(e.target.closest('input[type=range][data-k="price"]')) renderCards(LIST); });
+$('right').addEventListener('click',e=>{
+  const t=e.target.closest('[data-tl]'); if(t){ S.tl=t.dataset.tl; renderCards(LIST); return; }
+  if(e.target.id==='cpPitch'){
+    const s=R[S.sel];
+    const txt=`*Estudo de mercado solar — ${areaName()}*\n\n`+pitchItems().map(([i,t])=>'• '+t.replace(/<b>|<\/b>/g,'*').replace(/<[^>]+>/g,'').replace(/&amp;/g,'&')).join('\n\n')+`\n\nFonte: ANEEL e IBGE (dados públicos).`;
+    copy(txt,'Resumo copiado — cole no WhatsApp');
+  }
+  if(e.target.id==='cpTable'){
+    const rows=LIST.filter(o=>o.on).sort((a,b)=>b.score-a.score).map(o=>{ const z=met(o.r); return [o.r[1]+'/'+o.r[2],o.sede?0:Math.round(o.d),z.n,Math.round(z.kw),z.ritmo.toFixed(1).replace('.',','),z.old,z.semSolar,o.score].join('\t'); });
+    copy(['Cidade\tkm\tUsinas\tkW\tNovas/mês\t4+ anos\tCasas próprias s/ solar\tScore',...rows].join('\n'),'Tabela copiada — cole no Excel/Sheets');
+  }
+});
+function refreshPitch(){ const ul=document.querySelector('.pitch'); if(ul) ul.innerHTML=pitchItems().map(([i,t])=>`<li><span>${i}</span><span>${t}</span></li>`).join(''); }
+
+/* ---------- national reference ---------- */
+const NAT={n:0,pop:0,pib:0}; for(const r of R){ const z=met(r); NAT.n+=z.n; NAT.pop+=z.pop; NAT.pib+=z.pib; }
+
+/* ---------- boot ---------- */
+drawPickRadius();
+if(!readHash()) setTimeout(()=>$('pickInp').focus(),50);
+window.addEventListener('resize',()=>{ if(map) map.invalidateSize(); });
+})();
+</script>
+</body>
+</html>
