@@ -634,7 +634,7 @@ const R=D.rows,M=D.months,ST=D.stable,Y0=D.y0,NY=2026-Y0+1;
 const byIbge=new Map();
 R.forEach((r,i)=>{ r.k=norm(r[1]); byIbge.set(r[0],i); });
 const HAS_CNPJ=R.some(r=>r[19]);
-let CONC_HI=3,CONC_LO=1.2;
+let CONC_HI=5,CONC_LO=2; // vendas/mês por empresa: p75 e p25 das cidades brasileiras (Receita × ANEEL)
 // r: 0 ibge 1 nome 2 uf 3 lat 4 lon 5 pop 6 pop2010 7 domicílios 8 casas 9 casas próprias 10 PIB(mil) 11 empresas 12 salário 13 ocupados 14 estab.agro 15 PAM(mil) 16 irradiação 17 irr.pior mês 18 ANEEL
 
 /* ================= state ================= */
@@ -1260,7 +1260,7 @@ function renderRows(list){
   $('snav').innerHTML=order.map(k=>`<button data-go="${k}">${NAV[k]}</button>`).join('');
   $('rows').innerHTML=order.map(k=>X[k]).join('');
   let n=0; $('rows').querySelectorAll('.rnum').forEach(e=>e.textContent=String(++n).padStart(2,'0'));
-  $('foot').innerHTML=`<b>Fontes:</b> ANEEL (Geração Distribuída e Tarifas Homologadas, conexões até ${mLabel(D.asOf)}; médias com meses consolidados até ${stLbl}) · IBGE (Censos 2022 e 2010, PIB dos Municípios, CEMPRE, Censo Agro, PAM) · NASA POWER. Geração, economia e payback são estimativas.`;
+  $('foot').innerHTML=`<b>Fontes:</b> ANEEL (Geração Distribuída e Tarifas Homologadas, conexões até ${mLabel(D.asOf)}; médias com meses consolidados até ${stLbl}) · IBGE (Censos 2022 e 2010, PIB dos Municípios, CEMPRE, Censo Agro, PAM) · NASA POWER${HAS_CNPJ?' · Receita Federal (CNPJ ativos, ago–set/2026; empresas solares = “solar” no nome + atividade elétrica, estimativa)':''} · IBGE malhas. Geração, economia e payback são estimativas.`;
   updateCalc(); spyNav();
 }
 function updateCalc(){

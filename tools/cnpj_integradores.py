@@ -21,7 +21,7 @@ def rows(zpath):
             for line in io.TextIOWrapper(fh,encoding='latin-1',newline=''):
                 yield line.rstrip('\r\n').split('";"')
 CN={'4321500','7112000','3321000','4742300','3511501','3511502','4329199','4322302','4751201'}
-SOLAR=re.compile(r'SOLAR|FOTOVOLT|\bFV\b|SUNNY|\bSUN\b|FOTON|HELIO|ENERGIA SOL|ENERGIAS RENOV|ENERGIA RENOV|RENOVAVE',re.I)
+SOLAR=re.compile(r'SOLAR|FOTOVOLT|\bFV\b|SUNNY|\bSUN\b|FOTON|ENERGIA SOL|ENERGIAS RENOV|ENERGIA RENOV|RENOVAVE',re.I)
 mun={r[0].strip('"'):r[1].strip('"') for r in rows(os.path.join(D,'Municipios.zip'))}
 keep={}; broad=collections.Counter()
 for i in range(10):
