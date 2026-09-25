@@ -28,6 +28,8 @@ for uf in 11 12 13 14 15 16 17 21 22 23 24 25 26 27 28 29 31 32 33 35 41 42 43 5
   curl -sS --retry 2 --max-time 280 -o "$WORK/agro/$uf.json" "$S/t/6778/n6/in%20n3%20$uf/v/183/p/all/c829/46302/c309/10969/c218/46502/c12553/46523/c12517/113601/c220/110085" &
   sleep 1
 done; wait
+echo "3b/5 Receita Federal — empresas de energia solar por município (~6 GB, opcional: pule com SKIP_CNPJ=1)"
+[ -n "${SKIP_CNPJ:-}" ] || python3 tools/cnpj_integradores.py
 echo "4/5 Agregando ANEEL por município"
 awk -F'";"' 'NR>1{k=$4"|"$3; if(!(k in s)){s[k]=1; print k}}' "$WORK/empreendimento-geracao-distribuida.csv" > "$WORK/distcnpj.txt"
 python3 - <<'PY'

@@ -52,12 +52,28 @@ for c in A['cities'].values():
 stable=len(months)-1
 for i in range(len(months)-1,6,-1):
     if tot[i] >= 0.9*statistics.median(tot[i-6:i]): stable=i; break
+# integradores (Receita Federal, via tools/cnpj_integradores.py) — opcional
+import unicodedata,re as _re
+def _n(x): return _re.sub(r'[^a-z0-9]','',unicodedata.normalize('NFD',x).encode('ascii','ignore').decode().lower())
+cnpj={}
+if os.path.exists(J('cnpj_agg.json')):
+    CJ=json.load(open(J('cnpj_agg.json'))); key={(_n(nm),uf):ib for ib,nm,uf,la,lo in cities}
+    rf={code:key.get((_n(nm),uf)) for code_uf in [] for code,nm,uf in []}
+    def ibge_of(code,uf): return key.get((_n(CJ['mun'].get(code,'')),uf))
+    miss=0
+    for fld,idx in (('solar',0),('solarNew',1),('broad',2)):
+        for k,v in CJ[fld].items():
+            code,uf=k.split('|'); ib=ibge_of(code,uf)
+            if ib is None: miss+=1; continue
+            cnpj.setdefault(ib,[0,0,0])[idx]+=v
+    print('cnpj municipios',len(cnpj),'sem match',miss)
 rows=[]
 for ib,name,uf,lat,lon in cities:
     a=A['cities'].get(str(ib)); hs=irr(lat,lon)
     base=[ib,name,uf,lat,lon,int(pop.get(ib,0)),int(pop10.get(ib,0)),int(domT.get(ib,0)),int(casaT.get(ib,0)),int(casaP.get(ib,0)),
           int(pib.get(ib,0)),int(emp.get(ib,0)),round(sal.get(ib,0)),int(ocup.get(ib,0)),int(agro.get(ib,0)),int(pam.get(ib,0)),round(hs[0],2),round(hs[1],2)]
     base.append([a['cl'],a['mod'],a['pj'],a['ga'],a['gak'],a['mini'],a['ucs'],a['dist'][:2],a['top']] if a else None)
+    base.append(cnpj.get(ib) if cnpj else None)
     rows.append(base)
 out=dict(asOf=A['asOf'],gen=datetime.date.today().isoformat(),months=months,stable=stable,y0=A['y0'],dists=dists,rows=rows)
 s=json.dumps(out,ensure_ascii=False,separators=(',',':')).encode('utf-8')

@@ -13,6 +13,15 @@ Arquivo único (~3 MB) com os dados de 5.570 municípios embutidos e comprimidos
 
 **Painel do closer** (⋯ Mais → Painel do closer): abre numa **aba separada** — não compartilhe. Tem roteiro com os números da região, perguntas de diagnóstico, fatia do integrador, objeções e respostas, cola de números, lista de empresas e botões para copiar (WhatsApp/Excel). Acompanha automaticamente o que você muda na tela do cliente. No Meet, compartilhe **só a aba** do cliente.
 
+## Estrutura da tela (v5)
+Cada linha tem: **capítulo** (Diagnóstico · Mercado · Venda nova · Pós-venda · Estratégia), **frase-resumo**, **💡 como ler** em linguagem simples, número em destaque à esquerda e gráfico à direita.
+- **Termômetro do mercado**: veredito honesto (ainda tem mercado / disputado / demanda limitada) com 4 medidores: demanda, espaço livre, concorrência e base para pós-venda.
+- **Sua empresa no mercado** (aparece quando o closer liga no painel): participação na base e nas vendas, comparação com a média por empresa, funil de leads e teste de **meta realista** (sugere o raio que comporta a meta).
+- **O que ainda dá pra vender**: mercado de venda de kit em R$ por segmento + o que o mercado vendeu nos últimos 12 meses.
+- **Concorrência**: empresas de energia solar ativas por cidade (Receita Federal), usinas e vendas por empresa.
+- **Onde atacar**: score com os **pontos de cada critério** em colunas e barra empilhada.
+- **Mapa**: municípios pintados pela métrica (malha IBGE), bolhas = nº de usinas, nomes das principais cidades.
+
 ## O que o perfil muda
 | Perfil | Classes | Espaço de mercado | Plano sugerido | Ordem das seções |
 |---|---|---|---|---|
@@ -27,6 +36,8 @@ Arquivo único (~3 MB) com os dados de 5.570 municípios embutidos e comprimidos
 - **ANEEL**: Empreendimentos de Geração Distribuída (base, classe, potência, data, modalidade, PJ, Grupo A, distribuidora) e Tarifas Homologadas (B1 atual, 12 meses e 3 anos atrás).
 - **IBGE**: Censo 2022 (população, domicílios, casas próprias), Censo 2010 (crescimento), PIB dos Municípios, CEMPRE (empresas, salário médio), Censo Agro 2017, PAM (valor da produção agrícola).
 - **NASA POWER**: irradiação solar média por coordenada (grade de 1°).
+- **Receita Federal (CNPJ)**: empresas com CNPJ ativo e “solar” no nome em atividades de instalação elétrica/engenharia/material elétrico (espelho Casa dos Dados). Estimativa: nem todo integrador usa “solar” no nome.
+- **IBGE malhas**: contorno dos municípios, carregado no navegador (precisa de internet).
 
 ## Atualizar os dados (mensal)
 ```bash
