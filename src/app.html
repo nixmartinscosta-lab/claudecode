@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mapa de Mercado · Inteligência</title>
-<meta name="description" content="Inteligência de mercado solar para integradores — dados públicos ANEEL e IBGE.">
+<meta name="description" content="Inteligência de mercado solar para integradores — dados públicos ANEEL, IBGE e NASA.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
@@ -14,242 +14,336 @@
 :root{
   --c-app-bg:#f7f4ef;--c-card:#fff;--c-ink:#16130f;--c-text-soft:#6e6a62;--c-faint-label:#9a938a;
   --c-border:#ece6de;--c-border-input:#e6e0d8;--c-divider-a:#f2ede6;--c-divider-b:#f4efe8;
-  --c-orange:#ff6a00;--c-orange-dark:#e25c00;--c-tile-icon:#fff1e7;--c-hover-tile:#fff4ea;--c-hover:#fff6ef;
-  --c-badge-blue-bg:#e9f1fb;--c-badge-blue-text:#2d6fb8;--c-danger:#d64545;--c-ok:#1f8a4c;--c-ok-bg:#e8f5ee;
-  --ramp-1:#ff6a00;--ramp-2:#ff8a33;--ramp-3:#ffa866;--ramp-4:#ffc299;--ramp-5:#ffdcc4;
+  --c-orange:#ff6a00;--c-orange-dark:#e25c00;--c-tile-icon:#fff1e7;--c-hover:#fff6ef;
+  --c-blue-bg:#e9f1fb;--c-blue:#2d6fb8;--c-danger:#d64545;--c-ok:#1f8a4c;--c-ok-bg:#e8f5ee;
+  --s1:#ffe2d3;--s2:#ffb27a;--s3:#ff6a00;--s4:#d45500;--s5:#8f3a00;
   --f-sora:"Sora",system-ui,sans-serif;--f-man:"Manrope",system-ui,sans-serif;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{background:var(--c-app-bg);color:var(--c-ink);font-family:var(--f-man);-webkit-font-smoothing:antialiased}
-button{font-family:inherit}
+button{font-family:inherit;color:inherit}
 b,strong{font-weight:800}
 .hidden{display:none!important}
+.muted{color:var(--c-faint-label)}
 
 /* ---------- Picker ---------- */
 .picker{min-height:100vh;background:#16130f;display:flex;align-items:center;justify-content:center;padding:24px 16px;position:relative;overflow:hidden}
-.picker .glow{position:absolute;width:520px;height:520px;right:-160px;top:-200px;border-radius:50%;background:radial-gradient(circle,#ff6a0055,transparent 65%);filter:blur(10px)}
-.pcard{position:relative;background:#fff;border-radius:22px;padding:40px;width:100%;max-width:520px;box-shadow:0 30px 80px #0006}
-.logo{display:inline-block;background:#16130f;color:#fff;font-family:var(--f-sora);font-weight:800;font-size:18px;padding:10px 14px;border-radius:10px;letter-spacing:-.01em}
+.picker .glow{position:absolute;width:560px;height:560px;right:-160px;top:-220px;border-radius:50%;background:radial-gradient(circle,#ff6a0055,transparent 65%)}
+.pcard{position:relative;background:#fff;border-radius:22px;padding:38px 40px;width:100%;max-width:600px;box-shadow:0 30px 80px #0006}
+.logo{display:inline-block;background:#16130f;color:#fff;font-family:var(--f-sora);font-weight:800;font-size:18px;padding:10px 14px;border-radius:10px}
 .logo span,.hlogo span{color:var(--c-orange)}
-.eyebrow{font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--c-orange);text-transform:uppercase;margin:26px 0 8px}
-.ptitle{font-family:var(--f-sora);font-size:26px;line-height:1.18;margin:0 0 12px;letter-spacing:-.02em}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--c-orange);text-transform:uppercase;margin:24px 0 8px}
+.ptitle{font-family:var(--f-sora);font-size:26px;line-height:1.18;margin:0 0 10px;letter-spacing:-.02em}
 .ptitle em{font-style:normal;color:var(--c-orange)}
-.psub{color:var(--c-text-soft);font-size:14px;line-height:1.6;margin:0 0 24px}
-.flabel{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--c-faint-label);margin-bottom:8px;display:block}
+.psub{color:var(--c-text-soft);font-size:14px;line-height:1.6;margin:0 0 20px}
+.flabel{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--c-faint-label);margin:0 0 8px;display:block}
 .inp{width:100%;height:50px;border:1.5px solid var(--c-border-input);border-radius:12px;padding:0 16px;font:600 15px var(--f-man);color:var(--c-ink);outline:none;background:#fff}
-.inp:focus{border-color:var(--c-orange)}
-.sugg{position:absolute;left:0;right:0;top:calc(100% + 6px);background:#fff;border:1px solid var(--c-border-input);border-radius:12px;box-shadow:0 16px 38px #00000029;padding:6px;z-index:60;max-height:320px;overflow:auto}
+.inp:focus,.numin:focus{border-color:var(--c-orange)}
+.sugg{position:absolute;left:0;right:0;top:calc(100% + 6px);background:#fff;border:1px solid var(--c-border-input);border-radius:12px;box-shadow:0 16px 38px #00000029;padding:6px;z-index:900;max-height:320px;overflow:auto}
 .sugg div{padding:10px 12px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;display:flex;align-items:center;gap:10px}
 .sugg div:hover,.sugg div.on{background:var(--c-hover)}
 .sugg i{width:7px;height:7px;border-radius:50%;background:var(--c-orange);flex:none}
 .sugg small{margin-left:auto;color:var(--c-faint-label);font-weight:700;font-size:12px}
-.prow{display:flex;gap:14px;align-items:center;margin-top:18px;flex-wrap:wrap}
-.chip{border:1.5px solid var(--c-border-input);background:#fff;border-radius:999px;padding:7px 13px;font-weight:700;font-size:13px;cursor:pointer;color:var(--c-ink)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1.5px solid var(--c-border-input);background:#fff;border-radius:999px;padding:7px 13px;font-weight:700;font-size:13px;cursor:pointer}
 .chip.on{background:var(--c-orange);border-color:var(--c-orange);color:#fff}
-.pactions{display:flex;justify-content:space-between;align-items:center;margin-top:30px;gap:12px;flex-wrap:wrap}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pbtn{border:1.5px solid var(--c-border-input);background:#fff;border-radius:12px;padding:10px 12px;text-align:left;cursor:pointer}
+.pbtn b{display:block;font-size:13.5px}
+.pbtn span{display:block;font-size:11.5px;color:var(--c-text-soft);font-weight:600;margin-top:2px;line-height:1.35}
+.pbtn.on{border-color:var(--c-orange);background:var(--c-hover)}
+.pbtn.on b{color:var(--c-orange-dark)}
+.pactions{display:flex;justify-content:space-between;align-items:center;margin-top:26px;gap:12px;flex-wrap:wrap}
 .linkbtn{background:none;border:0;color:var(--c-orange);font-weight:700;font-size:13px;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:0}
-.cta{background:linear-gradient(90deg,#f34524,#f06c1b);color:#fff;border:0;border-radius:12px;height:52px;padding:0 26px;font:800 15px var(--f-man);cursor:pointer;box-shadow:0 10px 24px #f0501f40}
-.perr{color:var(--c-danger);font-size:13px;font-weight:600;margin-top:8px;min-height:18px}
+.cta{background:linear-gradient(90deg,#f34524,#f06c1b);color:#fff!important;border:0;border-radius:12px;height:52px;padding:0 26px;font:800 15px var(--f-man);cursor:pointer;box-shadow:0 10px 24px #f0501f40}
+.cta:disabled{opacity:.5;cursor:wait}
+.perr{color:var(--c-danger);font-size:13px;font-weight:600;margin-top:6px;min-height:18px}
 
 /* ---------- Header ---------- */
-.header{background:#fff;border-bottom:1px solid var(--c-border);min-height:64px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:30}
-.hleft{display:flex;align-items:center;gap:18px;min-width:0}
+.header{background:#fff;border-bottom:1px solid var(--c-border);min-height:64px;padding:8px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:700;flex-wrap:wrap}
+.hleft{display:flex;align-items:center;gap:16px;min-width:0}
 .hlogo{font-family:var(--f-sora);font-weight:800;font-size:17px}
 .hdiv{width:1px;height:22px;background:var(--c-border-input)}
 .crumb{font-weight:600;font-size:14px;color:var(--c-text-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .crumb b{color:var(--c-orange)}
-.hright{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.hbtn{height:40px;border:1.5px solid var(--c-border-input);background:#fff;border-radius:10px;padding:0 13px;display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:800;font-size:13px;color:var(--c-ink);white-space:nowrap}
+.hright{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fbtn{height:42px;border:1.5px solid var(--c-border-input);background:#fff;border-radius:10px;padding:0 12px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;cursor:pointer;min-width:0;position:relative}
+.fbtn:hover,.fbtn.open{border-color:var(--c-orange)}
+.fbtn small{font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--c-faint-label);font-weight:800;line-height:1}
+.fbtn span{font-size:13px;font-weight:800;line-height:1.3;white-space:nowrap}
+.fbtn span::after{content:" ▾";color:var(--c-faint-label);font-size:10px}
+.fbtn.act{border-color:#ffc299;background:#fffaf6}
+.hbtn{height:42px;border:1.5px solid var(--c-border-input);background:#fff;border-radius:10px;padding:0 13px;cursor:pointer;font-weight:800;font-size:13px;white-space:nowrap}
 .hbtn:hover{border-color:var(--c-orange)}
-.hbtn small{font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--c-faint-label);font-weight:700}
-.hsearch{position:relative}
-.hsearch input{height:40px;width:250px;border:1.5px solid var(--c-border-input);border-radius:10px;padding:0 12px 0 34px;font:600 13px var(--f-man);outline:none}
-.hsearch input:focus{border-color:var(--c-orange)}
-.hsearch svg{position:absolute;left:11px;top:12px}
-.hsearch .sugg{top:46px}
+.hbtn.pri{background:var(--c-ink);border-color:var(--c-ink);color:#fff}
+.hbtn.pri:hover{background:#2b241d}
+.dd{position:absolute;top:48px;left:0;min-width:260px;background:#fff;border:1px solid var(--c-border-input);border-radius:12px;box-shadow:0 16px 38px #00000029;padding:7px;z-index:800;cursor:default}
+.dd.r{left:auto;right:0}
+.ddrow{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700}
+.ddrow:hover{background:var(--c-hover)}
+.ddrow .dot{width:9px;height:9px;border-radius:50%;border:2px solid #d8d0c5;margin-top:4px;flex:none}
+.ddrow.on .dot{border-color:var(--c-orange);background:var(--c-orange)}
+.ddrow small{display:block;font-weight:600;color:var(--c-text-soft);font-size:11.5px;margin-top:1px}
+.ddhead{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--c-faint-label);padding:8px 10px 4px}
 
 /* ---------- Layout ---------- */
 .body{display:flex;height:calc(100vh - 64px)}
-.left{flex:0 0 46%;min-width:0;display:flex;flex-direction:column;border-right:1px solid var(--c-border)}
-.mapwrap{flex:0 0 46%;position:relative;min-height:0}
+.left{flex:0 0 44%;min-width:0;display:flex;flex-direction:column;border-right:1px solid var(--c-border)}
+.mapwrap{flex:0 0 48%;position:relative;min-height:0}
 #map{position:absolute;inset:0;background:#eef0f2}
-.radiusbar{position:absolute;left:12px;right:12px;bottom:12px;z-index:500;background:#fff;border:1px solid var(--c-border);border-radius:14px;padding:10px 14px;box-shadow:0 10px 26px #0000001f;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.radiusbar .rlab{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--c-faint-label)}
-.radiusbar .rval{font-family:var(--f-sora);font-weight:800;font-size:18px;color:var(--c-orange);min-width:78px}
-.radiusbar input[type=range]{flex:1;min-width:140px}
-.rquick{display:flex;gap:6px}
+.radiusbar{position:absolute;left:12px;right:12px;bottom:12px;z-index:500;background:#fff;border:1px solid var(--c-border);border-radius:14px;padding:9px 14px;box-shadow:0 10px 26px #0000001f;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.rlab{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--c-faint-label)}
+.rval{font-family:var(--f-sora);font-weight:800;font-size:18px;color:var(--c-orange);min-width:74px}
+.radiusbar input[type=range]{flex:1;min-width:120px}
+.rquick{display:flex;gap:5px}
 .rquick button{border:1.5px solid var(--c-border-input);background:#fff;border-radius:8px;padding:4px 8px;font-weight:800;font-size:11.5px;cursor:pointer}
 .rquick button.on{border-color:var(--c-orange);color:var(--c-orange-dark);background:var(--c-hover)}
 .rsel{height:30px;border:1.5px solid var(--c-border-input);border-radius:8px;font:700 12px var(--f-man);padding:0 6px;background:#fff}
-input[type=range]{accent-color:var(--c-orange);height:22px}
+input[type=range]{accent-color:var(--c-orange);height:22px;cursor:pointer}
+.maplegend{position:absolute;top:12px;right:12px;z-index:500;background:#fff;border:1px solid var(--c-border);border-radius:12px;padding:8px 10px;box-shadow:0 6px 18px #0000001a;font-size:11px;font-weight:700;max-width:210px}
+.maplegend select{width:100%;border:1.5px solid var(--c-border-input);border-radius:8px;height:30px;font:800 12px var(--f-man);margin:4px 0 6px;background:#fff}
+.lscale{display:flex;height:8px;border-radius:4px;overflow:hidden;gap:2px}
+.lscale i{flex:1}
+.lends{display:flex;justify-content:space-between;color:var(--c-text-soft);margin-top:3px;font-size:10.5px}
 .pane{flex:1;min-height:0;overflow-y:auto;background:#fff;padding:18px 20px 30px}
-.right{flex:1;min-width:0;overflow-y:auto;padding:14px 28px 60px;display:flex;flex-direction:column;gap:14px}
+.right{flex:1;min-width:0;overflow-y:auto;padding:0 26px 80px}
 
-/* ---------- Totals ---------- */
+/* ---------- left pane ---------- */
 .ttlrow{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .ttl{font-family:var(--f-sora);font-size:19px;font-weight:700;margin:0}
-.ttlsub{font-size:13px;color:var(--c-faint-label);font-weight:500;margin:4px 0 14px}
-.badge{background:var(--c-badge-blue-bg);color:var(--c-badge-blue-text);font-weight:800;font-size:11.5px;border-radius:999px;padding:4px 10px;white-space:nowrap}
-.badge.or{background:var(--c-tile-icon);color:var(--c-orange-dark)}
-.badge.ok{background:var(--c-ok-bg);color:var(--c-ok)}
-.badge.bad{background:#fdecec;color:var(--c-danger)}
+.ttlsub{font-size:12.5px;color:var(--c-faint-label);font-weight:600;margin:4px 0 12px}
+.badge{background:var(--c-blue-bg);color:var(--c-blue);font-weight:800;font-size:11.5px;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.fchips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.fchip{font-size:11.5px;font-weight:700;background:var(--c-divider-b);border-radius:999px;padding:4px 10px;color:var(--c-text-soft)}
+.fchip b{color:var(--c-ink)}
 .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;border-top:1px solid var(--c-divider-a);border-bottom:1px solid var(--c-divider-a);padding:14px 0}
-.kpi .kl{display:flex;align-items:center;gap:7px;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--c-faint-label)}
+.kpi .kl{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--c-faint-label)}
 .kpi .kl i{width:20px;height:20px;border-radius:6px;background:var(--c-tile-icon);display:inline-flex;align-items:center;justify-content:center;font-style:normal;color:var(--c-orange);font-size:11px;flex:none}
 .kpi .kv{font-family:var(--f-sora);font-weight:700;font-size:19px;margin-top:6px;white-space:nowrap}
 .kpi .ks{font-size:11.5px;color:var(--c-text-soft);font-weight:600;margin-top:2px}
-
-/* ---------- City table ---------- */
-.sect{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--c-faint-label);margin:18px 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sect{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--c-faint-label);margin:18px 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.sl2{letter-spacing:0;text-transform:none;font-weight:700}
+.hsearch{position:relative;margin-bottom:6px}
+.hsearch input{height:40px;width:100%;border:1.5px solid var(--c-border-input);border-radius:10px;padding:0 12px 0 34px;font:600 13px var(--f-man);outline:none}
+.hsearch input:focus{border-color:var(--c-orange)}
+.hsearch svg{position:absolute;left:11px;top:12px}
+.hsearch .sugg{top:46px}
 .tscroll{overflow-x:auto;margin:0 -4px;padding:0 4px}
 .tbl{width:100%;border-collapse:collapse;font-size:12.5px}
-.tbl th{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--c-faint-label);font-weight:800;text-align:right;padding:7px 6px;border-bottom:1px solid var(--c-border);cursor:pointer;white-space:nowrap;position:sticky;top:-18px;background:#fff;user-select:none}
+.tbl th{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--c-faint-label);font-weight:800;text-align:right;padding:7px 6px;border-bottom:1px solid var(--c-border);cursor:pointer;white-space:nowrap;background:#fff;user-select:none}
 .tbl th:first-child,.tbl th:nth-child(2){text-align:left}
 .tbl th.sorted{color:var(--c-orange-dark)}
 .tbl td{padding:8px 6px;border-bottom:1px solid var(--c-divider-b);text-align:right;font-weight:700;white-space:nowrap}
-.tbl td:nth-child(2){text-align:left;white-space:normal}
+.tbl td:nth-child(2){text-align:left;white-space:normal;min-width:120px}
 .tbl td:first-child{text-align:left;width:22px}
 .tbl tr.off td{opacity:.42}
-.tbl tr:hover td{background:var(--c-hover)}
+.tbl tbody tr:hover td{background:var(--c-hover)}
 .tbl tr.sede td{background:#fff8f2}
 .cname{cursor:pointer;font-weight:800}
-.cname:hover{color:var(--c-orange-dark)}
+.cname:hover{color:var(--c-orange-dark);text-decoration:underline}
 .cname small{color:var(--c-faint-label);font-weight:700;margin-left:3px}
-.tag{font-size:9px;font-weight:800;letter-spacing:.08em;border-radius:5px;padding:2px 5px;margin-left:6px;vertical-align:1px;text-transform:uppercase}
+.tag{font-size:9px;font-weight:800;letter-spacing:.08em;border-radius:5px;padding:2px 5px;margin-left:6px;vertical-align:1px;text-transform:uppercase;white-space:nowrap}
 .tag.sede{background:var(--c-tile-icon);color:var(--c-orange-dark)}
-.tag.ext{background:var(--c-badge-blue-bg);color:var(--c-badge-blue-text)}
+.tag.ext{background:var(--c-blue-bg);color:var(--c-blue)}
 .scorebar{display:inline-block;width:38px;height:6px;border-radius:4px;background:var(--c-divider-a);vertical-align:middle;margin-right:6px;overflow:hidden}
-.scorebar b{display:block;height:100%;background:var(--c-orange)}
-.up{color:var(--c-ok)}.down{color:var(--c-danger)}
+.scorebar b{display:block;height:100%;background:var(--c-orange);border-radius:4px}
+.up{color:var(--c-ok)}.down{color:var(--c-danger)}.flat{color:var(--c-text-soft)}
 input[type=checkbox]{accent-color:var(--c-orange);width:15px;height:15px;cursor:pointer}
 
-/* ---------- Cards ---------- */
-.card{background:#fff;border:1px solid var(--c-border);border-radius:18px;padding:20px 26px 22px}
+/* ---------- right: sticky nav ---------- */
+.snav{position:sticky;top:0;z-index:600;background:linear-gradient(var(--c-app-bg) 82%,#f7f4ef00);padding:14px 0 12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.snav button{border:1.5px solid var(--c-border-input);background:#fff;border-radius:999px;padding:6px 12px;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap}
+.snav button.on{background:var(--c-ink);color:#fff;border-color:var(--c-ink)}
+.snav .pers{margin-left:auto;font-size:11.5px;font-weight:800;color:var(--c-orange-dark);background:var(--c-tile-icon);border-radius:999px;padding:6px 11px}
+.section{scroll-margin-top:64px;display:flex;flex-direction:column;gap:14px;margin-bottom:26px}
+.shead{display:flex;align-items:baseline;gap:10px;margin:6px 2px 0;flex-wrap:wrap}
+.shead h2{font-family:var(--f-sora);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--c-orange-dark);margin:0}
+.shead p{margin:0;font-size:12.5px;color:var(--c-text-soft);font-weight:600}
+
+/* ---------- hero tiles ---------- */
+.hero{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) minmax(0,1.25fr);gap:10px}
+.htile{background:#fff;border:1px solid var(--c-border);border-radius:16px;padding:14px 14px 13px;min-width:0}
+.htile .hi{width:28px;height:28px;border-radius:9px;background:var(--c-tile-icon);color:var(--c-orange);display:flex;align-items:center;justify-content:center;font-size:14px;margin-bottom:8px}
+.htile .hv{font-family:var(--f-sora);font-size:clamp(18px,1.55vw,23px);font-weight:800;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.htile .hl{font-size:11.5px;font-weight:800;margin-top:2px}
+.htile .hs{font-size:11px;color:var(--c-text-soft);font-weight:600;margin-top:4px;line-height:1.35}
+.htile.dark{background:#16130f;border-color:#16130f;color:#fff}
+.htile.dark .hi{background:#2b221a}
+.htile.dark .hv{color:#ff8a33}
+.htile.dark .hs{color:#cbbfb2}
+
+/* ---------- cards ---------- */
+.card{background:#fff;border:1px solid var(--c-border);border-radius:18px;padding:20px 24px 22px}
 .chead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .cnum{font-family:var(--f-sora);color:var(--c-orange);font-size:13px;font-weight:800}
 .ctitle{font-family:var(--f-sora);font-size:18px;font-weight:700;margin:0}
-.info{display:inline-flex;width:17px;height:17px;border-radius:50%;border:1.5px solid #bbb;color:#999;font-size:10px;font-weight:800;align-items:center;justify-content:center;cursor:help;position:relative;top:-1px}
-.csub{font-size:13px;color:var(--c-faint-label);font-weight:500;margin:4px 0 16px;line-height:1.5}
+.info{display:inline-flex;width:17px;height:17px;border-radius:50%;border:1.5px solid #bbb;color:#999;font-size:10px;font-weight:800;align-items:center;justify-content:center;cursor:help;position:relative;top:-1px;font-style:normal}
+.csub{font-size:13px;color:var(--c-text-soft);font-weight:500;margin:4px 0 16px;line-height:1.5}
 .csub strong{color:var(--c-orange-dark)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.stat{background:#fffdfb;border:1px solid var(--c-divider-a);border-radius:12px;padding:12px 14px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.stat{background:#fffdfb;border:1px solid var(--c-divider-a);border-radius:12px;padding:12px 14px;min-width:0}
 .stat .sl{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--c-faint-label)}
-.stat .sv{font-family:var(--f-sora);font-weight:700;font-size:20px;margin-top:5px}
+.stat .sv{font-family:var(--f-sora);font-weight:700;font-size:20px;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .stat .ss{font-size:11.5px;color:var(--c-text-soft);font-weight:600;margin-top:3px;line-height:1.4}
 .stat.hl{background:var(--c-hover);border-color:#ffe2d3}
 .stat.hl .sv{color:var(--c-orange-dark)}
-.insight{margin-top:14px;background:#16130f;color:#f4efe8;border-radius:12px;padding:12px 16px;font-size:13px;line-height:1.55;font-weight:500}
-.insight b{color:#ff9a4d}
+.say{margin-top:14px;background:#16130f;color:#f4efe8;border-radius:12px;padding:12px 16px 12px 44px;font-size:13px;line-height:1.55;font-weight:500;position:relative}
+.say::before{content:"💬";position:absolute;left:14px;top:11px;font-size:16px}
+.say b{color:#ff9a4d}
+.say .st{display:block;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#a89a8b;font-weight:800;margin-bottom:2px}
+.note{font-size:11.5px;color:var(--c-faint-label);font-weight:600;margin-top:10px;line-height:1.5}
 
 /* pitch */
 .pitch{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
 .pitch li{display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.55;color:#2c2721;font-weight:500}
 .pitch li>span:first-child{flex:none;width:26px;height:26px;border-radius:8px;background:var(--c-tile-icon);color:var(--c-orange);display:flex;align-items:center;justify-content:center;font-size:13px;margin-top:1px}
-.pitch b{color:var(--c-ink)}
 .btnrow{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
-.btn{height:36px;border-radius:10px;padding:0 14px;font-weight:800;font-size:12.5px;cursor:pointer;border:1.5px solid var(--c-border-input);background:#fff;color:var(--c-ink)}
+.btn{height:36px;border-radius:10px;padding:0 14px;font-weight:800;font-size:12.5px;cursor:pointer;border:1.5px solid var(--c-border-input);background:#fff}
 .btn.pri{background:var(--c-orange);border-color:var(--c-orange);color:#fff}
 .btn:hover{border-color:var(--c-orange)}
 
-/* bars */
-.vbars{display:flex;align-items:flex-end;gap:5px;height:170px;padding-top:20px}
-.vcol{flex:1;display:flex;flex-direction:column;align-items:center;min-width:0;height:100%}
-.vval{font-size:10.5px;font-weight:800;margin-bottom:4px;white-space:nowrap}
+/* charts */
+.vbars{display:flex;align-items:flex-end;gap:2px;height:170px;padding-top:18px;border-bottom:1px solid var(--c-border)}
+.vcol{flex:1;display:flex;flex-direction:column;align-items:center;min-width:0;height:100%;cursor:default}
+.vval{font-size:10px;font-weight:800;margin-bottom:4px;white-space:nowrap;color:var(--c-text-soft)}
 .vtrack{flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center}
-.vbar{width:78%;max-width:34px;border-radius:5px 5px 2px 2px;background:var(--c-orange);min-height:3px;position:relative}
-.vbar.lag{background:repeating-linear-gradient(135deg,#ffc299 0 4px,#ffe2d3 4px 8px)}
-.vbar.old{background:#b84a00}
-.vbar.mid{background:var(--c-orange)}
-.vbar.new{background:#ffb27a}
-.vlab{font-size:10px;color:var(--c-faint-label);font-weight:700;margin-top:6px;white-space:nowrap}
+.vbar{width:74%;max-width:34px;border-radius:4px 4px 0 0;background:var(--s3);min-height:2px;transition:filter .15s}
+.vcol:hover .vbar{filter:brightness(.88)}
+.vbar.lag{background:repeating-linear-gradient(135deg,#ffc299 0 4px,#ffe8d9 4px 8px)}
+.vbar.a1{background:var(--s5)}.vbar.a2{background:var(--s3)}.vbar.a3{background:var(--s2)}
+.vlabs{display:flex;gap:2px}
+.vlabs span{flex:1;text-align:center;font-size:10px;color:var(--c-faint-label);font-weight:700;margin-top:6px;white-space:nowrap;min-width:0;overflow:visible}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;font-weight:700;color:var(--c-text-soft);margin-top:12px}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
 .tabs{display:inline-flex;background:var(--c-divider-b);border-radius:10px;padding:3px;gap:2px;margin-left:auto}
 .tabs button{border:0;background:none;padding:6px 11px;border-radius:8px;font-weight:800;font-size:12px;cursor:pointer;color:var(--c-text-soft)}
 .tabs button.on{background:#fff;color:var(--c-ink);box-shadow:0 1px 4px #0000001a}
-
 .hbars{display:flex;flex-direction:column;gap:9px}
-.hrow{display:grid;grid-template-columns:120px 1fr 74px;align-items:center;gap:12px;font-size:13px;font-weight:700}
+.hrow{display:grid;grid-template-columns:118px 1fr 70px;align-items:center;gap:12px;font-size:13px;font-weight:700}
 .hrow .hl{text-align:right;color:var(--c-text-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.htrack{height:16px;background:var(--c-divider-b);border-radius:6px;overflow:hidden}
-.hfill{height:100%;border-radius:6px;background:var(--c-orange)}
-.hrow .hv{font-weight:800}
-.hrow .hv small{color:var(--c-faint-label);font-weight:700;margin-left:4px}
-
-/* rings */
-.rings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.hrow.dim{opacity:.4}
+.htrack{height:16px;background:var(--c-divider-b);border-radius:4px;overflow:hidden}
+.hfill{height:100%;border-radius:4px;background:var(--s3)}
+.hv{font-weight:800;white-space:nowrap}
+.stack{display:flex;height:22px;border-radius:6px;overflow:hidden;gap:2px;margin:8px 0 6px}
+.stack i{display:block;height:100%}
+.rings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .ringc{border:1px solid var(--c-divider-a);border-radius:14px;padding:14px;text-align:center}
-.ring{width:106px;height:106px;border-radius:50%;margin:4px auto 10px;display:flex;align-items:center;justify-content:center}
-.ring>div{width:80px;height:80px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.ring b{font-family:var(--f-sora);font-size:19px}
-.ring small{font-size:9.5px;color:var(--c-faint-label);font-weight:800;letter-spacing:.05em}
+.ringc.focus{border-color:#ffb27a;background:#fffaf6;box-shadow:0 0 0 3px #fff1e7}
+.ring{width:104px;height:104px;border-radius:50%;margin:4px auto 10px;display:flex;align-items:center;justify-content:center}
+.ring>div{width:78px;height:78px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring b{font-family:var(--f-sora);font-size:18px}
+.ring small{font-size:9px;color:var(--c-faint-label);font-weight:800;letter-spacing:.05em}
 .ringc h4{margin:0;font-family:var(--f-sora);font-size:14px}
 .ringc p{margin:6px 0 0;font-size:12px;color:var(--c-text-soft);font-weight:600;line-height:1.45}
-.ringc p b{color:var(--c-orange-dark)}
+.ringc p b{color:var(--c-orange-dark);font-size:15px;font-family:var(--f-sora)}
+.timeline{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:6px}
+.timeline div{border-radius:8px;padding:8px 6px;text-align:center;background:var(--c-divider-b);font-size:11px;font-weight:800;color:var(--c-text-soft)}
+.timeline div b{display:block;font-family:var(--f-sora);font-size:15px;color:var(--c-ink)}
+.timeline div.now{background:var(--c-orange);color:#fff}
+.timeline div.now b{color:#fff}
+.timeline div.past{opacity:.55}
 
 /* calc */
 .calc{display:grid;grid-template-columns:1fr 1fr;gap:22px}
 .slider{margin-bottom:14px}
-.slider .top{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;color:var(--c-text-soft);margin-bottom:4px}
-.slider .top b{color:var(--c-ink);font-family:var(--f-sora)}
+.slider .top{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;color:var(--c-text-soft);margin-bottom:4px;gap:8px}
+.slider .top b{color:var(--c-ink);font-family:var(--f-sora);white-space:nowrap}
 .slider input{width:100%}
-.numin{width:100%;height:40px;border:1.5px solid var(--c-border-input);border-radius:10px;padding:0 12px;font:700 14px var(--f-man);outline:none}
-.numin:focus{border-color:var(--c-orange)}
+.numin{width:100%;height:42px;border:1.5px solid var(--c-border-input);border-radius:10px;padding:0 12px;font:700 15px var(--f-man);outline:none}
 .bigout{background:linear-gradient(135deg,#16130f,#2b1f14);border-radius:16px;padding:18px 20px;color:#fff}
 .bigout .bl{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:#c9b8a6}
-.bigout .bv{font-family:var(--f-sora);font-size:30px;font-weight:800;color:#ff8a33;margin:4px 0 2px}
+.bigout .bv{font-family:var(--f-sora);font-size:32px;font-weight:800;color:#ff8a33;margin:4px 0 2px}
 .bigout .bs{font-size:12.5px;color:#e8ddd2;font-weight:600}
 .outgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .outgrid .stat{background:#fff}
-
-/* table big */
 .ltbl{width:100%;border-collapse:collapse;font-size:12.5px}
-.ltbl th{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--c-faint-label);font-weight:800;text-align:left;padding:7px 8px;border-bottom:1px solid var(--c-border)}
+.ltbl th{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--c-faint-label);font-weight:800;text-align:left;padding:7px 8px;border-bottom:1px solid var(--c-border);white-space:nowrap}
 .ltbl td{padding:8px;border-bottom:1px solid var(--c-divider-b);font-weight:600}
-.ltbl td.r,.ltbl th.r{text-align:right}
-.ltbl td b{font-weight:800}
+.ltbl td.r,.ltbl th.r{text-align:right;white-space:nowrap}
 .foot{font-size:11.5px;color:var(--c-faint-label);line-height:1.6;padding:6px 4px 0}
 .foot b{color:var(--c-text-soft)}
 .empty{color:var(--c-faint-label);font-size:13px;font-weight:600;padding:10px 0}
 
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#16130f;color:#fff;border-radius:12px;padding:12px 18px;font-weight:700;font-size:13px;opacity:0;transition:.25s;z-index:999;pointer-events:none}
+/* tooltip & toast */
+#tip{position:fixed;z-index:6000;pointer-events:none;background:#16130f;color:#fff;border-radius:10px;padding:8px 11px;font-size:12px;font-weight:600;line-height:1.45;max-width:300px;box-shadow:0 10px 26px #0000003d;opacity:0;transition:opacity .1s;left:-999px;top:-999px}
+#tip b{color:#ff9a4d}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#16130f;color:#fff;border-radius:12px;padding:12px 18px;font-weight:700;font-size:13px;opacity:0;transition:.25s;z-index:7000;pointer-events:none}
 .toast.on{opacity:1;transform:translateX(-50%)}
-
 .leaflet-container{font-family:var(--f-man)}
 .lpop b{font-family:var(--f-sora)}
 .lpop .pg{display:grid;grid-template-columns:auto auto;gap:2px 12px;margin:6px 0 8px;font-size:12px}
 .lpop .pg span{color:#9a938a;font-weight:700}
-.lpop button{border:0;background:#ff6a00;color:#fff;border-radius:8px;padding:6px 10px;font-weight:800;font-size:11.5px;cursor:pointer;margin-right:4px}
+.lpop button{border:0;background:#ff6a00;color:#fff;border-radius:8px;padding:6px 10px;font-weight:800;font-size:11.5px;cursor:pointer;margin:2px 4px 0 0}
 .lpop button.sec{background:#f4efe8;color:#16130f}
 
+/* ---------- presentation ---------- */
+.show{position:fixed;inset:0;z-index:5000;background:#16130f;color:#fff;display:flex;flex-direction:column}
+.show .glow{position:absolute;width:700px;height:700px;right:-240px;top:-300px;border-radius:50%;background:radial-gradient(circle,#ff6a0040,transparent 65%);pointer-events:none}
+.shtop{display:flex;justify-content:space-between;align-items:center;padding:18px 32px;position:relative;z-index:1;gap:12px;flex-wrap:wrap}
+.shtop .hlogo{color:#fff}
+.shtop .sx{display:flex;gap:10px;align-items:center;font-size:12px;font-weight:700;color:#a89a8b}
+.shbtn{background:#2b221a;border:0;color:#fff;border-radius:10px;height:38px;padding:0 14px;font-weight:800;cursor:pointer}
+.slide{flex:1;display:flex;align-items:center;justify-content:center;padding:10px 60px;position:relative;z-index:1;min-height:0;overflow:auto}
+.sl-in{width:100%;max-width:1180px;display:grid;grid-template-columns:1fr 1.15fr;gap:48px;align-items:center}
+.sl-in.one{grid-template-columns:1fr;text-align:center;max-width:980px}
+.skick{font-size:13px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#ff8a33}
+.stitle{font-family:var(--f-sora);font-size:36px;line-height:1.15;margin:10px 0 18px;letter-spacing:-.02em}
+.sbig{font-family:var(--f-sora);font-size:84px;font-weight:800;color:#ff8a33;line-height:1;letter-spacing:-.03em}
+.sbig .up,.sbig .down{color:inherit}
+.sbigl{font-size:17px;font-weight:700;color:#e8ddd2;margin-top:8px}
+.ssup{display:flex;gap:26px;margin-top:26px;flex-wrap:wrap}
+.one .ssup{justify-content:center}
+.ssup div b{display:block;font-family:var(--f-sora);font-size:26px}
+.ssup div span{font-size:12.5px;color:#a89a8b;font-weight:700}
+.ssup .up{color:#6fd39a}.ssup .down{color:#ff8f8f}
+.ssay{margin-top:26px;font-size:17px;line-height:1.55;color:#f4efe8;border-left:3px solid #ff6a00;padding-left:16px;font-weight:500}
+.one .ssay{border-left:0;padding-left:0}
+.ssay b{color:#ff9a4d}
+.schart{background:#fff;color:var(--c-ink);border-radius:20px;padding:22px 24px}
+.shbot{display:flex;justify-content:center;align-items:center;gap:14px;padding:18px;position:relative;z-index:1}
+.sdots{display:flex;gap:6px}
+.sdots i{width:8px;height:8px;border-radius:50%;background:#4a3d31;cursor:pointer}
+.sdots i.on{background:#ff6a00;width:22px;border-radius:4px}
+.sarrow{width:44px;height:44px;border-radius:50%;border:0;background:#2b221a;color:#fff;font-size:18px;cursor:pointer}
+.sarrow:hover,.shbtn:hover{background:#3a2d22}
+
+@media (max-width:1250px){.hero{grid-template-columns:repeat(3,1fr)}}
 @media (max-width:1100px){
   .body{flex-direction:column;height:auto}
   .left{flex:none;border-right:0}
-  .mapwrap{flex:none;height:420px}
+  .mapwrap{flex:none;height:440px}
   .pane{overflow:visible}
-  .right{overflow:visible;padding:16px}
-  .hsearch input{width:190px}
+  .right{overflow:visible;padding:0 16px 40px}
+  .sl-in{grid-template-columns:1fr;gap:20px}.sbig{font-size:60px}.stitle{font-size:28px}.slide{padding:10px 20px;align-items:flex-start}
 }
 @media (max-width:700px){
-  .header{padding:10px 16px;flex-wrap:wrap}
+  .header{padding:10px 14px}
   .hright{width:100%}
-  .hsearch{flex:1 1 100%}.hsearch input{width:100%}
+  .fbtn{flex:1 1 40%}
+  .hero{grid-template-columns:repeat(2,1fr)}
   .kpis{grid-template-columns:repeat(2,1fr)}
-  .grid2,.calc,.rings,.grid3,.outgrid{grid-template-columns:1fr}
+  .grid2,.calc,.rings,.grid3,.grid4,.outgrid{grid-template-columns:1fr}
+  .pgrid{grid-template-columns:1fr 1fr}
   .card{padding:18px 16px}
-  .pcard{padding:28px 20px}
-  .hrow{grid-template-columns:90px 1fr 60px}
-  .tbl th:nth-child(6),.tbl td:nth-child(6),.tbl th:nth-child(8),.tbl td:nth-child(8){display:none}
+  .pcard{padding:26px 18px}
+  .hrow{grid-template-columns:86px 1fr 58px}
   .pane{padding:16px}
+  .maplegend{top:8px;right:8px;max-width:170px;padding:6px 8px}.maplegend .lnote{display:none}
+  .sbig{font-size:46px}.stitle{font-size:22px}.ssay{font-size:14px}
+  .timeline{grid-template-columns:repeat(3,1fr)}
+  .snav .pers{margin-left:0}
 }
 @media print{
-  .header .hright,.radiusbar,.btnrow,.tabs,.no-print{display:none!important}
+  .hright,.radiusbar,.btnrow,.tabs,.snav,.maplegend select,#tip,.hsearch{display:none!important}
+  .header{position:static}
   .body{display:block;height:auto}
   .left,.right{overflow:visible;display:block}
-  .mapwrap{height:360px}
-  .card{break-inside:avoid;margin-bottom:12px}
+  .mapwrap{height:340px}
+  .card,.hero{break-inside:avoid}
   .pane{overflow:visible}
   body{background:#fff}
 }
@@ -263,19 +357,21 @@ input[type=checkbox]{accent-color:var(--c-orange);width:15px;height:15px;cursor:
   <div class="pcard">
     <div class="logo">solar<span>Z</span></div>
     <p class="eyebrow">Mapa de Mercado · Inteligência</p>
-    <h1 class="ptitle">O mercado solar da sua região, <em>pronto para a reunião.</em></h1>
-    <p class="psub">Escolha a cidade do integrador e o raio. A ferramenta puxa sozinha as cidades vizinhas com demanda e monta a base instalada, o ritmo de novas usinas, a idade da base, o espaço de mercado e o potencial de receita de pós-venda.</p>
-    <label class="flabel" for="pickInp">Cidade</label>
+    <h1 class="ptitle">O mercado solar da região do integrador, <em>pronto para a reunião.</em></h1>
+    <p class="psub">Escolha a cidade, o raio e o perfil do integrador. A ferramenta puxa as cidades vizinhas e monta a base instalada, o ritmo de venda, o espaço de mercado e a receita possível com pós-venda.</p>
+    <label class="flabel" for="pickInp">1 · Cidade do integrador</label>
     <div style="position:relative">
-      <input class="inp" id="pickInp" autocomplete="off" placeholder="Digite 3 letras… ex.: jatai, ribeirao, feira">
+      <input class="inp" id="pickInp" autocomplete="off" placeholder="Carregando 5.570 cidades…" disabled>
       <div class="sugg hidden" id="pickSugg"></div>
     </div>
     <div class="perr" id="pickErr"></div>
-    <label class="flabel" style="margin-top:6px">Raio de vizinhança</label>
-    <div class="prow" id="pickRadius"></div>
+    <label class="flabel">2 · Raio de vizinhança</label>
+    <div class="chips" id="pickRadius"></div>
+    <label class="flabel" style="margin-top:18px">3 · Perfil do integrador</label>
+    <div class="pgrid" id="pickPersona"></div>
     <div class="pactions">
       <button class="linkbtn" id="pickExample">Usar cidade de exemplo</button>
-      <button class="cta" id="pickGo">Ver o mercado &nbsp;→</button>
+      <button class="cta" id="pickGo" disabled>Ver o mercado &nbsp;→</button>
     </div>
   </div>
 </div>
@@ -288,27 +384,19 @@ input[type=checkbox]{accent-color:var(--c-orange);width:15px;height:15px;cursor:
       <div class="hdiv"></div>
       <div class="crumb" id="crumb"></div>
     </div>
-    <div class="hright">
-      <div class="hsearch">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9a938a" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="addInp" placeholder="Adicionar cidade ao mapa" autocomplete="off">
-        <div class="sugg hidden" id="addSugg"></div>
-      </div>
-      <button class="hbtn" id="btnLink" title="Copia um link que já abre nesta cidade, raio e seleção">Copiar link</button>
-      <button class="hbtn" id="btnPrint" title="Salvar em PDF para enviar ao integrador">PDF</button>
-      <button class="hbtn" id="btnNew">Nova consulta</button>
-    </div>
+    <div class="hright" id="filters"></div>
   </header>
   <div class="body">
     <div class="left">
       <div class="mapwrap">
         <div id="map"></div>
+        <div class="maplegend" id="mapLegend"></div>
         <div class="radiusbar">
           <div><div class="rlab">Raio</div><div class="rval" id="rVal">50 km</div></div>
           <input type="range" id="rRange" min="0" max="250" step="5" value="50" aria-label="Raio em km">
           <div class="rquick" id="rQuick"></div>
-          <div><div class="rlab">Mín. usinas</div>
-            <select class="rsel" id="minN"><option value="1">1+</option><option value="10">10+</option><option value="50">50+</option><option value="200">200+</option><option value="1000">1.000+</option></select>
+          <div><div class="rlab">Cidades com</div>
+            <select class="rsel" id="minN" aria-label="Mínimo de usinas"><option value="1">1+ usina</option><option value="10">10+</option><option value="50">50+</option><option value="200">200+</option><option value="1000">1.000+</option></select>
           </div>
         </div>
       </div>
@@ -317,532 +405,727 @@ input[type=checkbox]{accent-color:var(--c-orange);width:15px;height:15px;cursor:
     <div class="right" id="right"></div>
   </div>
 </div>
+
+<!-- ============ PRESENTATION ============ -->
+<div class="show hidden" id="show">
+  <div class="glow"></div>
+  <div class="shtop"><div class="hlogo">solar<span>Z</span> <span style="color:#a89a8b;font-weight:700;font-size:14px;margin-left:8px" id="shArea"></span></div>
+    <div class="sx"><span>← → para navegar · Esc para sair</span><button class="shbtn" id="shExit">Sair</button></div></div>
+  <div class="slide" id="slide"></div>
+  <div class="shbot"><button class="sarrow" id="shPrev" aria-label="Anterior">←</button><div class="sdots" id="shDots"></div><button class="sarrow" id="shNext" aria-label="Próximo">→</button></div>
+</div>
+
+<div id="tip"></div>
 <div class="toast" id="toast"></div>
 
-<script type="application/json" id="data">__DATA__</script>
+<script type="text/plain" id="data">__DATA__</script>
 <script>
-(function(){
+(async function(){
 "use strict";
-const D = JSON.parse(document.getElementById('data').textContent);
-const R = D.rows, M = D.months, ST = D.stable, Y0 = D.y0, NY = 2026 - Y0 + 1;
-const CLASSES = ['Residencial','Comercial','Rural','Industrial','Outros'];
-const RAMP = ['#FF6A00','#FF8A33','#FFA866','#FFC299','#FFDCC4'];
-const TIERS = ['Até 5 kW','5 – 10 kW','10 – 15 kW','15 – 20 kW','Acima de 20 kW'];
-const MODS = ['Própria UC','Autoconsumo remoto','Compartilhada','Condomínio'];
-const MODMAP = {Gera:'Própria UC',Auto:'Autoconsumo remoto',Comp:'Compartilhada','Cond':'Condomínio'};
-const MES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-// Horas de sol pleno médias anuais por UF (estimativa, Atlas Brasileiro de Energia Solar 2017)
-const HSP = {AC:4.6,AL:5.4,AM:4.5,AP:4.8,BA:5.5,CE:5.6,DF:5.4,ES:5.0,GO:5.5,MA:5.2,MG:5.4,MS:5.3,MT:5.2,PA:4.9,PB:5.6,PE:5.6,PI:5.7,PR:4.8,RJ:4.9,RN:5.7,RO:4.7,RR:4.9,RS:4.6,SC:4.5,SE:5.4,SP:5.0,TO:5.4};
-const PR = 0.78, TAX = 1.30, OLD_YEAR = 2022;
+/* ================= constants ================= */
+const CLASSES=['Residencial','Comercial','Rural','Industrial','Outros'];
+const CLS_ICON=['⌂','▦','❀','⚙','•'];
+const RAMP=['#ff6a00','#ff8a33','#ffa866','#ffc299','#ffdcc4'];
+const SEQ=['#ffe2d3','#ffb27a','#ff6a00','#d45500','#8f3a00'];
+const DIV=['#d64545','#e79a8f','#d8d1c7','#8cc3a2','#1f8a4c'];
+const TIERS=['Até 5 kW','5 – 10 kW','10 – 20 kW','20 – 75 kW','Acima de 75 kW'];
+const MODS=['Própria UC','Autoconsumo remoto','Compartilhada','Condomínio'];
+const MODMAP={Gera:'Própria UC',Auto:'Autoconsumo remoto',Comp:'Compartilhada',Cond:'Condomínio'};
+const MES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const PR=0.78, TAX=1.30, FIOB=0.80, DISP=50*12; // FIOB: desconto por Fio B + perdas de compensação; DISP: custo de disponibilidade (kWh/ano, bifásico)
+const FIOB_STEPS=[[2023,15],[2024,30],[2025,45],[2026,60],[2027,75],[2028,90]];
+const PERSONAS={
+  todos:{label:'Visão geral',short:'Geral',desc:'Todo o mercado solar da região',cls:[0,1,2,3,4],ticket:35,space:'casa',order:['geral','base','venda','receita','alvos','energia'],w:{n:.35,r:.25,g:.15,s:.25}},
+  res:{label:'Residencial',short:'Residencial',desc:'Vende para casas: volume alto, ticket menor',cls:[0],ticket:35,space:'casa',order:['geral','venda','base','receita','alvos','energia'],w:{n:.3,r:.25,g:.15,s:.3}},
+  emp:{label:'Empresas',short:'Empresas',desc:'Comércio e indústria: contratos B2B',cls:[1,3],ticket:120,space:'emp',order:['geral','alvos','base','receita','venda','energia'],w:{n:.3,r:.2,g:.15,s:.35}},
+  agro:{label:'Agro',short:'Agro',desc:'Propriedades rurais: sistemas maiores',cls:[2],ticket:80,space:'agro',order:['geral','venda','base','alvos','receita','energia'],w:{n:.3,r:.2,g:.15,s:.35}},
+  inv:{label:'Investidor / usinas',short:'Investidor',desc:'Usinas de solo, autoconsumo remoto e compartilhada',cls:[0,1,2,3,4],ticket:250,space:'casa',order:['geral','energia','alvos','base','receita','venda'],w:{n:.4,r:.25,g:.15,s:.2}},
+  om:{label:'O&M / limpeza',short:'O&M',desc:'Só serviço: a base instalada é o mercado',cls:[0,1,2,3,4],ticket:35,space:'casa',order:['geral','base','energia','receita','alvos','venda'],w:{n:.45,o:.25,r:.15,g:.15}}
+};
+const SECTIONS={geral:['Visão geral','o mercado em 5 números'],base:['Base instalada','o mercado de pós-venda que já existe'],venda:['Venda nova','ritmo, espaço livre e por que agora'],
+  receita:['Receita','quanto o integrador pode faturar'],alvos:['Onde atacar','cidades e empresas prioritárias'],energia:['Monitoramento','energia parada é dinheiro perdido']};
 
-/* ---------- helpers ---------- */
-const $ = id => document.getElementById(id);
-const nf = new Intl.NumberFormat('pt-BR');
-const fmt = v => nf.format(Math.round(v || 0));
-const fmt1 = v => (v||0).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});
-const pct = (v,d=1) => (v==null||!isFinite(v)) ? '—' : (v*100).toLocaleString('pt-BR',{maximumFractionDigits:d,minimumFractionDigits:v*100<10&&d?1:0})+'%';
-const kwF = v => v >= 1000 ? fmt1(v/1000)+' MW' : fmt(v)+' kW';
-const kwpF = v => v >= 1000 ? fmt1(v/1000)+' MWp' : fmt(v)+' kWp';
+/* ================= helpers ================= */
+const $=id=>document.getElementById(id);
+const nf=new Intl.NumberFormat('pt-BR');
+const fmt=v=>nf.format(Math.round(v||0));
+const fmt1=v=>(v||0).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});
+const pct=(v,d=1)=>(v==null||!isFinite(v))?'—':(v*100).toLocaleString('pt-BR',{maximumFractionDigits:d,minimumFractionDigits:(Math.abs(v)<0.1&&d)?1:0})+'%';
+const kwF=v=>v>=1000?fmt1(v/1000)+' MW':fmt(v)+' kW';
+const kwpF=v=>v>=1000?fmt1(v/1000)+' MWp':fmt(v)+' kWp';
+const kShort=v=>v>=10000?fmt(v/1000)+'k':v>=1000?fmt1(v/1000)+'k':fmt(v);
 function money(v){ v=v||0; const a=Math.abs(v);
   if(a>=1e9) return 'R$ '+(v/1e9).toLocaleString('pt-BR',{maximumFractionDigits:1})+' bi';
   if(a>=1e6) return 'R$ '+(v/1e6).toLocaleString('pt-BR',{maximumFractionDigits:1})+' mi';
-  if(a>=1e4) return 'R$ '+(v/1e3).toLocaleString('pt-BR',{maximumFractionDigits:0})+' mil';
+  if(a>=1e4) return 'R$ '+fmt(v/1e3)+' mil';
   return 'R$ '+fmt(v); }
-const moneyFull = v => 'R$ '+fmt(v);
-const mLabel = s => { const [y,m]=s.split('-'); return MES[+m-1]+'/'+y.slice(2); };
-const grow = g => g==null ? '<span>—</span>' : `<span class="${g>=0?'up':'down'}">${g>=0?'▲':'▼'} ${pct(Math.abs(g),0)}</span>`;
-const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
-const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const sum = (a,i,j) => { let s=0; for(let k=Math.max(0,i);k<=j;k++) s+=a[k]||0; return s; };
-function toast(t){ const el=$('toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toast._t); toast._t=setTimeout(()=>el.classList.remove('on'),2200); }
-const byIbge = new Map();
-R.forEach((r,i)=>{ r.k = norm(r[1]); r.ku = r.k+' '+r[2].toLowerCase(); byIbge.set(r[0],i); });
-function hav(a,b){ const t=Math.PI/180, dLa=(b[3]-a[3])*t, dLo=(b[4]-a[4])*t;
+const moneyFull=v=>'R$ '+fmt(v);
+const mLabel=s=>{ const [y,m]=s.split('-'); return MES[+m-1]+'/'+y.slice(2); };
+const grow=(g,plain)=>{ if(g==null||!isFinite(g)) return '—'; const c=g>0.02?'up':g<-0.02?'down':'flat'; const t=`${g>0.02?'▲':g<-0.02?'▼':'■'} ${pct(Math.abs(g),0)}`; return plain?t:`<span class="${c}">${t}</span>`; };
+const norm=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sum=(a,i,j)=>{ let s=0; for(let k=Math.max(0,i);k<=j;k++) s+=a[k]||0; return s; };
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function toast(t){ const el=$('toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toast._t); toast._t=setTimeout(()=>el.classList.remove('on'),2300); }
+function hav(a,b){ const t=Math.PI/180,dLa=(b[3]-a[3])*t,dLo=(b[4]-a[4])*t;
   const x=Math.sin(dLa/2)**2+Math.cos(a[3]*t)*Math.cos(b[3]*t)*Math.sin(dLo/2)**2; return 12742*Math.asin(Math.sqrt(x)); }
+function copy(t,msg){
+  const done=()=>toast(msg);
+  const fb=()=>{ const ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); done(); }catch(e){ toast('Não foi possível copiar'); } ta.remove(); };
+  if(navigator.clipboard&&window.isSecureContext) navigator.clipboard.writeText(t).then(done,fb); else fb();
+}
 
-/* ---------- per-city metrics ---------- */
+/* tooltip */
+const tipEl=$('tip'); let tipOn=false;
+document.addEventListener('mouseover',e=>{ const t=e.target.closest&&e.target.closest('[data-tip]'); if(!t||!t.dataset.tip){ tipOn=false; tipEl.style.opacity=0; return; } tipEl.innerHTML=t.dataset.tip; tipOn=true; tipEl.style.opacity=1; });
+document.addEventListener('mousemove',e=>{ if(!tipOn) return; const w=tipEl.offsetWidth,h=tipEl.offsetHeight; let x=e.clientX+14,y=e.clientY-h-12; if(x+w>innerWidth-8) x=e.clientX-w-14; if(y<8) y=e.clientY+18; tipEl.style.left=x+'px'; tipEl.style.top=y+'px'; });
+
+/* ================= data ================= */
+async function loadData(){
+  const b64=$('data').textContent.trim();
+  const bin=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));
+  const txt=await new Response(new Blob([bin]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
+  return JSON.parse(txt);
+}
+let D;
+try{ D=await loadData(); }catch(e){ $('pickErr').textContent='Não foi possível carregar os dados neste navegador. Use Chrome, Edge, Safari ou Firefox atualizados.'; return; }
+const R=D.rows,M=D.months,ST=D.stable,Y0=D.y0,NY=2026-Y0+1;
+const byIbge=new Map();
+R.forEach((r,i)=>{ r.k=norm(r[1]); byIbge.set(r[0],i); });
+// r: 0 ibge 1 nome 2 uf 3 lat 4 lon 5 pop 6 pop2010 7 domicílios 8 casas 9 casas próprias 10 PIB(mil) 11 empresas 12 salário 13 ocupados 14 estab.agro 15 PAM(mil) 16 irradiação 17 irr.pior mês 18 ANEEL
+
+/* ================= state ================= */
+const S={sel:null,radius:50,minN:1,ex:new Set(),extra:new Set(),sort:'score',dir:-1,persona:'todos',cls:[0,1,2,3,4],win:12,oldY:2022,color:'score',tl:'m',
+  calc:{cap:5,ticket:35,clean:250,cleanPct:30,price:3000,intU:'',intM:''}};
+try{ const c=JSON.parse(localStorage.getItem('mm3calc')||'null'); if(c) Object.assign(S.calc,c); }catch(e){}
+const saveCalc=()=>{ try{ localStorage.setItem('mm3calc',JSON.stringify(S.calc)); }catch(e){} };
+const P=()=>PERSONAS[S.persona];
+let MKEY='', lastHash='';
+const setKey=()=>{ MKEY=S.cls.join('')+'|'+S.win+'|'+S.oldY+'|'+S.persona; };
+setKey();
+
+/* ================= metrics ================= */
 function met(r){
-  if(r._m) return r._m;
-  const a=r[12];
-  const z={n:0,kw:0,c:[0,0,0,0,0],ck:[0,0,0,0,0],t:[0,0,0,0,0],y:new Array(NY).fill(0),m:new Array(M.length).fill(0),mk:new Array(M.length).fill(0),mod:[0,0,0,0],pj:0,ga:0,gak:0,mini:0,ucs:0,dist:[],top:[]};
-  if(a){ [z.n,z.kw,z.c,z.ck,z.t,z.y,z.m,z.mk,z.mod,z.pj,z.ga,z.gak,z.mini,z.ucs,z.dist,z.top]=a; }
-  z.pop=r[5]; z.dom=r[6]; z.casa=r[7]; z.casaP=r[8]; z.pib=r[9]; z.emp=r[10]; z.agro=r[11];
+  if(r._k===MKEY) return r._m;
+  const a=r[18],L=M.length;
+  const z={n:0,kw:0,c:[0,0,0,0,0],ck:[0,0,0,0,0],t:[0,0,0,0,0],y:new Array(NY).fill(0),m:new Array(L).fill(0),mk:new Array(L).fill(0),mod:[0,0,0,0],pj:0,ga:0,gak:0,mini:0,ucs:0,dist:[],top:[]};
+  if(a){
+    a[0].forEach((k,i)=>{ if(!k) return; z.c[i]=k[0]; z.ck[i]=k[1]; if(!S.cls.includes(i)) return;
+      z.n+=k[0]; z.kw+=k[1]; for(let j=0;j<5;j++) z.t[j]+=k[2][j]; for(let j=0;j<NY;j++) z.y[j]+=k[3][j]; for(let j=0;j<L;j++){ z.m[j]+=k[4][j]; z.mk[j]+=k[5][j]; } });
+    [z.mod,z.pj,z.ga,z.gak,z.mini,z.ucs,z.dist,z.top]=a.slice(1);
+    z.top=z.top.filter(t=>S.cls.includes(t[2]));
+  }
+  z.all=z.c.reduce((s,v)=>s+v,0);
+  z.pop=r[5]; z.pop10=r[6]; z.dom=r[7]; z.casa=r[8]; z.casaP=r[9]; z.pib=r[10]; z.emp=r[11]; z.sal=r[12]; z.ocup=r[13]; z.agro=r[14]; z.pam=r[15]; z.hsp=r[16]||5; z.hspMin=r[17]||4;
+  z.popG=z.pop10?z.pop/z.pop10-1:null;
   z.w12=sum(z.m,ST-11,ST); z.p12=sum(z.m,ST-23,ST-12); z.kw12=sum(z.mk,ST-11,ST);
-  z.ritmo=z.w12/12; z.growth=z.p12>=12 ? z.w12/z.p12-1 : null;
-  z.old=sum(z.y,0,OLD_YEAR-Y0);
-  z.hsp=HSP[r[2]]||5;
-  z.gen=z.kw*z.hsp*30*PR; // kWh/mês
-  const d0=z.dist[0]; z.tar=d0 && D.dists[d0[0]][2] ? D.dists[d0[0]][2] : 850; // R$/MWh sem impostos
+  z.win=sum(z.m,ST-S.win+1,ST); z.ritmo=z.win/S.win;
+  z.growth=z.p12>=12?z.w12/z.p12-1:null;
+  z.old=sum(z.y,0,S.oldY-Y0);
+  z.gen=z.kw*z.hsp*30*PR;
+  const d0=z.dist[0],dd=d0?D.dists[d0[0]]:null;
+  z.tar=dd&&dd[2]?dd[2]:850; z.tar12=dd&&dd[4]?dd[4]:null;
   z.econ=z.gen*z.tar/1000*TAX;
-  z.semSolar=Math.max(0,z.casaP-z.c[0]);
-  r._m=z; return z;
+  z.semCasa=Math.max(0,z.casaP-z.c[0]); z.semEmp=Math.max(0,z.emp-z.c[1]-z.c[3]); z.semAgro=Math.max(0,z.agro-z.c[2]);
+  const sp=P().space; z.space=sp==='emp'?z.semEmp:sp==='agro'?z.semAgro:z.semCasa;
+  z.remote=z.mod[1]+z.mod[2]+z.mod[3];
+  r._k=MKEY; r._m=z; return z;
 }
 function aggregate(list){
-  const A={n:0,kw:0,c:[0,0,0,0,0],ck:[0,0,0,0,0],t:[0,0,0,0,0],y:new Array(NY).fill(0),m:new Array(M.length).fill(0),mk:new Array(M.length).fill(0),mod:[0,0,0,0],pj:0,ga:0,gak:0,mini:0,ucs:0,pop:0,dom:0,casa:0,casaP:0,pib:0,emp:0,agro:0,gen:0,econ:0,semSolar:0,old:0,w12:0,p12:0,kw12:0,dist:new Map(),top:[]};
+  const L=M.length;
+  const A={n:0,kw:0,all:0,c:[0,0,0,0,0],ck:[0,0,0,0,0],t:[0,0,0,0,0],y:new Array(NY).fill(0),m:new Array(L).fill(0),mk:new Array(L).fill(0),mod:[0,0,0,0],dist:new Map(),top:[]};
+  const keys=['pj','ga','gak','mini','ucs','pop','pop10','dom','casa','casaP','pib','emp','ocup','agro','pam','gen','econ','semCasa','semEmp','semAgro','space','old','w12','p12','kw12','win','remote'];
+  keys.forEach(k=>A[k]=0); let salW=0,hspW=0,wk=0,tarW=0,wn=0,rj=0,rjN=0;
   for(const r of list){ const z=met(r);
-    for(const k of ['n','kw','pj','ga','gak','mini','ucs','pop','dom','casa','casaP','pib','emp','agro','gen','econ','semSolar','old','w12','p12','kw12']) A[k]+=z[k];
-    for(const k of ['c','ck','t','y','m','mk','mod']) z[k].forEach((v,i)=>A[k][i]+=v);
+    A.n+=z.n; A.kw+=z.kw; A.all+=z.all; keys.forEach(k=>A[k]+=z[k]);
+    ['c','ck','t','y','m','mk','mod'].forEach(k=>z[k].forEach((v,i)=>A[k][i]+=v));
     for(const [di,n] of z.dist) A.dist.set(di,(A.dist.get(di)||0)+n);
     for(const t of z.top) A.top.push([...t,r]);
+    salW+=z.sal*z.ocup; const k1=Math.max(1,z.kw),n1=Math.max(1,z.n); hspW+=z.hsp*k1; wk+=k1; tarW+=z.tar*n1; wn+=n1;
+    if(z.tar12){ rj+=(z.tar/z.tar12-1)*n1; rjN+=n1; }
   }
-  A.ritmo=A.w12/12; A.growth=A.p12>=12?A.w12/A.p12-1:null;
-  A.tarMed = A.gen ? (A.econ/TAX*1000/A.gen) : 850;
+  A.sal=A.ocup?salW/A.ocup:0; A.hsp=wk?hspW/wk:5; A.tar=wn?tarW/wn:850; A.reaj=rjN?rj/rjN:null;
+  A.ritmo=A.win/S.win; A.growth=A.p12>=12?A.w12/A.p12-1:null; A.popG=A.pop10?A.pop/A.pop10-1:null;
+  A.avgKw=A.n?A.kw/A.n:0;
   return A;
 }
 
-/* ---------- state ---------- */
-const S = { sel:null, radius:50, minN:1, ex:new Set(), extra:new Set(), sort:'score', dir:-1,
-  calc:{cap:5, ticket:35, clean:250, cleanPct:30, price:3000, intU:'', intM:''}, tl:'m' };
-try{ const c=JSON.parse(localStorage.getItem('mm2calc')||'null'); if(c) Object.assign(S.calc,c); }catch(e){}
-function saveCalc(){ try{ localStorage.setItem('mm2calc',JSON.stringify(S.calc)); }catch(e){} }
-
+/* ================= region & score ================= */
 function region(){
-  const s=R[S.sel], out=[], seen=new Set();
+  const s=R[S.sel],out=[],seen=new Set(),lim=S.radius/100+0.5;
   for(const r of R){
     if(r===s){ out.push({r,d:0,sede:true}); seen.add(r); continue; }
-    if(Math.abs(r[3]-s[3])>S.radius/100+0.5) continue;
+    if(Math.abs(r[3]-s[3])>lim) continue;
     const d=hav(s,r);
-    if(d<=S.radius && met(r).n>=S.minN){ out.push({r,d}); seen.add(r); }
+    if(d<=S.radius&&met(r).n>=S.minN){ out.push({r,d}); seen.add(r); }
   }
-  for(const ib of S.extra){ const r=R[byIbge.get(ib)]; if(r && !seen.has(r)){ out.push({r,d:hav(s,r),extra:true}); seen.add(r);} }
-  out.forEach(o=>o.on = o.sede || !S.ex.has(o.r[0]));
-  // opportunity score (relative to region)
-  const on=out.filter(o=>o.on);
-  const mx=k=>Math.max(1e-9,...on.map(o=>k(met(o.r))));
-  const mN=mx(z=>z.n), mR=mx(z=>z.ritmo), mS=mx(z=>z.semSolar);
+  for(const ib of S.extra){ const r=R[byIbge.get(ib)]; if(r&&!seen.has(r)){ out.push({r,d:hav(s,r),extra:true}); seen.add(r); } }
+  out.forEach(o=>o.on=o.sede||!S.ex.has(o.r[0]));
+  const on=out.filter(o=>o.on),w=P().w;
+  const mx=f=>Math.max(1e-9,...on.map(o=>f(met(o.r))));
+  const bv=z=>S.persona==='inv'?z.kw:z.n;
+  const mN=mx(bv),mR=mx(z=>z.ritmo),mS=mx(z=>z.space),mO=mx(z=>z.old);
   for(const o of out){ const z=met(o.r);
-    const g=z.growth==null?0.33:Math.min(1,Math.max(0,(z.growth+0.5)/1.5));
-    o.score=Math.round(100*(0.35*Math.sqrt(z.n/mN)+0.25*Math.sqrt(z.ritmo/mR)+0.15*g+0.25*Math.sqrt(z.semSolar/mS)));
+    const g=z.growth==null?0.33:clamp((z.growth+0.5)/1.5,0,1);
+    o.score=Math.round(100*clamp((w.n||0)*Math.sqrt(bv(z)/mN)+(w.r||0)*Math.sqrt(z.ritmo/mR)+(w.g||0)*g+(w.s||0)*Math.sqrt(z.space/mS)+(w.o||0)*Math.sqrt(z.old/mO),0,1));
   }
   return out;
 }
 
-/* ---------- search ---------- */
+/* ================= search ================= */
+const totalN=r=>{ const x=r[18]; return x?x[0].reduce((s,k)=>s+(k?k[0]:0),0):0; };
 function search(q,lim=8){
   q=norm(q); if(q.length<2) return [];
-  const parts=q.split(' '), last=parts[parts.length-1];
-  const uf = last.length===2 && parts.length>1 ? last : null;
-  const qq = uf ? parts.slice(0,-1).join(' ') : q;
+  const parts=q.split(' '),last=parts[parts.length-1];
+  const uf=last.length===2&&parts.length>1?last:null,qq=uf?parts.slice(0,-1).join(' '):q;
   const a=[],b=[];
-  for(const r of R){
-    if(uf && r[2].toLowerCase()!==uf) continue;
-    if(r.k.startsWith(qq)) a.push(r); else if(r.k.includes(qq)) b.push(r);
-  }
-  const key=r=>-(met(r).n);
-  a.sort((x,y)=>key(x)-key(y)); b.sort((x,y)=>key(x)-key(y));
+  for(const r of R){ if(uf&&r[2].toLowerCase()!==uf) continue; if(r.k.startsWith(qq)) a.push(r); else if(r.k.includes(qq)) b.push(r); }
+  a.sort((x,y)=>totalN(y)-totalN(x)); b.sort((x,y)=>totalN(y)-totalN(x));
   return a.concat(b).slice(0,lim);
 }
 function wireSearch(inp,box,onPick){
   let items=[],idx=-1;
   const draw=()=>{ if(!items.length){ box.classList.add('hidden'); return; }
-    box.innerHTML=items.map((r,i)=>`<div data-i="${i}" class="${i===idx?'on':''}"><i></i>${esc(r[1])}, ${r[2]}<small>${fmt(met(r).n)} usinas</small></div>`).join('');
-    box.classList.remove('hidden'); };
+    box.innerHTML=items.map((r,i)=>`<div data-i="${i}" class="${i===idx?'on':''}"><i></i>${esc(r[1])}, ${r[2]}<small>${fmt(totalN(r))} usinas</small></div>`).join(''); box.classList.remove('hidden'); };
   inp.addEventListener('input',()=>{ items=search(inp.value); idx=items.length?0:-1; draw(); });
   inp.addEventListener('keydown',e=>{
     if(e.key==='ArrowDown'){ idx=Math.min(items.length-1,idx+1); draw(); e.preventDefault(); }
     else if(e.key==='ArrowUp'){ idx=Math.max(0,idx-1); draw(); e.preventDefault(); }
     else if(e.key==='Enter'){ if(items[idx]){ onPick(items[idx]); box.classList.add('hidden'); } e.preventDefault(); }
-    else if(e.key==='Escape'){ box.classList.add('hidden'); }
+    else if(e.key==='Escape') box.classList.add('hidden');
   });
   box.addEventListener('mousedown',e=>{ const d=e.target.closest('[data-i]'); if(d){ onPick(items[+d.dataset.i]); box.classList.add('hidden'); e.preventDefault(); } });
   inp.addEventListener('blur',()=>setTimeout(()=>box.classList.add('hidden'),150));
   inp.addEventListener('focus',()=>{ if(items.length) draw(); });
 }
 
-/* ---------- picker ---------- */
+/* ================= picker ================= */
 let pickSel=null;
 const RADII=[0,25,50,100,150];
-function drawPickRadius(){ $('pickRadius').innerHTML=RADII.map(v=>`<button class="chip ${S.radius===v?'on':''}" data-r="${v}">${v?v+' km':'Só a cidade'}</button>`).join(''); }
-$('pickRadius').addEventListener('click',e=>{ const b=e.target.closest('[data-r]'); if(b){ S.radius=+b.dataset.r; drawPickRadius(); } });
+function drawPicker(){
+  $('pickRadius').innerHTML=RADII.map(v=>`<button class="chip ${S.radius===v?'on':''}" data-r="${v}">${v?v+' km':'Só a cidade'}</button>`).join('');
+  $('pickPersona').innerHTML=Object.entries(PERSONAS).map(([k,p])=>`<button class="pbtn ${S.persona===k?'on':''}" data-p="${k}"><b>${p.label}</b><span>${p.desc}</span></button>`).join('');
+}
+$('pickRadius').addEventListener('click',e=>{ const b=e.target.closest('[data-r]'); if(b){ S.radius=+b.dataset.r; drawPicker(); } });
+$('pickPersona').addEventListener('click',e=>{ const b=e.target.closest('[data-p]'); if(b){ setPersona(b.dataset.p,true); drawPicker(); } });
 wireSearch($('pickInp'),$('pickSugg'),r=>{ pickSel=r; $('pickInp').value=`${r[1]}, ${r[2]}`; $('pickErr').textContent=''; });
 $('pickInp').addEventListener('input',()=>{ pickSel=null; });
-$('pickExample').onclick=()=>{ pickSel=R[byIbge.get(5211909)]; $('pickInp').value=`${pickSel[1]}, ${pickSel[2]}`; };
+$('pickExample').onclick=()=>{ pickSel=R[byIbge.get(5211909)]; $('pickInp').value=`${pickSel[1]}, ${pickSel[2]}`; S.radius=150; drawPicker(); };
 $('pickGo').onclick=()=>{
   if(!pickSel){ const s=search($('pickInp').value,1); if(s.length) pickSel=s[0]; }
-  if(!pickSel){ $('pickErr').textContent='Selecione uma cidade da lista.'; return; }
-  openCity(pickSel);
+  if(!pickSel){ $('pickErr').textContent='Digite e selecione uma cidade da lista.'; return; }
+  S.sel=byIbge.get(pickSel[0]); S.ex.clear(); S.extra.clear(); openDash();
 };
+$('pickInp').disabled=false; $('pickGo').disabled=false; $('pickInp').placeholder='Digite o nome… ex.: jatai, ribeirao preto, feira';
 
-function openCity(r){
-  S.sel=byIbge.get(r[0]); S.ex.clear(); S.extra.clear();
+function setPersona(k,quiet){
+  S.persona=k; const p=PERSONAS[k]; S.cls=p.cls.slice(); S.calc.ticket=p.ticket; setKey();
+  if(!quiet) toast(`Perfil ${p.label}: classes, ordem e argumentos ajustados`);
+}
+function openDash(){
   $('picker').classList.add('hidden'); $('dash').classList.remove('hidden');
   $('rRange').value=S.radius; $('minN').value=String(S.minN);
   initMap(); render(true); writeHash();
 }
 
-/* ---------- hash (link pronto p/ reunião) ---------- */
+/* ================= hash ================= */
 function writeHash(){
   if(S.sel==null) return;
-  const p=new URLSearchParams({c:R[S.sel][0],r:S.radius,n:S.minN});
+  const p=new URLSearchParams({c:R[S.sel][0],r:S.radius,n:S.minN,p:S.persona,k:S.cls.join(''),w:S.win,o:S.oldY});
   if(S.extra.size) p.set('x',[...S.extra].join('.'));
-  if(S.ex.size) p.set('o',[...S.ex].join('.'));
-  history.replaceState(null,'','#'+p.toString());
+  if(S.ex.size) p.set('e',[...S.ex].join('.'));
+  history.replaceState(null,'','#'+p.toString()); lastHash=location.hash;
 }
 function readHash(){
-  const p=new URLSearchParams(location.hash.slice(1)); const c=+p.get('c');
-  if(!c || !byIbge.has(c)) return false;
-  S.radius=Math.min(250,Math.max(0,+p.get('r')||50)); S.minN=+p.get('n')||1;
-  const r=R[byIbge.get(c)];
-  S.sel=byIbge.get(c);
-  $('picker').classList.add('hidden'); $('dash').classList.remove('hidden');
+  const p=new URLSearchParams(location.hash.slice(1)),c=+p.get('c');
+  if(!c||!byIbge.has(c)) return false;
+  S.sel=byIbge.get(c); S.radius=clamp(+(p.get('r')??50)||0,0,250); S.minN=+p.get('n')||1;
+  if(PERSONAS[p.get('p')]) setPersona(p.get('p'),true);
+  const k=(p.get('k')||'').split('').map(Number).filter(v=>v>=0&&v<5); if(k.length) S.cls=[...new Set(k)].sort();
+  if([3,6,12].includes(+p.get('w'))) S.win=+p.get('w');
+  if(+p.get('o')>=2019&&+p.get('o')<=2023) S.oldY=+p.get('o');
   (p.get('x')||'').split('.').filter(Boolean).forEach(v=>S.extra.add(+v));
-  (p.get('o')||'').split('.').filter(Boolean).forEach(v=>S.ex.add(+v));
-  $('rRange').value=S.radius; $('minN').value=String(S.minN);
-  initMap(); render(true); return true;
+  (p.get('e')||'').split('.').filter(Boolean).forEach(v=>S.ex.add(+v));
+  setKey(); openDash(); return true;
 }
 
-/* ---------- map ---------- */
-let map, lyr, circle;
+/* ================= header filters ================= */
+let openDD=null;
+function renderFilters(){
+  const p=P();
+  const clsTxt=S.cls.length===5?'Todas':S.cls.length===1?CLASSES[S.cls[0]]:S.cls.map(i=>CLASSES[i].slice(0,3)+'.').join(' + ');
+  const F=[
+    ['persona','Perfil do integrador',p.label,Object.entries(PERSONAS).map(([k,v])=>[k,v.label,v.desc,S.persona===k])],
+    ['cls','Classes de consumo',clsTxt,CLASSES.map((c,i)=>[String(i),c,'',S.cls.includes(i)])],
+    ['win','Ritmo de venda',`Média ${S.win} meses`,[[12,'Últimos 12 meses','mais estável'],[6,'Últimos 6 meses','tendência recente'],[3,'Últimos 3 meses','o que está acontecendo agora']].map(([v,l,d])=>[String(v),l,d,S.win===v])],
+    ['old','Base antiga',`Até ${S.oldY}`,[2019,2020,2021,2022,2023].map(y=>[String(y),`Conectadas até ${y}`,`${2026-y}+ anos de uso`+(y===2022?' · padrão (boom antes da Lei 14.300)':''),S.oldY===y])]
+  ];
+  const act={persona:S.persona!=='todos',cls:S.cls.length!==5,win:S.win!==12,old:S.oldY!==2022};
+  $('filters').innerHTML=F.map(([k,l,v,opts])=>`<div class="fbtn ${act[k]?'act':''} ${openDD===k?'open':''}" data-dd="${k}" role="button" tabindex="0"><small>${l}</small><span>${esc(v)}</span>
+    ${openDD===k?`<div class="dd ${k==='old'?'r':''}">${k==='cls'?'<div class="ddhead">Marque uma ou mais</div>':''}${opts.map(([val,lab,desc,on])=>`<div class="ddrow ${on?'on':''}" data-set="${k}:${val}"><i class="dot" style="${k==='cls'?'border-radius:4px':''}"></i><div>${lab}${desc?`<small>${desc}</small>`:''}</div></div>`).join('')}</div>`:''}</div>`).join('')
+  +`<button class="hbtn pri" id="btnShow" data-tip="Abre os slides em tela cheia para mostrar ao integrador">▶ Apresentar</button>
+    <button class="hbtn" id="btnLink" data-tip="Copia um link que já abre nesta cidade, raio, perfil e filtros">Copiar link</button>
+    <button class="hbtn" id="btnPrint" data-tip="Salvar em PDF para enviar ao integrador">PDF</button>
+    <button class="hbtn" id="btnNew">Nova consulta</button>`;
+}
+$('filters').addEventListener('click',e=>{
+  const set=e.target.closest('[data-set]');
+  if(set){ const [k,v]=set.dataset.set.split(':');
+    if(k==='persona'){ setPersona(v); openDD=null; }
+    else if(k==='cls'){ const i=+v; if(S.cls.includes(i)){ if(S.cls.length>1) S.cls=S.cls.filter(x=>x!==i); else toast('Deixe ao menos uma classe marcada'); } else S.cls=[...S.cls,i].sort(); }
+    else if(k==='win'){ S.win=+v; openDD=null; }
+    else if(k==='old'){ S.oldY=+v; openDD=null; }
+    setKey(); render(false); writeHash(); e.stopPropagation(); return; }
+  const dd=e.target.closest('[data-dd]');
+  if(dd){ openDD=openDD===dd.dataset.dd?null:dd.dataset.dd; renderFilters(); e.stopPropagation(); return; }
+  const id=e.target.id;
+  if(id==='btnShow') startShow();
+  if(id==='btnLink') copy(location.href,'Link copiado — abre direto nesta análise');
+  if(id==='btnPrint') window.print();
+  if(id==='btnNew'){ $('dash').classList.add('hidden'); $('picker').classList.remove('hidden'); history.replaceState(null,'',location.pathname+location.search); drawPicker(); $('pickInp').value=''; pickSel=null; $('pickInp').focus(); }
+});
+document.addEventListener('click',e=>{ if(openDD&&!e.target.closest('.fbtn')){ openDD=null; renderFilters(); } });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&openDD){ openDD=null; renderFilters(); } });
+
+/* ================= map ================= */
+let map,lyr,circle;
 function initMap(){
-  if(map){ setTimeout(()=>map.invalidateSize(),50); return; }
-  if(typeof L==='undefined'){ $('map').innerHTML='<div class="empty" style="padding:20px">Mapa indisponível sem internet — os dados abaixo funcionam normalmente.</div>'; return; }
-  map=L.map('map',{zoomControl:true,attributionControl:true,preferCanvas:true}).setView([-15,-50],5);
+  if(map){ setTimeout(()=>map.invalidateSize(),60); return; }
+  if(typeof L==='undefined'){ $('map').innerHTML='<div class="empty" style="padding:20px">Mapa indisponível sem internet — os dados funcionam normalmente.</div>'; return; }
+  map=L.map('map',{zoomControl:true,preferCanvas:true}).setView([-15,-50],5);
   const osm=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(map);
   let tErr=0; osm.on('tileerror',()=>{ if(++tErr===4){ map.removeLayer(osm); L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'© Esri · OpenStreetMap'}).addTo(map); } });
   lyr=L.layerGroup().addTo(map);
 }
+const COLORS={
+  score:{label:'Score de oportunidade',f:(z,o)=>o.score,fmt:v=>fmt(v)},
+  growth:{label:'Crescimento 12 meses',f:z=>z.growth,div:true,fmt:v=>pct(v,0)},
+  pen:{label:'Casas próprias com solar',f:z=>z.casaP?z.c[0]/z.casaP:null,fmt:v=>pct(v)},
+  old:{label:'% de usinas antigas',f:z=>z.n?z.old/z.n:null,fmt:v=>pct(v,0)},
+  ritmo:{label:'Novas usinas por mês',f:z=>z.ritmo,fmt:v=>fmt1(v)},
+  irr:{label:'Irradiação solar (kWh/m²/dia)',f:z=>z.hsp,fmt:v=>fmt1(v)}
+};
+function colorScale(list){
+  const C=COLORS[S.color],vals=list.filter(o=>o.on).map(o=>C.f(met(o.r),o)).filter(v=>v!=null&&isFinite(v)).sort((a,b)=>a-b);
+  if(C.div) return {C,col:v=>v==null?'#b8b1a6':DIV[v<-0.25?0:v<-0.05?1:v<=0.05?2:v<=0.25?3:4],lo:'queda',hi:'alta',ramp:DIV};
+  const q=i=>vals.length?vals[Math.min(vals.length-1,Math.floor(i*vals.length))]:0, cuts=[q(.2),q(.4),q(.6),q(.8)];
+  return {C,col:v=>{ if(v==null) return '#b8b1a6'; let i=0; while(i<4&&v>cuts[i]) i++; return SEQ[i]; },lo:vals.length?C.fmt(vals[0]):'—',hi:vals.length?C.fmt(vals[vals.length-1]):'—',ramp:SEQ};
+}
 function drawMap(list,fit){
+  const sc=colorScale(list);
+  $('mapLegend').innerHTML=`<div class="rlab">Cor das bolinhas</div><select id="colorSel" aria-label="Métrica da cor">${Object.entries(COLORS).map(([k,c])=>`<option value="${k}" ${S.color===k?'selected':''}>${c.label}</option>`).join('')}</select>
+    <div class="lscale">${sc.ramp.map(c=>`<i style="background:${c}"></i>`).join('')}</div><div class="lends"><span>${sc.lo}</span><span>${sc.hi}</span></div>
+    <div class="lnote" style="color:var(--c-text-soft);margin-top:5px;font-weight:600;line-height:1.35">Tamanho = nº de usinas<br>Cinza = fora da análise (clique para incluir)</div>`;
   if(!map) return;
-  lyr.clearLayers();
+  lyr.clearLayers(); if(circle){ circle.remove(); circle=null; }
   const s=R[S.sel];
-  if(circle) circle.remove();
-  if(S.radius>0) circle=L.circle([s[3],s[4]],{radius:S.radius*1000,color:'#ff6a00',weight:1.5,dashArray:'6 6',fillColor:'#ff6a00',fillOpacity:.04,interactive:false}).addTo(map);
-  // cidades próximas fora da seleção (cinza, clicáveis p/ adicionar)
-  const inSet=new Set(list.map(o=>o.r));
-  const ext=S.radius*1.5+40;
+  if(S.radius>0) circle=L.circle([s[3],s[4]],{radius:S.radius*1000,color:'#ff6a00',weight:1.5,dashArray:'6 6',fillColor:'#ff6a00',fillOpacity:.03,interactive:false}).addTo(map);
+  const inSet=new Set(list.map(o=>o.r)),ext=S.radius*1.5+40;
   for(const r of R){
-    if(inSet.has(r) || Math.abs(r[3]-s[3])>ext/100+0.5) continue;
-    const z=met(r); if(!z.n) continue;
-    const d=hav(s,r); if(d>ext) continue;
-    L.circleMarker([r[3],r[4]],{radius:Math.max(3,Math.min(14,Math.sqrt(z.n)/3)),color:'#b8b1a6',weight:1,fillColor:'#dcd5ca',fillOpacity:.6})
-      .bindPopup(()=>popHtml(r,d,'out')).addTo(lyr);
+    if(inSet.has(r)||Math.abs(r[3]-s[3])>ext/100+0.5) continue;
+    const z=met(r); if(!z.n) continue; const d=hav(s,r); if(d>ext) continue;
+    L.circleMarker([r[3],r[4]],{radius:clamp(Math.sqrt(z.n)/3,3,14),color:'#b8b1a6',weight:1,fillColor:'#e6e0d8',fillOpacity:.7}).bindTooltip(`${esc(r[1])} · ${fmt(z.n)} usinas · ${fmt(d)} km`).bindPopup(()=>popHtml(r,d,'out')).addTo(lyr);
   }
   const mxN=Math.max(1,...list.map(o=>met(o.r).n));
-  for(const o of list){
-    const z=met(o.r); const rad=o.sede?11:Math.max(5,Math.min(22,4+18*Math.sqrt(z.n/mxN)));
-    L.circleMarker([o.r[3],o.r[4]],{radius:rad,color:o.sede?'#16130f':'#fff',weight:o.sede?3:1.5,fillColor:o.on?'#ff6a00':'#b8b1a6',fillOpacity:o.on?.85:.5})
-      .bindTooltip(`${esc(o.r[1])} · ${fmt(z.n)} usinas`,{direction:'top',offset:[0,-rad]})
+  list.slice().sort((a,b)=>met(b.r).n-met(a.r).n).forEach(o=>{
+    const z=met(o.r),rad=Math.max(o.sede?9:5,Math.min(24,4+20*Math.sqrt(z.n/mxN))),v=sc.C.f(z,o);
+    L.circleMarker([o.r[3],o.r[4]],{radius:rad,color:o.sede?'#16130f':'#fff',weight:o.sede?3:1.5,fillColor:o.on?sc.col(v):'#d8d1c7',fillOpacity:o.on?.92:.55})
+      .bindTooltip(`<b>${esc(o.r[1])}</b> · ${fmt(z.n)} usinas<br>${sc.C.label}: ${v==null?'—':sc.C.fmt(v)}`,{direction:'top',offset:[0,-rad]})
       .bindPopup(()=>popHtml(o.r,o.d,o.sede?'sede':(o.on?'on':'off'))).addTo(lyr);
-  }
-  if(fit){
-    if(circle) map.fitBounds(circle.getBounds(),{paddingTopLeft:[20,20],paddingBottomRight:[20,90]}); else map.setView([s[3],s[4]],11);
-  }
+  });
+  if(fit){ if(circle) map.fitBounds(circle.getBounds(),{paddingTopLeft:[20,20],paddingBottomRight:[20,90]}); else map.setView([s[3],s[4]],11); }
 }
+$('mapLegend').addEventListener('change',e=>{ if(e.target.id==='colorSel'){ S.color=e.target.value; drawMap(LIST,false); } });
 function popHtml(r,d,mode){
-  const z=met(r);
-  let btns='';
-  if(mode==='out') btns=`<button data-act="add" data-ib="${r[0]}">+ Adicionar</button>`;
-  if(mode==='on') btns=`<button class="sec" data-act="off" data-ib="${r[0]}">Remover</button>`;
-  if(mode==='off') btns=`<button data-act="on" data-ib="${r[0]}">Incluir</button>`;
-  if(mode!=='sede') btns+=`<button class="sec" data-act="sede" data-ib="${r[0]}">Tornar sede</button>`;
+  const z=met(r); let b='';
+  if(mode==='out') b=`<button data-act="add" data-ib="${r[0]}">+ Incluir na análise</button>`;
+  if(mode==='on') b=`<button class="sec" data-act="off" data-ib="${r[0]}">Tirar da soma</button>`;
+  if(mode==='off') b=`<button data-act="on" data-ib="${r[0]}">Incluir</button>`;
+  if(mode!=='sede') b+=`<button class="sec" data-act="sede" data-ib="${r[0]}">Tornar sede</button>`;
   return `<div class="lpop"><b>${esc(r[1])}/${r[2]}</b> <span style="color:#9a938a;font-weight:700">· ${d?fmt(d)+' km':'sede'}</span>
-  <div class="pg"><span>Usinas</span><b>${fmt(z.n)}</b><span>Potência</span><b>${kwF(z.kw)}</b><span>Ritmo/mês</span><b>${fmt1(z.ritmo)}</b><span>Casas próprias</span><b>${fmt(z.casaP)}</b></div>${btns}</div>`;
+  <div class="pg"><span>Usinas</span><b>${fmt(z.n)}</b><span>Potência</span><b>${kwF(z.kw)}</b><span>Novas/mês</span><b>${fmt1(z.ritmo)}</b><span>Crescimento</span><b>${grow(z.growth)}</b><span>Casas próprias</span><b>${fmt(z.casaP)}</b></div>${b}</div>`;
 }
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-act]'); if(!b) return;
-  const ib=+b.dataset.ib, act=b.dataset.act;
+  const ib=+b.dataset.ib,act=b.dataset.act;
   if(act==='add'){ S.extra.add(ib); S.ex.delete(ib); }
-  else if(act==='off'){ S.ex.add(ib); }
-  else if(act==='on'){ S.ex.delete(ib); }
+  else if(act==='off') S.ex.add(ib);
+  else if(act==='on') S.ex.delete(ib);
   else if(act==='sede'){ S.sel=byIbge.get(ib); S.ex.clear(); S.extra.clear(); if(map) map.closePopup(); render(true); writeHash(); return; }
   else return;
   if(map) map.closePopup(); render(false); writeHash();
 });
 
-/* ---------- controls ---------- */
+/* ================= radius controls ================= */
 const QUICK=[0,25,50,100,150];
-function drawQuick(){ $('rQuick').innerHTML=QUICK.map(v=>`<button class="${S.radius===v?'on':''}" data-q="${v}">${v||'Só sede'}</button>`).join(''); }
-$('rQuick').addEventListener('click',e=>{ const b=e.target.closest('[data-q]'); if(!b) return; S.radius=+b.dataset.q; $('rRange').value=S.radius; render(true); writeHash(); });
+const drawQuick=()=>{ $('rQuick').innerHTML=QUICK.map(v=>`<button class="${S.radius===v?'on':''}" data-q="${v}">${v||'Só sede'}</button>`).join(''); };
+$('rQuick').addEventListener('click',e=>{ const b=e.target.closest('[data-q]'); if(!b) return; S.radius=+b.dataset.q; render(true); writeHash(); });
 let rT;
 $('rRange').addEventListener('input',()=>{ S.radius=+$('rRange').value; $('rVal').textContent=S.radius?S.radius+' km':'Só sede'; clearTimeout(rT); rT=setTimeout(()=>{ render(false); writeHash(); },140); });
-$('rRange').addEventListener('change',()=>{ render(true); writeHash(); });
+$('rRange').addEventListener('change',()=>{ clearTimeout(rT); render(true); writeHash(); });
 $('minN').addEventListener('change',()=>{ S.minN=+$('minN').value; render(false); writeHash(); });
-wireSearch($('addInp'),$('addSugg'),r=>{ if(r[0]!==R[S.sel][0]){ S.extra.add(r[0]); S.ex.delete(r[0]); } $('addInp').value=''; render(false); writeHash(); toast(`${r[1]} adicionada`); });
-$('btnNew').onclick=()=>{ $('dash').classList.add('hidden'); $('picker').classList.remove('hidden'); history.replaceState(null,'',location.pathname); drawPickRadius(); $('pickInp').focus(); };
-$('btnPrint').onclick=()=>window.print();
-$('btnLink').onclick=()=>copy(location.href,'Link copiado — abre direto nesta análise');
-function copy(t,msg){
-  const done=()=>toast(msg);
-  if(navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t).then(done,()=>fallback());
-  else fallback();
-  function fallback(){ const ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); done();}catch(e){ toast('Não foi possível copiar'); } ta.remove(); }
-}
 
-/* ---------- render ---------- */
-let LIST=[], AG=null;
+/* ================= render ================= */
+let LIST=[],AG=null;
 function render(fit){
   const list=region(); LIST=list;
-  const on=list.filter(o=>o.on).map(o=>o.r);
-  AG=aggregate(on);
+  AG=aggregate(list.filter(o=>o.on).map(o=>o.r));
   const s=R[S.sel];
-  $('crumb').innerHTML=`Mapa de Mercado · <b>${esc(s[1])}/${s[2]}</b>${S.radius?` <span style="font-weight:600"> + raio ${S.radius} km</span>`:''}`;
-  $('rVal').textContent=S.radius?S.radius+' km':'Só sede'; drawQuick();
-  drawMap(list,fit);
-  renderPane(list);
-  renderCards(list);
+  $('crumb').innerHTML=`Mapa de Mercado · <b>${esc(s[1])}/${s[2]}</b>${S.radius?` <span> + ${S.radius} km</span>`:''}`;
+  $('rVal').textContent=S.radius?S.radius+' km':'Só sede'; $('rRange').value=S.radius; drawQuick();
+  const y=$('right').scrollTop;
+  renderFilters(); drawMap(list,fit); renderPane(list); renderRight(list);
+  $('right').scrollTop=y;
 }
+const areaName=()=>{ const s=R[S.sel],n=LIST.filter(o=>o.on).length; return n>1?`${s[1]} e região (${n} cidades)`:s[1]; };
+const clsLabel=()=>S.cls.length===5?'todas as classes':S.cls.map(i=>CLASSES[i].toLowerCase()).join(' + ');
 
 function renderPane(list){
-  const A=AG, nOn=list.filter(o=>o.on).length;
-  const cols=[['score','Score'],['d','km'],['n','Usinas'],['kw','Potência'],['ritmo','Ritmo/mês'],['growth','Cresc. 12m'],['pen','Penetr. casas']];
+  const A=AG,nOn=list.filter(o=>o.on).length;
+  const cols=[['score','Score','Score de oportunidade 0–100, relativo às cidades da análise'],['d','km','Distância da sede'],['n','Usinas','Usinas conectadas nas classes filtradas'],['ritmo','Novas/mês',`Média dos últimos ${S.win} meses consolidados`],['growth','Cresc.','12 meses vs 12 meses anteriores'],['pen','Casas c/ solar','Usinas residenciais ÷ casas próprias (Censo 2022)']];
   const val=(o,k)=>{ const z=met(o.r); if(k==='d') return o.d; if(k==='score') return o.score; if(k==='pen') return z.casaP?z.c[0]/z.casaP:0; if(k==='name') return o.r.k; return z[k]==null?-9:z[k]; };
   const rows=list.slice().sort((a,b)=>{ if(a.sede) return -1; if(b.sede) return 1; const x=val(a,S.sort),y=val(b,S.sort); return (x<y?-1:x>y?1:0)*S.dir; });
+  const fch=[`Perfil <b>${P().short}</b>`,`Classes <b>${S.cls.length===5?'todas':S.cls.map(i=>CLASSES[i]).join(', ')}</b>`,`Ritmo <b>${S.win} meses</b>`,`Base antiga <b>até ${S.oldY}</b>`];
   $('pane').innerHTML=`
-  <div class="ttlrow"><div><h2 class="ttl">Total da região</h2><p class="ttlsub">Soma das cidades marcadas ${S.radius?`no raio de ${S.radius} km`:''}</p></div>
-  <span class="badge">${nOn} ${nOn===1?'cidade':'cidades'}</span></div>
+  <div class="ttlrow"><div><h2 class="ttl">Total da região</h2><p class="ttlsub">${S.radius?`Sede + cidades no raio de ${S.radius} km`:'Somente a sede'} · desmarque na tabela para tirar da soma</p></div><span class="badge">${nOn} ${nOn===1?'cidade':'cidades'}</span></div>
+  <div class="fchips">${fch.map(t=>`<span class="fchip">${t}</span>`).join('')}</div>
   <div class="kpis">
-    <div class="kpi"><div class="kl"><i>⚡</i>Usinas</div><div class="kv">${fmt(A.n)}</div><div class="ks">${fmt(A.ucs)} UCs com crédito</div></div>
-    <div class="kpi"><div class="kl"><i>●</i>Potência</div><div class="kv">${kwF(A.kw)}</div><div class="ks">média ${fmt1(A.n?A.kw/A.n:0)} kW/usina</div></div>
-    <div class="kpi"><div class="kl"><i>⌂</i>Casas próprias</div><div class="kv">${fmt(A.casaP)}</div><div class="ks">${fmt(A.pop)} habitantes</div></div>
-    <div class="kpi"><div class="kl"><i>↗</i>Novas/mês</div><div class="kv">${fmt1(A.ritmo)}</div><div class="ks">${grow(A.growth)} vs 12m ant.</div></div>
+    <div class="kpi" data-tip="Usinas de geração distribuída conectadas (ANEEL), nas classes filtradas"><div class="kl"><i>⚡</i>Usinas</div><div class="kv">${fmt(A.n)}</div><div class="ks">${A.n!==A.all?`de ${fmt(A.all)} no total`:`${fmt(A.ucs)} UCs com crédito`}</div></div>
+    <div class="kpi"><div class="kl"><i>●</i>Potência</div><div class="kv">${kwF(A.kw)}</div><div class="ks">média ${fmt1(A.avgKw)} kW/usina</div></div>
+    <div class="kpi" data-tip="Censo 2022: domicílios tipo casa, próprios de algum morador"><div class="kl"><i>⌂</i>Casas próprias</div><div class="kv">${fmt(A.casaP)}</div><div class="ks">${fmt(A.pop)} habitantes</div></div>
+    <div class="kpi"><div class="kl"><i>↗</i>Novas/mês</div><div class="kv">${fmt1(A.ritmo)}</div><div class="ks">${grow(A.growth)} em 12m</div></div>
   </div>
-  <div class="sect"><span>Cidades na análise · clique no nome p/ ver no mapa</span><span style="letter-spacing:0;text-transform:none;font-weight:700">desmarque p/ tirar da soma</span></div>
-  <div class="tscroll"><table class="tbl"><thead><tr><th></th><th data-s="name">Cidade</th>${cols.map(([k,l])=>`<th data-s="${k}" class="${S.sort===k?'sorted':''}">${l}${S.sort===k?(S.dir<0?' ↓':' ↑'):''}</th>`).join('')}</tr></thead>
+  <div class="sect"><span>Cidades na análise</span><span class="sl2">clique no nome para ver no mapa · no título para ordenar</span></div>
+  <div class="hsearch"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9a938a" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="addInp" placeholder="Adicionar outra cidade (pode digitar sem acento)" autocomplete="off"><div class="sugg hidden" id="addSugg"></div></div>
+  <div class="tscroll"><table class="tbl"><thead><tr><th></th><th data-s="name">Cidade</th>${cols.map(([k,l,t])=>`<th data-s="${k}" class="${S.sort===k?'sorted':''}" data-tip="${esc(t)}">${l}${S.sort===k?(S.dir<0?' ↓':' ↑'):''}</th>`).join('')}</tr></thead>
   <tbody>${rows.map(o=>{ const z=met(o.r); return `<tr class="${o.on?'':'off'} ${o.sede?'sede':''}">
-    <td>${o.sede?'':`<input type="checkbox" data-t="${o.r[0]}" ${o.on?'checked':''}>`}</td>
+    <td>${o.sede?'':`<input type="checkbox" data-t="${o.r[0]}" ${o.on?'checked':''} aria-label="Incluir ${esc(o.r[1])}">`}</td>
     <td><span class="cname" data-f="${o.r[0]}">${esc(o.r[1])}<small>${o.r[2]}</small></span>${o.sede?'<span class="tag sede">sede</span>':''}${o.extra?'<span class="tag ext">add</span>':''}</td>
     <td><span class="scorebar"><b style="width:${o.score}%"></b></span>${o.score}</td>
-    <td>${o.sede?'—':fmt(o.d)}</td><td>${fmt(z.n)}</td><td>${kwF(z.kw)}</td><td>${fmt1(z.ritmo)}</td><td>${grow(z.growth)}</td><td>${z.casaP?pct(z.c[0]/z.casaP):'—'}</td></tr>`; }).join('')}
+    <td>${o.sede?'—':fmt(o.d)}</td><td>${fmt(z.n)}</td><td>${fmt1(z.ritmo)}</td><td>${grow(z.growth)}</td><td>${z.casaP?pct(z.c[0]/z.casaP):'—'}</td></tr>`; }).join('')}
   </tbody></table></div>
-  ${list.length<=1&&S.radius>0?'<p class="empty">Nenhuma cidade com usinas nesse raio — aumente o raio ou baixe o filtro de mínimo de usinas.</p>':''}`;
+  ${list.length<=1&&S.radius>0?'<p class="empty">Nenhuma outra cidade com usinas nesse raio. Aumente o raio ou baixe o filtro “Cidades com”.</p>':''}`;
+  wireSearch($('addInp'),$('addSugg'),r=>{ if(r[0]!==R[S.sel][0]){ S.extra.add(r[0]); S.ex.delete(r[0]); } render(false); writeHash(); toast(`${r[1]} adicionada à análise`); });
 }
 $('pane').addEventListener('click',e=>{
   const th=e.target.closest('th[data-s]');
-  if(th){ const k=th.dataset.s; if(S.sort===k) S.dir*=-1; else { S.sort=k; S.dir=k==='d'||k==='name'?1:-1; } renderPane(LIST); return; }
+  if(th){ const k=th.dataset.s; if(S.sort===k) S.dir*=-1; else { S.sort=k; S.dir=(k==='d'||k==='name')?1:-1; } renderPane(LIST); return; }
   const f=e.target.closest('[data-f]');
-  if(f && map){ const r=R[byIbge.get(+f.dataset.f)]; map.setView([r[3],r[4]],Math.max(map.getZoom(),10)); lyr.eachLayer(l=>{ const ll=l.getLatLng&&l.getLatLng(); if(ll&&ll.lat===r[3]&&ll.lng===r[4]) l.openPopup(); }); }
+  if(f&&map){ const r=R[byIbge.get(+f.dataset.f)]; map.setView([r[3],r[4]],Math.max(map.getZoom(),10)); lyr.eachLayer(l=>{ const ll=l.getLatLng&&l.getLatLng(); if(ll&&ll.lat===r[3]&&ll.lng===r[4]) l.openPopup(); }); }
 });
-$('pane').addEventListener('change',e=>{
-  const c=e.target.closest('[data-t]'); if(!c) return;
-  const ib=+c.dataset.t; if(c.checked) S.ex.delete(ib); else S.ex.add(ib);
-  render(false); writeHash();
-});
+$('pane').addEventListener('change',e=>{ const c=e.target.closest('[data-t]'); if(!c) return; const ib=+c.dataset.t; if(c.checked) S.ex.delete(ib); else S.ex.add(ib); render(false); writeHash(); });
 
-/* ---------- cards ---------- */
-function card(n,title,tip,sub,body,extraHead=''){
-  return `<section class="card"><div class="chead"><span class="cnum">${String(n).padStart(2,'0')}</span><h3 class="ctitle">${title}</h3>${tip?`<span class="info" title="${esc(tip)}">i</span>`:''}${extraHead}</div>${sub?`<p class="csub">${sub}</p>`:''}${body}</section>`;
+/* ================= building blocks ================= */
+const card=(title,tip,sub,body,head='')=>`<section class="card"><div class="chead"><span class="cnum"></span><h3 class="ctitle">${title}</h3>${tip?`<i class="info" data-tip="${esc(tip)}">i</i>`:''}${head}</div>${sub?`<p class="csub">${sub}</p>`:''}${body}</section>`;
+const say=t=>`<div class="say"><span class="st">O que falar</span>${t}</div>`;
+const stat=(l,v,s,hl,tip)=>`<div class="stat ${hl?'hl':''}" ${tip?`data-tip="${esc(tip)}"`:''}><div class="sl">${l}</div><div class="sv">${v}</div>${s?`<div class="ss">${s}</div>`:''}</div>`;
+function vbars(items,opt={}){
+  const mx=Math.max(1,...items.map(i=>i.v)),every=opt.every||1,last=items.length-1;
+  return `<div class="vbars" style="height:${opt.h||170}px">${items.map(i=>`<div class="vcol" data-tip="${esc(i.tip)}"><div class="vval">${kShort(i.v)}</div><div class="vtrack"><div class="vbar ${i.cls||''}" style="height:${Math.max(1.5,i.v/mx*100)}%"></div></div></div>`).join('')}</div>
+  <div class="vlabs">${items.map((i,k)=>`<span>${(last-k)%every===0?i.label:''}</span>`).join('')}</div>`;
 }
-function areaName(){ const s=R[S.sel]; const n=LIST.filter(o=>o.on).length; return n>1?`${s[1]} e região (${n} cidades)`:s[1]; }
+function hbars(rows,colorFn){ const mx=Math.max(1,...rows.map(r=>r.v));
+  return `<div class="hbars">${rows.map((r,i)=>`<div class="hrow ${r.dim?'dim':''}" data-tip="${esc(r.tip||'')}"><span class="hl">${r.label}</span><div class="htrack"><div class="hfill" style="width:${r.v?Math.max(1.5,r.v/mx*100):0}%;background:${colorFn?colorFn(i):SEQ[2]}"></div></div><span class="hv">${fmt(r.v)}</span></div>`).join('')}</div>`; }
+const ring=(p,lab)=>{ const d=clamp(p*100,0,100); return `<div class="ring" style="background:conic-gradient(#ff6a00 ${Math.max(d,0.8)*3.6}deg,#f2eae0 0deg)"><div><b>${pct(p)}</b><small>${lab}</small></div></div>`; };
+
+/* ================= content builders (reused by slides) ================= */
+function yearsItems(A){
+  const out=[];
+  for(let y=2015;y<=2026;y++){ const v=y===2015?sum(A.y,0,2015-Y0):A.y[y-Y0], age=y<=S.oldY?'a1':y<=2024?'a2':'a3';
+    out.push({v,label:y===2015?'≤15':"'"+String(y).slice(2),cls:age,tip:`<b>${y===2015?'Até 2015':y}</b>: ${fmt(v)} usinas conectadas${y<=S.oldY?' · base antiga':''}${y===2026?' · ano em andamento':''}`}); }
+  return out;
+}
+function monthsItems(A,n=24){
+  const off=M.length-n; return M.slice(off).map((m,i)=>{ const k=i+off,lag=k>ST; return {v:A.m[k],label:mLabel(m),cls:lag?'lag':'',tip:`<b>${mLabel(m)}</b>: ${fmt(A.m[k])} usinas · ${kwF(A.mk[k])}${lag?'<br>ANEEL ainda registrando este mês':''}`}; });
+}
+function spaceInfo(A){
+  const sp=P().space;
+  if(sp==='emp') return {n:A.semEmp,label:'empresas sem solar',tot:A.emp,has:A.c[1]+A.c[3],seg:'Empresas',short:'Empresas'};
+  if(sp==='agro') return {n:A.semAgro,label:'propriedades rurais sem solar',tot:A.agro,has:A.c[2],seg:'Rural',short:'Propr.'};
+  return {n:A.semCasa,label:'casas próprias sem solar',tot:A.casaP,has:A.c[0],seg:'Residencial',short:'Casas'};
+}
+function payback(A){
+  const kwp=S.persona==='emp'?(A.c[1]?A.ck[1]/A.c[1]:30):S.persona==='agro'?(A.c[2]?A.ck[2]/A.c[2]:25):(A.c[0]?A.ck[0]/A.c[0]:6);
+  const price=kwp*S.calc.price,year=Math.max(0,(kwp*A.hsp*365*PR*FIOB-DISP)*(A.tar/1000)*TAX);
+  return {kwp,price,year,years:year?price/year:null};
+}
+const calcOut=A=>{ const C=S.calc,cli=Math.round(A.n*C.cap/100); return {cli,mrr:cli*C.ticket,clean:cli*C.cleanPct/100*C.clean,oldMrr:A.old*C.cap/100*C.ticket}; };
+const dayLossOf=A=>A.avgKw*A.hsp*PR*(A.tar/1000)*TAX;
 
 function pitchItems(){
-  const A=AG, s=R[S.sel], C=S.calc, stableLbl=mLabel(M[ST]);
-  const avgKw=A.n?A.kw/A.n:0, avgRes=A.c[0]?A.ck[0]/A.c[0]:avgKw;
-  const dayLoss=avgKw*met(s).hsp*PR*(A.tarMed/1000)*TAX;
-  const cli=Math.round(A.n*C.cap/100), mrr=cli*C.ticket;
-  const items=[];
-  items.push(['📍',`Em <b>${esc(areaName())}</b> já existem <b>${fmt(A.n)} usinas</b> conectadas, somando <b>${kwpF(A.kw)}</b>. Cada uma é um cliente que precisa de pós-venda.`]);
-  items.push(['↗',`Entram em média <b>${fmt1(A.ritmo)} novas usinas por mês</b> na região (${grow(A.growth)} vs. 12 meses anteriores) — contando você e todos os outros integradores. Base: 12 meses até ${stableLbl}.`]);
-  if(A.growth!=null && A.growth<=-0.15) items.push(['⚠',`A venda nova na região <b>caiu ${pct(-A.growth,0)}</b> em 12 meses. Com menos cliente novo, <b>a receita tem que vir da base instalada</b> — pós-venda, limpeza e expansão.`]);
-  else if(A.growth!=null && A.growth>=0.15) items.push(['🔥',`O mercado está <b>acelerando ${pct(A.growth,0)}</b> — mais usinas entrando por mês significa mais clientes para acompanhar. Quem estruturar o pós-venda agora sai na frente.`]);
-  if(A.n) items.push(['⏳',`<b>${fmt(A.old)} usinas (${pct(A.old/A.n,0)}) têm 4 anos ou mais</b> (conectadas até ${OLD_YEAR}, no boom antes da Lei 14.300). Muita empresa daquela época fechou — é onde está o <b>cliente órfão</b>.`]);
-  items.push(['☀',`A base gera ~<b>${fmt(A.gen/1000)} MWh/mês</b> ≈ <b>${money(A.econ)}/mês</b> de economia para os clientes. Uma usina média (${fmt1(avgKw)} kWp) parada custa ~<b>${moneyFull(dayLoss)} por dia</b> ao cliente — monitoramento se paga.`]);
-  items.push(['💰',`Com <b>${C.cap}% da base</b> num plano de <b>${moneyFull(C.ticket)}/mês</b>: <b>${fmt(cli)} clientes</b> e <b>${money(mrr)}/mês</b> de receita recorrente (${money(mrr*12)}/ano), sem depender de venda nova.`]);
-  if(A.casaP) items.push(['⌂',`Ainda há <b>${fmt(A.semSolar)} casas próprias sem solar</b> — penetração residencial de só <b>${pct(A.c[0]/A.casaP)}</b>. O mercado de venda nova está longe de saturar.`]);
-  const iu=+C.intU||0, im=+C.intM||0;
-  if(iu>0 && A.n) items.push(['🎯',`O integrador tem <b>${pct(iu/A.n)}</b> da base instalada da região — <b>${fmt(Math.max(0,A.n-iu))} usinas são de outros integradores</b>${im>0&&A.ritmo?` e ele faz <b>${pct(im/A.ritmo,0)}</b> das novas conexões/mês`:''}.`]);
+  const A=AG,C=S.calc,co=calcOut(A),sp=spaceInfo(A),pb=payback(A);
+  const it=[];
+  it.push(['📍',`Em <b>${esc(areaName())}</b> já existem <b>${fmt(A.n)} usinas</b>${S.cls.length<5?` (${clsLabel()})`:''} conectadas, somando <b>${kwpF(A.kw)}</b>. Cada uma é um cliente que precisa de pós-venda.`]);
+  it.push(['↗',`Entram em média <b>${fmt1(A.ritmo)} novas usinas por mês</b> na região (últimos ${S.win} meses até ${mLabel(M[ST])}) — somando você e todos os concorrentes.`]);
+  if(A.growth!=null&&A.growth<=-0.15) it.push(['⚠',`A venda nova <b>caiu ${pct(-A.growth,0)}</b> em 12 meses. Com menos cliente novo, <b>a receita precisa vir da base instalada</b>: pós-venda, limpeza e ampliação.`]);
+  else if(A.growth!=null&&A.growth>=0.15) it.push(['🔥',`O mercado está <b>crescendo ${pct(A.growth,0)}</b> em 12 meses. Mais usinas por mês = mais clientes para acompanhar. Quem estruturar o pós-venda agora sai na frente.`]);
+  if(A.n) it.push(['⏳',`<b>${fmt(A.old)} usinas (${pct(A.old/A.n,0)})</b> foram conectadas até ${S.oldY}. Muita empresa daquela época fechou — é aí que está o <b>cliente órfão</b>.`]);
+  if(S.persona==='inv') it.push(['◆',`São <b>${fmt(A.remote)} usinas em autoconsumo remoto/compartilhada</b> e <b>${fmt(A.mini)} minigerações</b> (acima de 75 kW) — ativos de investidor que exigem monitoramento e O&amp;M profissional.`]);
+  if(S.persona==='emp') it.push(['▦',`<b>${fmt(A.pj)} usinas são de empresas</b> e <b>${fmt(A.ga)} estão em média tensão</b> (Grupo A). Contrato de O&amp;M B2B tem ticket maior e renova todo ano.`]);
+  if(S.persona==='agro'&&A.pam) it.push(['❀',`A lavoura da região produz <b>${money(A.pam*1000)} por ano</b> (IBGE/PAM) e ainda há <b>${fmt(A.semAgro)} propriedades rurais sem solar</b>.`]);
+  if(A.reaj!=null) it.push(['🧾',`A conta de luz <b>subiu ${pct(A.reaj,0)}</b> no último ano (tarifa homologada ANEEL). Payback estimado de um sistema típico: <b>${pb.years?fmt1(pb.years)+' anos':'—'}</b>.`]);
+  it.push(['☀',`A base gera ~<b>${money(A.econ)}/mês</b> de economia para os clientes. Uma usina média (${fmt1(A.avgKw)} kWp) parada custa <b>${moneyFull(dayLossOf(A))} por dia</b> — o monitoramento se paga.`]);
+  it.push(['💰',`Com <b>${C.cap}% da base</b> num plano de <b>${moneyFull(C.ticket)}/mês</b>: <b>${fmt(co.cli)} clientes</b> e <b>${money(co.mrr)}/mês</b> de receita recorrente (${money(co.mrr*12+co.clean)}/ano com limpeza).`]);
+  if(sp.tot) it.push(['⌂',`Ainda há <b>${fmt(sp.n)} ${sp.label}</b> — só <b>${pct(sp.has/sp.tot)}</b> já têm solar. Espaço de venda nova não falta.`]);
+  const iu=+C.intU||0,im=+C.intM||0;
+  if(iu>0&&A.n) it.push(['🎯',`Você tem <b>${pct(iu/A.n)}</b> da base da região — <b>${fmt(Math.max(0,A.n-iu))} usinas são de outros integradores</b>${im>0&&A.ritmo?` e você faz <b>${pct(im/A.ritmo,0)}</b> das novas conexões`:''}.`]);
   const best=LIST.filter(o=>o.on&&!o.sede).sort((a,b)=>b.score-a.score)[0];
-  if(best) items.push(['★',`Vizinha com maior oportunidade: <b>${esc(best.r[1])}</b> (${fmt(best.d)} km) — ${fmt(met(best.r).n)} usinas, ${fmt1(met(best.r).ritmo)} novas/mês, score ${best.score}.`]);
-  return items;
+  if(best) it.push(['★',`Vizinha com maior oportunidade: <b>${esc(best.r[1])}</b> (${fmt(best.d)} km) — ${fmt(met(best.r).n)} usinas e ${fmt1(met(best.r).ritmo)} novas/mês.`]);
+  return it;
 }
 
-function renderCards(list){
-  const A=AG, C=S.calc, stableLbl=mLabel(M[ST]);
-  const html=[];
+/* ================= right column ================= */
+function renderRight(list){
+  const A=AG,C=S.calc,p=P(),sp=spaceInfo(A),co=calcOut(A),pb=payback(A),stLbl=mLabel(M[ST]);
+  const sec={};
 
-  // 01 Pitch
-  const items=pitchItems();
-  html.push(card(1,'Resumo para a reunião','Frases prontas geradas a partir dos dados. Ajuste a calculadora (card 04) e o share do integrador (card 05) que o texto acompanha.',
-    `Leia na reunião ou copie para mandar no WhatsApp depois. Tudo recalcula quando você mexe no raio ou nas cidades.`,
-    `<ul class="pitch">${items.map(([i,t])=>`<li><span>${i}</span><span>${t}</span></li>`).join('')}</ul>
-     <div class="btnrow"><button class="btn pri" id="cpPitch">Copiar resumo (WhatsApp)</button><button class="btn" id="cpTable">Copiar tabela de cidades</button></div>`));
+  // ---- GERAL
+  const heroT=[
+    ['⚡',fmt(A.n),'usinas instaladas',`${kwpF(A.kw)} · ${clsLabel()}`],
+    ['↗',fmt1(A.ritmo),'novas usinas / mês',`${grow(A.growth)} em 12 meses`],
+    ['⏳',fmt(A.old),'usinas antigas',`conectadas até ${S.oldY} · ${A.n?pct(A.old/A.n,0):'—'} da base`],
+    [p.space==='emp'?'▦':p.space==='agro'?'❀':'⌂',fmt(sp.n),sp.label,`só ${sp.tot?pct(sp.has/sp.tot):'—'} já têm solar`]
+  ];
+  if(S.persona==='om') heroT[3]=['✦',money(A.n*C.clean),'mercado de limpeza / ano',`1 visita por usina × ${moneyFull(C.clean)}`];
+  if(S.persona==='inv') heroT[3]=['◆',fmt(A.remote),'usinas remotas/compart.',`${fmt(A.mini)} minigerações acima de 75 kW`];
+  sec.geral=`<div class="hero">${heroT.map(([i,v,l,s])=>`<div class="htile"><div class="hi">${i}</div><div class="hv">${v}</div><div class="hl">${l}</div><div class="hs">${s}</div></div>`).join('')}
+    <div class="htile dark"><div class="hi">💰</div><div class="hv" id="heroMrr">${money(co.mrr)}</div><div class="hl">receita possível / mês</div><div class="hs" id="heroMrrS">${C.cap}% da base × ${moneyFull(C.ticket)}</div></div></div>`
+   +card('Resumo para a reunião','Frases geradas a partir dos dados e dos filtros atuais. Mudou raio, perfil ou calculadora? O texto acompanha.',
+    `Leia na reunião ou copie para mandar no WhatsApp depois.`,
+    `<ul class="pitch" id="pitchList">${pitchItems().map(([i,t])=>`<li><span>${i}</span><span>${t}</span></li>`).join('')}</ul>
+     <div class="btnrow"><button class="btn pri" id="cpPitch">Copiar resumo (WhatsApp)</button><button class="btn" id="cpTable">Copiar tabela de cidades (Excel)</button><button class="btn" id="goShow">▶ Apresentar em slides</button></div>`);
 
-  // 02 Idade da base
-  const yrs=[]; for(let i=0;i<NY;i++) yrs.push({y:Y0+i,n:A.y[i]});
-  const ys=yrs.filter(o=>o.y>=2015); ys[0].n+=sum(A.y,0,2015-Y0-1); ys[0].lbl='≤15';
-  const mxY=Math.max(1,...ys.map(o=>o.n));
-  const cls=y=> y<=OLD_YEAR?'old':(y<=2024?'mid':'new');
-  const n23=A.y[2023-Y0]+A.y[2024-Y0], nNew=A.y[2025-Y0]+A.y[2026-Y0];
-  const idade=A.n?yrs.reduce((s,o)=>s+o.n*(2026.5-o.y-0.5),0)/A.n:0;
-  html.push(card(2,'Base instalada por ano — a mina de ouro parada','Ano de conexão/cadastro da usina na distribuidora (ANEEL). Usinas antigas tendem a estar sem acompanhamento do integrador original.',
-    `Quanto mais antiga a usina, maior a chance de estar <strong>sem assistência</strong> (integrador fechou, garantia de instalação vencida, sujeira e queda de performance).`,
-    `<div class="vbars">${ys.map(o=>`<div class="vcol" title="${o.y}: ${fmt(o.n)} usinas"><div class="vval">${o.n>=1000?fmt1(o.n/1000)+'k':fmt(o.n)}</div><div class="vtrack"><div class="vbar ${cls(o.y)}" style="height:${Math.max(2,o.n/mxY*100)}%"></div></div><div class="vlab">${o.lbl||("'"+String(o.y).slice(2))}</div></div>`).join('')}</div>
-     <div class="legend"><span><i style="background:#b84a00"></i>4+ anos (até ${OLD_YEAR})</span><span><i style="background:#ff6a00"></i>2–3 anos (2023–24)</span><span><i style="background:#ffb27a"></i>Recentes (2025–26)</span></div>
-     <div class="grid3" style="margin-top:14px">
-       <div class="stat hl"><div class="sl">Usinas com 4+ anos</div><div class="sv">${fmt(A.old)}</div><div class="ss">${A.n?pct(A.old/A.n,0):'—'} da base · alvo de resgate de órfãos</div></div>
-       <div class="stat"><div class="sl">2023 – 2024</div><div class="sv">${fmt(n23)}</div><div class="ss">entrando na fase de limpeza e revisão</div></div>
-       <div class="stat"><div class="sl">Idade média</div><div class="sv">${fmt1(idade)} anos</div><div class="ss">${fmt(nNew)} conectadas em 2025–26</div></div>
-     </div>
-     <div class="insight">💡 <b>Argumento:</b> “Dessas ${fmt(A.n)} usinas, ${fmt(A.old)} foram instaladas até ${OLD_YEAR}. Quantos desses clientes ainda têm alguém olhando a usina? Com o login do portal do inversor você traz esse cliente pra sua carteira — sem precisar falar com o integrador antigo.”</div>`));
-
-  // 03 Ritmo
-  const nM=24, off=M.length-nM, ms=M.slice(off), vals=A.m.slice(off), kws=A.mk.slice(off);
-  const mxM=Math.max(1,...vals);
-  const yearly=[]; for(let i=Math.max(0,2017-Y0);i<NY;i++) yearly.push({y:Y0+i,n:A.y[i]});
-  const mxYY=Math.max(1,...yearly.map(o=>o.n));
-  const bars = S.tl==='m'
-    ? `<div class="vbars">${ms.map((m,i)=>{ const lag=(i+off)>ST; return `<div class="vcol" title="${mLabel(m)}: ${fmt(vals[i])} usinas · ${kwF(kws[i])}${lag?' · ANEEL ainda atualizando':''}"><div class="vval" style="${lag?'color:#b8b1a6':''}">${fmt(vals[i])}</div><div class="vtrack"><div class="vbar ${lag?'lag':''}" style="height:${Math.max(2,vals[i]/mxM*100)}%"></div></div><div class="vlab">${i%2===(nM-1)%2?mLabel(m):''}</div></div>`; }).join('')}</div>
-       <div class="legend"><span><i style="background:#ff6a00"></i>Consolidado</span><span><i style="background:repeating-linear-gradient(135deg,#ffc299 0 3px,#ffe2d3 3px 6px)"></i>Meses recentes — a ANEEL ainda está registrando (vai subir)</span></div>`
-    : `<div class="vbars">${yearly.map(o=>`<div class="vcol" title="${o.y}: ${fmt(o.n)}"><div class="vval">${o.n>=1000?fmt1(o.n/1000)+'k':fmt(o.n)}</div><div class="vtrack"><div class="vbar ${o.y===2026?'lag':''}" style="height:${Math.max(2,o.n/mxYY*100)}%"></div></div><div class="vlab">${o.y}</div></div>`).join('')}</div>`;
-  html.push(card(3,'Ritmo de novas usinas','Média mensal calculada só com meses já consolidados na base da ANEEL (os últimos meses chegam com atraso de registro).',
-    `Fluxo mensal de conexões na região — seu e dos concorrentes. Média dos 12 meses até <strong>${stableLbl}</strong>.`,
-    `${bars}
-     <div class="grid3" style="margin-top:14px">
-      <div class="stat hl"><div class="sl">Novas usinas / mês</div><div class="sv">${fmt1(A.ritmo)}</div><div class="ss">${fmt(A.w12)} em 12 meses</div></div>
-      <div class="stat"><div class="sl">Crescimento</div><div class="sv">${grow(A.growth)}</div><div class="ss">12m vs 12m anteriores (${fmt(A.p12)})</div></div>
-      <div class="stat"><div class="sl">Mercado de venda nova / ano</div><div class="sv">${money(A.kw12*C.price)}</div><div class="ss">${kwpF(A.kw12)} × ${moneyFull(C.price)}/kWp</div></div>
-     </div>`,
-    `<div class="tabs"><button data-tl="m" class="${S.tl==='m'?'on':''}">24 meses</button><button data-tl="y" class="${S.tl==='y'?'on':''}">Por ano</button></div>`));
-
-  // 04 Calculadora
-  html.push(card(4,'Receita recorrente de pós-venda','Simulação: base instalada da região × % que o integrador consegue trazer para um plano de acompanhamento/monitoramento + limpeza.',
-    `Quanto o integrador fatura <strong>todo mês</strong> se transformar uma fatia da base da região em cliente de pós-venda.`,
-    `<div class="calc">
-      <div>
-        ${slider('cap','% da base captada',1,30,1,C.cap,v=>v+'%')}
-        ${slider('ticket','Plano mensal por usina',15,150,5,C.ticket,v=>'R$ '+v)}
-        ${slider('clean','Limpeza/revisão (R$ por visita/ano)',0,800,10,C.clean,v=>'R$ '+v)}
-        ${slider('cleanPct','% dos clientes que fazem limpeza no ano',0,100,5,C.cleanPct,v=>v+'%')}
-        ${slider('price','Preço médio de venda (R$/kWp)',1800,6000,100,C.price,v=>'R$ '+fmt(v))}
-      </div>
-      <div id="calcOut"></div>
-    </div>`));
-
-  // 05 Share do integrador
-  html.push(card(5,'Onde o integrador está nesse mercado','Pergunte na reunião e digite. O cálculo compara com a base e o fluxo da região selecionada.',
-    `Pergunte: <strong>“quantas usinas você já instalou?”</strong> e <strong>“quantas vende por mês?”</strong>`,
-    `<div class="grid2">
-      <div><label class="flabel">Usinas instaladas pelo integrador</label><input class="numin" id="intU" inputmode="numeric" placeholder="ex.: 500" value="${esc(C.intU)}"></div>
-      <div><label class="flabel">Vendas / mês do integrador</label><input class="numin" id="intM" inputmode="numeric" placeholder="ex.: 10" value="${esc(C.intM)}"></div>
-     </div><div id="shareOut" style="margin-top:14px"></div>`));
-
-  // 06 Espaço de mercado
-  const penR=A.casaP?A.c[0]/A.casaP:0, penC=A.emp?(A.c[1]+A.c[3])/A.emp:0, penA=A.agro?A.c[2]/A.agro:0;
-  const ring=(p,lab)=>{ const d=Math.min(100,p*100); return `<div class="ring" style="background:conic-gradient(#FF6A00 ${Math.max(d,0.6)*3.6}deg,#F2EAE0 0deg)"><div><b>${pct(p)}</b><small>${lab}</small></div></div>`; };
-  html.push(card(6,'Espaço de mercado (penetração)','Residencial: casas (inclui casa de vila/condomínio) próprias de algum morador — Censo 2022. Comercial/Industrial: unidades locais de empresas — IBGE CEMPRE 2021. Rural: estabelecimentos agropecuários — Censo Agro 2017.',
-    `Quanto do público que <strong>pode</strong> ter solar já tem. Quem mora em casa própria é o cliente residencial real — apartamento e aluguel ficam de fora.`,
-    `<div class="rings">
-      <div class="ringc"><h4>Residencial</h4>${ring(penR,'COM SOLAR')}<p><b>${fmt(A.semSolar)}</b> casas próprias sem solar<br>${fmt(A.c[0])} de ${fmt(A.casaP)}</p></div>
-      <div class="ringc"><h4>Comercial / Industrial</h4>${ring(penC,'COM SOLAR')}<p><b>${fmt(Math.max(0,A.emp-A.c[1]-A.c[3]))}</b> empresas sem solar<br>${fmt(A.c[1]+A.c[3])} de ${fmt(A.emp)}</p></div>
-      <div class="ringc"><h4>Rural</h4>${ring(penA,'COM SOLAR')}<p><b>${fmt(Math.max(0,A.agro-A.c[2]))}</b> propriedades sem solar<br>${fmt(A.c[2])} de ${fmt(A.agro)}</p></div>
-     </div>
-     <div class="grid3" style="margin-top:14px">
-      <div class="stat"><div class="sl">Domicílios ocupados</div><div class="sv">${fmt(A.dom)}</div><div class="ss">${A.dom?pct(A.casa/A.dom,0):'—'} são casas</div></div>
-      <div class="stat"><div class="sl">Usinas por mil hab.</div><div class="sv">${A.pop?fmt1(A.n/A.pop*1000):'—'}</div><div class="ss">Brasil ≈ ${fmt1(NAT.n/NAT.pop*1000)}</div></div>
-      <div class="stat"><div class="sl">PIB per capita</div><div class="sv">${A.pop?money(A.pib*1000/A.pop):'—'}</div><div class="ss">Brasil ≈ ${money(NAT.pib*1000/NAT.pop)} (IBGE 2023)</div></div>
-     </div>`));
-
-  // 07 Perfil
-  const mxC=Math.max(1,...A.c), mxT=Math.max(1,...A.t);
+  // ---- BASE
+  const n23=A.y[2023-Y0]+A.y[2024-Y0],nNew=A.y[2025-Y0]+A.y[2026-Y0];
+  const idade=A.n?A.y.reduce((s,v,i)=>s+v*(2026-(Y0+i)),0)/A.n:0;
   const modT=A.mod.reduce((a,b)=>a+b,0)||1;
-  html.push(card(7,'Perfil da base instalada','Classe de consumo, faixa de potência, tipo de titular, modalidade de compensação e grupo tarifário (ANEEL).',
+  sec.base=card('Base instalada por ano de conexão','Ano de conexão/cadastro da usina na distribuidora (ANEEL). O corte de “base antiga” muda no filtro do topo.',
+    `Quanto mais antiga a usina, maior a chance de estar <strong>sem assistência</strong>: integrador fechou, garantia de instalação vencida, sujeira e queda de geração.`,
+    `${vbars(yearsItems(A))}
+     <div class="legend"><span><i style="background:var(--s5)"></i>Base antiga (até ${S.oldY})</span><span><i style="background:var(--s3)"></i>${S.oldY<2024?`${S.oldY+1}–2024`:'2024'}</span><span><i style="background:var(--s2)"></i>Recentes (2025–26)</span></div>
+     <div class="grid3" style="margin-top:14px">
+      ${stat('Usinas antigas',fmt(A.old),`${A.n?pct(A.old/A.n,0):'—'} da base · alvo de resgate de órfãos`,true)}
+      ${stat('2023 – 2024',fmt(n23),'entrando na fase de limpeza e revisão')}
+      ${stat('Idade média da base',fmt1(idade)+' anos',`${fmt(nNew)} conectadas em 2025–26`)}
+     </div>
+     ${say(`“Dessas ${fmt(A.n)} usinas, <b>${fmt(A.old)} foram instaladas até ${S.oldY}</b>. Quantos desses clientes ainda têm alguém olhando a usina? Com o login do portal do inversor você traz esse cliente para a sua carteira — sem falar com o integrador antigo.”`)}`)
+   +card('Quem é o cliente dessa base','Classe de consumo (sempre todas, para comparação; as fora do filtro ficam apagadas), faixa de potência (classes filtradas), tipo de titular e modalidade de compensação.',
     `Para saber <strong>com quem</strong> o integrador vai falar: casa, comércio, agro, investidor ou média tensão.`,
     `<div class="grid2">
-      <div><div class="sect" style="margin-top:0">Por classe</div><div class="hbars">${CLASSES.map((c,i)=>`<div class="hrow"><span class="hl">${c}</span><div class="htrack"><div class="hfill" style="width:${Math.max(1,A.c[i]/mxC*100)}%;background:${RAMP[i]}"></div></div><span class="hv">${fmt(A.c[i])}</span></div>`).join('')}</div></div>
-      <div><div class="sect" style="margin-top:0">Por potência</div><div class="hbars">${TIERS.map((c,i)=>`<div class="hrow"><span class="hl">${c}</span><div class="htrack"><div class="hfill" style="width:${Math.max(1,A.t[i]/mxT*100)}%;background:${RAMP[i]}"></div></div><span class="hv">${fmt(A.t[i])}</span></div>`).join('')}</div></div>
+      <div><div class="sect" style="margin-top:0">Por classe de consumo</div>${hbars(CLASSES.map((c,i)=>({label:CLS_ICON[i]+' '+c,v:A.c[i],dim:!S.cls.includes(i),tip:`<b>${c}</b>: ${fmt(A.c[i])} usinas · ${kwF(A.ck[i])} · média ${fmt1(A.c[i]?A.ck[i]/A.c[i]:0)} kWp`})),i=>RAMP[i])}</div>
+      <div><div class="sect" style="margin-top:0">Por potência <span class="sl2">${clsLabel()}</span></div>${hbars(TIERS.map((t,i)=>({label:t,v:A.t[i],tip:`<b>${t}</b>: ${fmt(A.t[i])} usinas (${A.n?pct(A.t[i]/A.n,0):'—'})`})))}</div>
      </div>
-     <div class="grid3" style="margin-top:16px">
-      <div class="stat"><div class="sl">Pessoa física / jurídica</div><div class="sv">${A.n?pct((A.n-A.pj)/A.n,0):'—'} <span style="font-size:13px;color:#9a938a">PF</span></div><div class="ss">${fmt(A.pj)} usinas de empresas (PJ)</div></div>
-      <div class="stat"><div class="sl">Autoconsumo remoto + compartilhada</div><div class="sv">${fmt(A.mod[1]+A.mod[2]+A.mod[3])}</div><div class="ss">${pct((A.mod[1]+A.mod[2]+A.mod[3])/modT,0)} · usinas de investidor/aluguel e fazendas solares</div></div>
-      <div class="stat"><div class="sl">Média tensão (Grupo A)</div><div class="sv">${fmt(A.ga)}</div><div class="ss">${kwF(A.gak)} · ${fmt(A.mini)} minigeração (&gt;75 kW) — contratos de O&amp;M</div></div>
-     </div>
-     <div class="grid3" style="margin-top:10px">
-      <div class="stat"><div class="sl">Média residencial</div><div class="sv">${fmt1(A.c[0]?A.ck[0]/A.c[0]:0)} kWp</div><div class="ss">ticket ≈ ${money((A.c[0]?A.ck[0]/A.c[0]:0)*C.price)}</div></div>
-      <div class="stat"><div class="sl">Média comercial</div><div class="sv">${fmt1(A.c[1]?A.ck[1]/A.c[1]:0)} kWp</div><div class="ss">ticket ≈ ${money((A.c[1]?A.ck[1]/A.c[1]:0)*C.price)}</div></div>
-      <div class="stat"><div class="sl">Média rural</div><div class="sv">${fmt1(A.c[2]?A.ck[2]/A.c[2]:0)} kWp</div><div class="ss">ticket ≈ ${money((A.c[2]?A.ck[2]/A.c[2]:0)*C.price)}</div></div>
-     </div>`));
+     <div class="sect">Modalidade de compensação <span class="sl2">todas as classes</span></div>
+     <div class="stack">${A.mod.map((v,i)=>v?`<i style="flex:${v};background:${RAMP[i]}" data-tip="<b>${MODS[i]}</b>: ${fmt(v)} usinas (${pct(v/modT,0)})"></i>`:'').join('')}</div>
+     <div class="legend" style="margin-top:4px">${A.mod.map((v,i)=>`<span><i style="background:${RAMP[i]}"></i>${MODS[i]} · ${pct(v/modT,0)}</span>`).join('')}</div>
+     <div class="grid4" style="margin-top:14px">
+      ${stat('Empresas (PJ)',fmt(A.pj),`${A.all?pct(A.pj/A.all,0):'—'} das usinas`)}
+      ${stat('Média tensão',fmt(A.ga),`Grupo A · ${kwF(A.gak)}`,false,'Unidades do Grupo A (A4, A3…) — contratos de O&M de maior valor')}
+      ${stat('Minigeração',fmt(A.mini),'acima de 75 kW')}
+      ${stat('Remoto/compart.',fmt(A.remote),'usinas de investidor/aluguel')}
+     </div>`);
 
-  // 08 Energia & distribuidora
-  const dl=[...A.dist.entries()].sort((a,b)=>b[1]-a[1]).slice(0,4);
-  const dT=dl.reduce((s,d)=>s+d[1],0)||1;
-  const avgKw=A.n?A.kw/A.n:0, hspR=A.kw?A.gen/(A.kw*30*PR):5;
-  const dayLoss=avgKw*hspR*PR*(A.tarMed/1000)*TAX;
-  html.push(card(8,'Energia, conta de luz e distribuidora','Geração estimada = kWp × horas de sol pleno da UF × 30 dias × 78% de performance. Tarifa B1 residencial convencional homologada pela ANEEL (TUSD+TE, sem impostos); economia estimada com ~30% de impostos.',
+  // ---- VENDA
+  const bars=S.tl==='m'?vbars(monthsItems(A),{every:3})+`<div class="legend"><span><i style="background:var(--s3)"></i>Mês consolidado</span><span><i style="background:repeating-linear-gradient(135deg,#ffc299 0 3px,#ffe8d9 3px 6px)"></i>ANEEL ainda registrando (vai subir)</span></div>`
+    : vbars(A.y.map((v,i)=>({v,label:String(Y0+i),cls:Y0+i===2026?'lag':'',tip:`<b>${Y0+i}</b>: ${fmt(v)} usinas${Y0+i===2026?' · ano em andamento':''}`})).slice(2017-Y0));
+  const penR=A.casaP?A.c[0]/A.casaP:0,penC=A.emp?(A.c[1]+A.c[3])/A.emp:0,penA=A.agro?A.c[2]/A.agro:0;
+  const fb=FIOB_STEPS.map(([y,v])=>`<div class="${y<2026?'past':y===2026?'now':''}"><b>${v}%</b>${y}</div>`).join('');
+  sec.venda=card('Ritmo de novas usinas','Média só com meses consolidados na ANEEL (os meses recentes chegam com atraso de registro). Janela ajustável no filtro “Ritmo de venda”.',
+    `Quantas usinas entram por mês na região — do integrador e dos concorrentes. Média dos <strong>${S.win} meses até ${stLbl}</strong>.`,
+    `${bars}
+     <div class="grid3" style="margin-top:14px">
+      ${stat('Novas usinas / mês',fmt1(A.ritmo),`${fmt(A.win)} em ${S.win} meses`,true)}
+      ${stat('Crescimento 12 meses',grow(A.growth),`${fmt(A.w12)} vs ${fmt(A.p12)} nos 12 anteriores`)}
+      ${stat('Venda nova / ano',money(A.kw12*C.price),`${kwpF(A.kw12)} × ${moneyFull(C.price)}/kWp`,false,'Potência conectada nos últimos 12 meses consolidados × preço médio (ajuste na calculadora)')}
+     </div>
+     ${A.growth!=null&&A.growth<=-0.15?say(`“A venda nova na região <b>caiu ${pct(-A.growth,0)}</b>. Quem depende só de venda nova vai sofrer. A saída é <b>faturar com quem já comprou</b>.”`):A.growth!=null&&A.growth>=0.1?say(`“O mercado está <b>crescendo ${pct(A.growth,0)}</b>. Cada venda nova vira um cliente a mais para acompanhar — o pós-venda precisa escalar junto.”`):''}`,
+    `<div class="tabs"><button data-tl="m" class="${S.tl==='m'?'on':''}">24 meses</button><button data-tl="y" class="${S.tl==='y'?'on':''}">Por ano</button></div>`)
+   +card('Espaço de mercado — quem ainda não tem solar','Residencial: casas (inclui vila/condomínio) próprias de algum morador — Censo 2022. Empresas: unidades locais — IBGE CEMPRE 2021. Rural: estabelecimentos agropecuários — Censo Agro 2017.',
+    `Quanto do público que <strong>pode</strong> ter solar já tem. Casa própria é o cliente residencial real — apartamento e aluguel ficam de fora. O destaque segue o perfil escolhido.`,
+    `<div class="rings">
+      <div class="ringc ${p.space==='casa'?'focus':''}"><h4>⌂ Residencial</h4>${ring(penR,'COM SOLAR')}<p><b>${fmt(A.semCasa)}</b><br>casas próprias sem solar</p></div>
+      <div class="ringc ${p.space==='emp'?'focus':''}"><h4>▦ Empresas</h4>${ring(penC,'COM SOLAR')}<p><b>${fmt(A.semEmp)}</b><br>empresas sem solar</p></div>
+      <div class="ringc ${p.space==='agro'?'focus':''}"><h4>❀ Rural</h4>${ring(penA,'COM SOLAR')}<p><b>${fmt(A.semAgro)}</b><br>propriedades sem solar</p></div>
+     </div>
+     <div class="grid4" style="margin-top:14px">
+      ${stat('População',fmt(A.pop),`${grow(A.popG)} desde 2010`,false,'Censo 2010 → Censo 2022')}
+      ${stat('Salário médio',A.sal?moneyFull(A.sal):'—',`Brasil ≈ ${moneyFull(NAT.sal)}`,false,'Salário médio mensal dos empregados formais — IBGE CEMPRE 2021')}
+      ${stat('PIB per capita',A.pop?money(A.pib*1000/A.pop):'—',`Brasil ≈ ${money(NAT.pib*1000/NAT.pop)}`,false,'IBGE PIB dos Municípios 2023')}
+      ${stat('Produção agrícola',money(A.pam*1000),'valor por ano (PAM)',false,'IBGE Produção Agrícola Municipal — valor da produção das lavouras')}
+     </div>`)
+   +card('Por que comprar agora','Tarifa B1 residencial convencional homologada pela ANEEL (TUSD+TE, sem impostos) da distribuidora de cada cidade; reajuste vs tarifa vigente 12 meses antes. Payback simplificado: sistema típico do perfil, irradiação NASA da região, 78% de performance, ~30% de impostos, 20% de desconto por Fio B/compensação e custo de disponibilidade de 50 kWh/mês. Não inclui financiamento.',
+    `Os três argumentos de urgência: <strong>conta subindo</strong>, <strong>Fio B aumentando</strong> e <strong>sol forte</strong>.`,
+    `<div class="grid3">
+      ${stat('Conta de luz em 12 meses',A.reaj!=null?(A.reaj>=0?'+':'')+pct(A.reaj,0):'—',`tarifa ≈ R$ ${(A.tar*TAX/1000).toFixed(2).replace('.',',')}/kWh com impostos`,true)}
+      ${stat('Payback estimado',pb.years?fmt1(pb.years)+' anos':'—',`sistema de ${fmt1(pb.kwp)} kWp ≈ ${money(pb.price)}`)}
+      ${stat('Sol da região',fmt1(A.hsp)+' kWh/m²/dia',`cada kWp gera ≈ ${fmt(A.hsp*30*PR)} kWh/mês`,false,'Irradiação global horizontal média anual — NASA POWER')}
+     </div>
+     <div class="sect">Fio B (Lei 14.300) — % da TUSD Fio B paga sobre a energia compensada</div>
+     <div class="timeline">${fb}</div>
+     ${say(`“A conta subiu <b>${A.reaj!=null?pct(A.reaj,0):'—'}</b> em um ano e o Fio B sobe todo ano. Quem instala agora paga <b>60%</b>; em 2028 serão <b>90%</b>. Cada ano de espera é economia perdida.”`)}`);
+
+  // ---- RECEITA
+  sec.receita=card('Receita recorrente de pós-venda','Simulação: base instalada da região (classes filtradas) × % que o integrador traz para um plano de acompanhamento + limpeza anual.',
+    `Quanto o integrador fatura <strong>todo mês</strong> transformando uma fatia da base em cliente de pós-venda.`,
+    `<div class="calc"><div>
+      ${slider('cap','% da base captada',1,30,1,C.cap)}
+      ${slider('ticket','Plano mensal por usina',15,400,5,C.ticket)}
+      ${slider('clean','Limpeza/revisão (R$ por visita)',0,1500,10,C.clean)}
+      ${slider('cleanPct','% dos clientes que fazem limpeza no ano',0,100,5,C.cleanPct)}
+      ${slider('price','Preço médio de venda (R$/kWp)',1800,6000,100,C.price)}
+      <p class="note">Plano sugerido pelo perfil <b>${p.label}</b>: ${moneyFull(p.ticket)}/mês. Ajustes ficam salvos neste navegador.</p>
+     </div><div id="calcOut"></div></div>`)
+   +card('Onde o integrador está nesse mercado','Compara com a base e o fluxo da região e classes selecionadas.',
+    `Pergunte na reunião: <strong>“quantas usinas você já instalou?”</strong> e <strong>“quantas vende por mês?”</strong>`,
+    `<div class="grid2">
+      <div><label class="flabel" for="intU">Usinas instaladas pelo integrador</label><input class="numin" id="intU" inputmode="numeric" placeholder="ex.: 500" value="${esc(C.intU)}"></div>
+      <div><label class="flabel" for="intM">Vendas por mês do integrador</label><input class="numin" id="intM" inputmode="numeric" placeholder="ex.: 10" value="${esc(C.intM)}"></div>
+     </div><div id="shareOut" style="margin-top:14px"></div>`);
+
+  // ---- ALVOS
+  const rk=list.filter(o=>o.on).sort((a,b)=>b.score-a.score).slice(0,12);
+  const w=p.w,wtxt=[w.n&&`${Math.round(w.n*100)}% ${S.persona==='inv'?'potência':'base'} instalada`,w.o&&`${Math.round(w.o*100)}% base antiga`,w.r&&`${Math.round(w.r*100)}% ritmo`,w.g&&`${Math.round(w.g*100)}% crescimento`,w.s&&`${Math.round(w.s*100)}% ${sp.label}`].filter(Boolean).join(' · ');
+  const tops=A.top.slice().sort((a,b)=>b[1]-a[1]).slice(0,15);
+  sec.alvos=card('Ranking de cidades para priorizar',`Score 0–100 relativo às cidades da análise. Pesos do perfil ${p.label}: ${wtxt}.`,
+    `Onde o integrador deve <strong>concentrar esforço</strong> no perfil <strong>${p.label}</strong>.`,
+    rk.length?`<div class="tscroll"><table class="ltbl"><thead><tr><th>#</th><th>Cidade</th><th class="r">km</th><th class="r">Usinas</th><th class="r">Antigas</th><th class="r">Novas/mês</th><th class="r">${sp.short} s/ solar</th><th class="r">Score</th></tr></thead><tbody>
+    ${rk.map((o,i)=>{ const z=met(o.r); return `<tr><td>${i+1}</td><td><b>${esc(o.r[1])}</b> <span class="muted">${o.r[2]}</span>${o.sede?'<span class="tag sede">sede</span>':''}</td><td class="r">${o.sede?'—':fmt(o.d)}</td><td class="r">${fmt(z.n)}</td><td class="r">${fmt(z.old)}</td><td class="r">${fmt1(z.ritmo)} ${grow(z.growth)}</td><td class="r">${fmt(z.space)}</td><td class="r"><span class="scorebar"><b style="width:${o.score}%"></b></span><b>${o.score}</b></td></tr>`; }).join('')}
+    </tbody></table></div><p class="note">Pesos do perfil ${p.label}: ${wtxt}.</p>`:'<p class="empty">Sem cidades.</p>')
+   +card('Maiores usinas de empresas na região','Titulares pessoa jurídica com usinas ≥ 20 kW no cadastro público da ANEEL (as 8 maiores de cada cidade, nas classes filtradas).',
+    `Lista de prospecção para <strong>contratos de O&amp;M, limpeza e monitoramento B2B</strong>.`,
+    tops.length?`<div class="tscroll"><table class="ltbl"><thead><tr><th>Titular</th><th>Cidade</th><th class="r">Potência</th><th>Classe</th><th class="r">Desde</th><th>Modalidade</th></tr></thead><tbody>
+    ${tops.map(t=>`<tr><td><b>${esc(t[0])}</b></td><td>${esc(t[6][1])}</td><td class="r">${kwF(t[1])}</td><td>${CLASSES[t[2]]}${t[4]&&t[4][0]==='A'?' <span class="tag ext">'+esc(t[4])+'</span>':''}</td><td class="r">${t[3]}</td><td>${MODMAP[t[5]]||'—'}</td></tr>`).join('')}
+    </tbody></table></div><div class="btnrow"><button class="btn" id="cpPJ">Copiar lista completa (Excel)</button></div>`:'<p class="empty">Nenhuma usina PJ ≥ 20 kW nas cidades e classes selecionadas.</p>');
+
+  // ---- ENERGIA
+  const dl=[...A.dist.entries()].sort((a,b)=>b[1]-a[1]).slice(0,4),dT=dl.reduce((s,d)=>s+d[1],0)||1,dayLoss=dayLossOf(A);
+  sec.energia=card('Energia parada é dinheiro perdido','Geração = kWp × irradiação NASA da cidade × 30 dias × 78% de performance. Economia = geração × tarifa da distribuidora com ~30% de impostos.',
     `Traduz a base em <strong>dinheiro do cliente</strong> — o argumento para cobrar monitoramento.`,
     `<div class="grid3">
-      <div class="stat hl"><div class="sl">Economia gerada pela base</div><div class="sv">${money(A.econ)}/mês</div><div class="ss">${fmt(A.gen/1000)} MWh/mês estimados</div></div>
-      <div class="stat"><div class="sl">Usina média parada</div><div class="sv">${moneyFull(dayLoss)}/dia</div><div class="ss">${moneyFull(dayLoss*30)} por mês perdido (${fmt1(avgKw)} kWp)</div></div>
-      <div class="stat"><div class="sl">Se 5% da base parar</div><div class="sv">${money(A.econ*0.05)}/mês</div><div class="ss">${fmt(A.n*0.05)} usinas sem gerar e ninguém vendo</div></div>
+      ${stat('Economia gerada pela base',money(A.econ)+'/mês',`${fmt(A.gen/1000)} MWh/mês estimados`,true)}
+      ${stat('Usina média parada',moneyFull(dayLoss)+'/dia',`${moneyFull(dayLoss*30)} por mês (${fmt1(A.avgKw)} kWp)`)}
+      ${stat('Se 5% da base parar',money(A.econ*0.05)+'/mês',`${fmt(A.n*0.05)} usinas sem gerar e ninguém vendo`)}
      </div>
-     <div class="sect">Distribuidora na região · tarifa B1 residencial (sem impostos)</div>
-     <div class="tscroll"><table class="ltbl"><thead><tr><th>Distribuidora</th><th class="r">Usinas</th><th class="r">Tarifa R$/kWh</th><th class="r">c/ impostos ≈</th></tr></thead><tbody>
-     ${dl.map(([di,n])=>{ const d=D.dists[di]; return `<tr><td><b>${esc(d[0])}</b> <span style="color:#9a938a">· ${esc(d[1])}</span></td><td class="r">${fmt(n)} <span style="color:#9a938a">(${pct(n/dT,0)})</span></td><td class="r">${d[2]?'R$ '+(d[2]/1000).toFixed(3).replace('.',','):'—'}</td><td class="r">${d[2]?'R$ '+(d[2]*TAX/1000).toFixed(2).replace('.',','):'—'}</td></tr>`; }).join('')}
+     <div class="sect">Distribuidoras na região · tarifa B1 residencial</div>
+     <div class="tscroll"><table class="ltbl"><thead><tr><th>Distribuidora</th><th class="r">Usinas</th><th class="r">R$/kWh s/ imp.</th><th class="r">Reajuste 12m</th><th class="r">Em 3 anos</th></tr></thead><tbody>
+     ${dl.map(([di,n])=>{ const d=D.dists[di]; return `<tr><td><b>${esc(d[0])}</b> <span class="muted">· ${esc(d[1])}</span></td><td class="r">${fmt(n)} <span class="muted">(${pct(n/dT,0)})</span></td><td class="r">${d[2]?'R$ '+(d[2]/1000).toFixed(3).replace('.',','):'—'}</td><td class="r">${d[2]&&d[4]?grow(d[2]/d[4]-1):'—'}</td><td class="r">${d[2]&&d[5]?grow(d[2]/d[5]-1):'—'}</td></tr>`; }).join('')}
      </tbody></table></div>
-     <div class="insight">💡 <b>Argumento:</b> “A região economiza ${money(A.econ)} por mês com solar. Se só 5% dessas usinas estiverem paradas sem ninguém ver, são ${money(A.econ*0.05)} por mês jogados fora pelos clientes — e a primeira ligação vai ser pra você.”</div>`));
+     ${say(`“A região economiza <b>${money(A.econ)} por mês</b> com solar. Se só 5% dessas usinas estiverem paradas sem ninguém ver, são <b>${money(A.econ*0.05)} por mês</b> jogados fora pelos clientes — e a primeira ligação vai ser para você.”`)}`);
 
-  // 09 Ranking
-  const rk=list.filter(o=>o.on).sort((a,b)=>b.score-a.score).slice(0,12);
-  html.push(card(9,'Ranking de oportunidade na região','Score 0–100 relativo às cidades da região: 35% base instalada, 25% ritmo de novas usinas, 15% crescimento, 25% casas próprias sem solar.',
-    `Onde o integrador deve <strong>priorizar</strong> — base para pós-venda + fluxo de venda nova + espaço livre.`,
-    rk.length?`<div class="tscroll"><table class="ltbl"><thead><tr><th>#</th><th>Cidade</th><th class="r">km</th><th class="r">Usinas</th><th class="r">4+ anos</th><th class="r">Novas/mês</th><th class="r">Casas s/ solar</th><th class="r">Score</th></tr></thead><tbody>
-    ${rk.map((o,i)=>{ const z=met(o.r); return `<tr><td>${i+1}</td><td><b>${esc(o.r[1])}</b> <span style="color:#9a938a">${o.r[2]}</span>${o.sede?'<span class="tag sede">sede</span>':''}</td><td class="r">${o.sede?'—':fmt(o.d)}</td><td class="r">${fmt(z.n)}</td><td class="r">${fmt(z.old)}</td><td class="r">${fmt1(z.ritmo)} ${grow(z.growth)}</td><td class="r">${fmt(z.semSolar)}</td><td class="r"><span class="scorebar"><b style="width:${o.score}%"></b></span><b>${o.score}</b></td></tr>`; }).join('')}
-    </tbody></table></div>`:'<p class="empty">Sem cidades.</p>'));
-
-  // 10 Maiores PJ
-  const tops=A.top.slice().sort((a,b)=>b[1]-a[1]).slice(0,15);
-  html.push(card(10,'Maiores usinas de empresas na região','Titulares pessoa jurídica com usinas ≥ 20 kW, conforme cadastro público da ANEEL (as 6 maiores de cada cidade).',
-    `Lista de prospecção para <strong>contratos de O&amp;M, limpeza e monitoramento B2B</strong>.`,
-    tops.length?`<div class="tscroll"><table class="ltbl"><thead><tr><th>Titular</th><th>Cidade</th><th class="r">Potência</th><th>Classe</th><th class="r">Ano</th><th>Modalidade</th></tr></thead><tbody>
-    ${tops.map(t=>`<tr><td><b>${esc(t[0])}</b></td><td>${esc(t[6][1])}</td><td class="r">${kwF(t[1])}</td><td>${CLASSES[t[2]]}${t[4]&&t[4][0]==='A'?' <span class="tag ext">'+esc(t[4])+'</span>':''}</td><td class="r">${t[3]}</td><td>${MODMAP[t[5]]||'—'}</td></tr>`).join('')}
-    </tbody></table></div>`:'<p class="empty">Nenhuma usina PJ ≥ 20 kW nas cidades selecionadas.</p>'));
-
-  html.push(`<div class="foot"><b>Fontes:</b> ANEEL — Empreendimentos de Geração Distribuída (base de ${D.gen.split('-').reverse().join('/')}, conexões até ${mLabel(D.asOf)}; média mensal usa meses consolidados até ${stableLbl}) e Tarifas Homologadas das Distribuidoras · IBGE — Censo 2022 (população, domicílios por tipo e condição de ocupação), PIB dos Municípios 2023, CEMPRE 2021, Censo Agropecuário 2017. Geração e economia são estimativas. “Cliente órfão” é uma leitura estratégica da idade da base, não um dado da ANEEL.</div>`);
-
-  $('right').innerHTML=html.join('');
-  updateCalc(); updateShare();
+  const order=p.order;
+  $('right').innerHTML=`<nav class="snav" id="snav">${order.map((k,i)=>`<button data-go="${k}" class="${i===0?'on':''}">${SECTIONS[k][0]}</button>`).join('')}<span class="pers">Perfil: ${p.label}</span></nav>`
+    +order.map(k=>`<div class="section" id="sec-${k}"><div class="shead"><h2>${SECTIONS[k][0]}</h2><p>${SECTIONS[k][1]}</p></div>${sec[k]}</div>`).join('')
+    +`<div class="foot"><b>Fontes:</b> ANEEL — Geração Distribuída (base de ${D.gen.split('-').reverse().join('/')}, conexões até ${mLabel(D.asOf)}; médias com meses consolidados até ${stLbl}) e Tarifas Homologadas · IBGE — Censos 2022 e 2010, PIB dos Municípios 2023, CEMPRE 2021, Censo Agropecuário 2017, PAM · NASA POWER (irradiação). Geração, economia e payback são estimativas. “Cliente órfão” é leitura estratégica da idade da base, não um dado oficial.</div>`;
+  let k=0; $('right').querySelectorAll('.cnum').forEach(e=>e.textContent=String(++k).padStart(2,'0'));
+  updateCalc(); updateShare(); spy();
 }
-
-function slider(k,label,min,max,step,v,f){
-  return `<div class="slider"><div class="top"><span>${label}</span><b id="sv_${k}">${f(v)}</b></div><input type="range" data-k="${k}" min="${min}" max="${max}" step="${step}" value="${v}"></div>`;
-}
-const SF={cap:v=>v+'%',ticket:v=>'R$ '+v,clean:v=>'R$ '+v,cleanPct:v=>v+'%',price:v=>'R$ '+fmt(v)};
+const SLIDERS={cap:v=>v+'%',ticket:v=>'R$ '+v,clean:v=>'R$ '+fmt(v),cleanPct:v=>v+'%',price:v=>'R$ '+fmt(v)};
+const slider=(k,l,min,max,step,v)=>`<div class="slider"><div class="top"><label for="sl_${k}">${l}</label><b id="sv_${k}">${SLIDERS[k](v)}</b></div><input id="sl_${k}" type="range" data-k="${k}" min="${min}" max="${max}" step="${step}" value="${v}"></div>`;
 function updateCalc(){
-  const A=AG, C=S.calc, el=$('calcOut'); if(!el) return;
-  const cli=Math.round(A.n*C.cap/100), mrr=cli*C.ticket, clean=cli*C.cleanPct/100*C.clean, novas=A.ritmo*C.cap/100;
-  el.innerHTML=`<div class="bigout"><div class="bl">Receita recorrente mensal</div><div class="bv">${money(mrr)}</div><div class="bs">${fmt(cli)} clientes × ${moneyFull(C.ticket)} · ${money(mrr*12+clean)} por ano com limpeza</div></div>
+  const A=AG,C=S.calc,el=$('calcOut'); if(!el) return; const co=calcOut(A);
+  el.innerHTML=`<div class="bigout"><div class="bl">Receita recorrente mensal</div><div class="bv">${money(co.mrr)}</div><div class="bs">${fmt(co.cli)} clientes × ${moneyFull(C.ticket)} · <b>${money(co.mrr*12+co.clean)}</b> por ano com limpeza</div></div>
    <div class="outgrid">
-    <div class="stat"><div class="sl">Limpeza / revisão no ano</div><div class="sv">${money(clean)}</div><div class="ss">${fmt(cli*C.cleanPct/100)} visitas</div></div>
-    <div class="stat"><div class="sl">Cada 1% da base</div><div class="sv">${money(A.n/100*C.ticket)}/mês</div><div class="ss">${fmt(A.n/100)} usinas</div></div>
-    <div class="stat"><div class="sl">Só das usinas 4+ anos</div><div class="sv">${money(A.old*C.cap/100*C.ticket)}/mês</div><div class="ss">mesmo % aplicado aos órfãos potenciais</div></div>
-    <div class="stat"><div class="sl">Carteira cresce</div><div class="sv">+${fmt1(novas)}/mês</div><div class="ss">se ${C.cap}% das novas usinas entrarem no plano</div></div>
+    ${stat('Limpeza / revisão no ano',money(co.clean),`${fmt(co.cli*C.cleanPct/100)} visitas`)}
+    ${stat('Cada 1% da base',money(A.n/100*C.ticket)+'/mês',`${fmt(A.n/100)} usinas`)}
+    ${stat('Só das usinas antigas',money(co.oldMrr)+'/mês',`${C.cap}% das ${fmt(A.old)} antigas`)}
+    ${stat('Carteira cresce',`+${fmt1(A.ritmo*C.cap/100)}/mês`,`se ${C.cap}% das novas usinas entrarem`)}
    </div>`;
+  const h=$('heroMrr'); if(h){ h.textContent=money(co.mrr); $('heroMrrS').textContent=`${C.cap}% da base × ${moneyFull(C.ticket)}`; }
 }
 function updateShare(){
-  const A=AG, C=S.calc, el=$('shareOut'); if(!el) return;
-  const iu=+C.intU||0, im=+C.intM||0;
-  if(!iu && !im){ el.innerHTML='<p class="empty" style="padding:0">Preencha para ver a fatia do integrador e o tamanho do mercado que ainda não é dele.</p>'; return; }
+  const A=AG,C=S.calc,el=$('shareOut'); if(!el) return; const iu=+C.intU||0,im=+C.intM||0;
+  if(!iu&&!im){ el.innerHTML='<p class="empty" style="padding:0">Preencha para ver a fatia do integrador e o mercado que ainda não é dele.</p>'; return; }
   el.innerHTML=`<div class="grid3">
-    <div class="stat hl"><div class="sl">Fatia da base</div><div class="sv">${A.n&&iu?pct(iu/A.n):'—'}</div><div class="ss">${fmt(Math.max(0,A.n-iu))} usinas de outros integradores</div></div>
-    <div class="stat"><div class="sl">Fatia das novas conexões</div><div class="sv">${A.ritmo&&im?pct(im/A.ritmo,0):'—'}</div><div class="ss">${fmt1(Math.max(0,A.ritmo-im))} usinas/mês vão para concorrentes</div></div>
-    <div class="stat"><div class="sl">Receita da própria base</div><div class="sv">${iu?money(iu*C.ticket*0.3):'—'}/mês</div><div class="ss">30% da carteira dele no plano de ${moneyFull(C.ticket)}</div></div>
-  </div>`;
+    ${stat('Fatia da base',A.n&&iu?pct(iu/A.n):'—',`${fmt(Math.max(0,A.n-iu))} usinas de outros integradores`,true)}
+    ${stat('Fatia das novas conexões',A.ritmo&&im?pct(im/A.ritmo,0):'—',`${fmt1(Math.max(0,A.ritmo-im))} usinas/mês com concorrentes`)}
+    ${stat('Receita da própria base',iu?money(iu*C.ticket*0.3)+'/mês':'—',`30% da carteira no plano de ${moneyFull(C.ticket)}`)}
+   </div>`;
 }
+const refreshPitch=()=>{ const ul=$('pitchList'); if(ul) ul.innerHTML=pitchItems().map(([i,t])=>`<li><span>${i}</span><span>${t}</span></li>`).join(''); };
 $('right').addEventListener('input',e=>{
   const s=e.target.closest('input[type=range][data-k]');
-  if(s){ const k=s.dataset.k; S.calc[k]=+s.value; $('sv_'+k).textContent=SF[k](+s.value); updateCalc(); refreshPitch(); saveCalc(); return; }
-  if(e.target.id==='intU'||e.target.id==='intM'){ S.calc[e.target.id]=e.target.value.replace(/\D/g,''); updateShare(); refreshPitch(); saveCalc(); }
+  if(s){ const k=s.dataset.k; S.calc[k]=+s.value; $('sv_'+k).textContent=SLIDERS[k](+s.value); updateCalc(); refreshPitch(); saveCalc(); return; }
+  if(e.target.id==='intU'||e.target.id==='intM'){ e.target.value=e.target.value.replace(/\D/g,''); S.calc[e.target.id]=e.target.value; updateShare(); refreshPitch(); saveCalc(); }
 });
-$('right').addEventListener('change',e=>{ if(e.target.closest('input[type=range][data-k="price"]')) renderCards(LIST); });
+$('right').addEventListener('change',e=>{ if(e.target.closest('input[data-k="price"]')){ const y=$('right').scrollTop; renderRight(LIST); $('right').scrollTop=y; } });
 $('right').addEventListener('click',e=>{
-  const t=e.target.closest('[data-tl]'); if(t){ S.tl=t.dataset.tl; renderCards(LIST); return; }
-  if(e.target.id==='cpPitch'){
-    const s=R[S.sel];
-    const txt=`*Estudo de mercado solar — ${areaName()}*\n\n`+pitchItems().map(([i,t])=>'• '+t.replace(/<b>|<\/b>/g,'*').replace(/<[^>]+>/g,'').replace(/&amp;/g,'&')).join('\n\n')+`\n\nFonte: ANEEL e IBGE (dados públicos).`;
-    copy(txt,'Resumo copiado — cole no WhatsApp');
-  }
-  if(e.target.id==='cpTable'){
-    const rows=LIST.filter(o=>o.on).sort((a,b)=>b.score-a.score).map(o=>{ const z=met(o.r); return [o.r[1]+'/'+o.r[2],o.sede?0:Math.round(o.d),z.n,Math.round(z.kw),z.ritmo.toFixed(1).replace('.',','),z.old,z.semSolar,o.score].join('\t'); });
-    copy(['Cidade\tkm\tUsinas\tkW\tNovas/mês\t4+ anos\tCasas próprias s/ solar\tScore',...rows].join('\n'),'Tabela copiada — cole no Excel/Sheets');
-  }
+  const t=e.target.closest('[data-tl]'); if(t){ S.tl=t.dataset.tl; const y=$('right').scrollTop; renderRight(LIST); $('right').scrollTop=y; return; }
+  const g=e.target.closest('[data-go]'); if(g){ const el=$('sec-'+g.dataset.go),rc=$('right'); if(rc.scrollHeight>rc.clientHeight+5) rc.scrollTo({top:el.offsetTop-58,behavior:'smooth'}); else el.scrollIntoView({behavior:'smooth'}); return; }
+  const id=e.target.id;
+  if(id==='goShow') startShow();
+  if(id==='cpPitch') copy(`*Estudo de mercado solar — ${areaName()}*\n\n`+pitchItems().map(([i,t])=>'• '+t.replace(/<\/?b>/g,'*').replace(/<[^>]+>/g,'').replace(/&amp;/g,'&')).join('\n\n')+`\n\nFonte: ANEEL, IBGE e NASA (dados públicos).`,'Resumo copiado — cole no WhatsApp');
+  if(id==='cpTable'){ const rows=LIST.filter(o=>o.on).sort((a,b)=>b.score-a.score).map(o=>{ const z=met(o.r); return [o.r[1]+'/'+o.r[2],o.sede?0:Math.round(o.d),z.n,Math.round(z.kw),z.ritmo.toFixed(1).replace('.',','),z.growth==null?'':Math.round(z.growth*100)+'%',z.old,z.space,o.score].join('\t'); });
+    copy(['Cidade\tkm\tUsinas\tkW\tNovas/mês\tCresc. 12m\tAntigas\tSem solar ('+spaceInfo(AG).label+')\tScore',...rows].join('\n'),'Tabela copiada — cole no Excel/Sheets'); }
+  if(id==='cpPJ'){ const tops=AG.top.slice().sort((a,b)=>b[1]-a[1]);
+    copy(['Titular\tCidade\tkW\tClasse\tAno\tModalidade\tSubgrupo',...tops.map(t=>[t[0],t[6][1]+'/'+t[6][2],t[1],CLASSES[t[2]],t[3],MODMAP[t[5]]||'',t[4]].join('\t'))].join('\n'),`${tops.length} empresas copiadas — cole no Excel`); }
 });
-function refreshPitch(){ const ul=document.querySelector('.pitch'); if(ul) ul.innerHTML=pitchItems().map(([i,t])=>`<li><span>${i}</span><span>${t}</span></li>`).join(''); }
+function spy(){ const rc=$('right'),nav=$('snav'); if(!nav) return;
+  const f=()=>{ const secs=[...rc.querySelectorAll('.section')]; if(!secs.length) return; const inner=rc.scrollHeight>rc.clientHeight+5; const top=inner?rc.scrollTop+90:90;
+    let cur=secs[0]; for(const s of secs){ const t=inner?s.offsetTop:s.getBoundingClientRect().top; if(t<=top) cur=s; }
+    nav.querySelectorAll('[data-go]').forEach(b=>b.classList.toggle('on','sec-'+b.dataset.go===cur.id)); };
+  rc.onscroll=f; window.onscroll=f; }
 
-/* ---------- national reference ---------- */
-const NAT={n:0,pop:0,pib:0}; for(const r of R){ const z=met(r); NAT.n+=z.n; NAT.pop+=z.pop; NAT.pib+=z.pib; }
+/* ================= presentation ================= */
+let SL=[],si=0;
+function buildSlides(){
+  const A=AG,C=S.calc,co=calcOut(A),sp=spaceInfo(A),pb=payback(A),s=R[S.sel],nOn=LIST.filter(o=>o.on).length;
+  const rk=LIST.filter(o=>o.on).sort((a,b)=>b.score-a.score).slice(0,6);
+  const out=[];
+  out.push({one:true,kick:'Estudo de mercado solar',title:`${esc(s[1])}/${s[2]}${nOn>1?` + ${nOn-1} cidades vizinhas`:''}`,big:fmt(A.n),bigl:`usinas solares já instaladas${S.cls.length<5?' ('+clsLabel()+')':''}`,
+    sup:[[kwpF(A.kw),'potência instalada'],[fmt1(A.ritmo),'novas usinas por mês'],[fmt(A.pop),'habitantes'],[S.radius?S.radius+' km':'só a cidade','área analisada']],
+    say:`Dados públicos da <b>ANEEL</b>, <b>IBGE</b> e <b>NASA</b>, com conexões até ${mLabel(D.asOf)}.`});
+  out.push({kick:'A mina de ouro parada',title:'Cada usina instalada é um cliente de pós-venda',big:fmt(A.old),bigl:`usinas conectadas até ${S.oldY} — ${A.n?pct(A.old/A.n,0):'—'} da base`,
+    sup:[[fmt(A.n),'usinas na base'],[fmt(A.y[2025-Y0]+A.y[2026-Y0]),'conectadas em 2025–26']],
+    chart:vbars(yearsItems(A),{h:230})+`<div class="legend"><span><i style="background:var(--s5)"></i>Base antiga</span><span><i style="background:var(--s3)"></i>Até 2024</span><span><i style="background:var(--s2)"></i>2025–26</span></div>`,
+    say:`Muita empresa daquela época fechou. Esse é o <b>cliente órfão</b> que você pode trazer para a sua carteira.`});
+  out.push({kick:'O mercado não para',title:'Quantas usinas entram por mês',big:fmt1(A.ritmo),bigl:`novas usinas por mês (média ${S.win} meses)`,
+    sup:[[grow(A.growth),'em 12 meses'],[money(A.kw12*C.price),'em venda nova por ano']],chart:vbars(monthsItems(A),{h:230,every:3}),
+    say:A.growth!=null&&A.growth<=-0.15?`A venda nova <b>caiu ${pct(-A.growth,0)}</b>. Com menos cliente novo, a receita tem que vir <b>da base instalada</b>.`:`Todo mês entram <b>${fmt1(A.ritmo)}</b> usinas na região. Cada uma vira um cliente para acompanhar.`});
+  out.push({kick:'Espaço de mercado',title:`Ainda falta muito ${sp.seg==='Residencial'?'telhado':sp.seg==='Empresas'?'empresa':'propriedade rural'} com solar`,big:fmt(sp.n),bigl:sp.label,
+    sup:[[sp.tot?pct(sp.has/sp.tot):'—','já têm solar'],[fmt(sp.tot),'no total'],[grow(A.popG),'população desde 2010']],
+    chart:`<div class="rings">${[['⌂ Residencial',A.casaP?A.c[0]/A.casaP:0,A.semCasa,'casas'],['▦ Empresas',A.emp?(A.c[1]+A.c[3])/A.emp:0,A.semEmp,'empresas'],['❀ Rural',A.agro?A.c[2]/A.agro:0,A.semAgro,'propriedades']].map(([t,pp,nn,l])=>`<div class="ringc"><h4>${t}</h4>${ring(pp,'COM SOLAR')}<p><b>${fmt(nn)}</b><br>${l} sem solar</p></div>`).join('')}</div>`,
+    say:`Penetração de só <b>${sp.tot?pct(sp.has/sp.tot):'—'}</b>. O mercado de venda nova está longe de saturar.`});
+  out.push({kick:'Por que agora',title:'Conta subindo, Fio B aumentando',big:A.reaj!=null?(A.reaj>=0?'+':'')+pct(A.reaj,0):'—',bigl:'reajuste da conta de luz em 12 meses',
+    sup:[[pb.years?fmt1(pb.years)+' anos':'—','payback estimado'],[fmt1(A.hsp),'kWh/m²/dia de sol']],
+    chart:`<div class="sect" style="margin-top:0">Fio B — % pago sobre a energia compensada</div><div class="timeline">${FIOB_STEPS.map(([y,v])=>`<div class="${y<2026?'past':y===2026?'now':''}"><b>${v}%</b>${y}</div>`).join('')}</div>`,
+    say:`Quem instala em 2026 paga <b>60%</b> do Fio B; em 2028 serão <b>90%</b>. Esperar custa caro.`});
+  out.push({one:true,kick:'Monitoramento se paga',title:'Energia parada é dinheiro perdido',big:money(A.econ),bigl:'de economia gerada por mês pelas usinas da região',
+    sup:[[moneyFull(dayLossOf(A)),'por dia, usina média parada'],[money(A.econ*0.05)+'/mês','perdidos se 5% parar']],
+    say:`Se 5% das usinas estiverem paradas sem ninguém ver, são <b>${money(A.econ*0.05)} por mês</b> perdidos pelos clientes — e a primeira ligação vai ser para o integrador.`});
+  out.push({one:true,kick:'Receita recorrente',title:'Quanto o pós-venda pode faturar',big:money(co.mrr),bigl:'por mês, sem depender de venda nova',
+    sup:[[C.cap+'%','da base captada'],[fmt(co.cli),'clientes'],[moneyFull(C.ticket),'plano mensal'],[money(co.mrr*12+co.clean),'por ano com limpeza']],
+    say:`Cada <b>1% da base</b> são <b>${money(A.n/100*C.ticket)}/mês</b>. Só com as usinas antigas: <b>${money(co.oldMrr)}/mês</b>.`});
+  if(rk.length>1) out.push({kick:'Onde atacar',title:'Cidades prioritárias na região',big:esc(rk[0].r[1]),bigl:`${fmt(met(rk[0].r).n)} usinas · score ${rk[0].score}`,
+    chart:hbars(rk.map(o=>({label:esc(o.r[1]),v:met(o.r).n,tip:`Score ${o.score}`}))),say:`Ranking com os pesos do perfil <b>${P().label}</b>: base instalada, ritmo, crescimento e espaço livre.`});
+  return out;
+}
+function drawSlide(){
+  const s=SL[si],two=s.chart&&!s.one;
+  $('slide').innerHTML=`<div class="sl-in ${two?'':'one'}"><div><div class="skick">${s.kick}</div><h2 class="stitle">${s.title}</h2><div class="sbig">${s.big}</div><div class="sbigl">${s.bigl}</div>
+    ${s.sup?`<div class="ssup">${s.sup.map(([v,l])=>`<div><b>${v}</b><span>${l}</span></div>`).join('')}</div>`:''}<div class="ssay">${s.say}</div></div>${two?`<div class="schart">${s.chart}</div>`:''}</div>`;
+  $('shDots').innerHTML=SL.map((_,i)=>`<i class="${i===si?'on':''}" data-si="${i}" data-tip="Slide ${i+1}: ${esc(SL[i].kick)}"></i>`).join('');
+}
+function startShow(){ SL=buildSlides(); si=0; $('shArea').textContent=areaName(); $('show').classList.remove('hidden'); drawSlide(); try{ const p=document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen(); if(p&&p.catch) p.catch(()=>{}); }catch(e){} }
+function endShow(){ $('show').classList.add('hidden'); try{ if(document.fullscreenElement) document.exitFullscreen(); }catch(e){} }
+const go=d=>{ si=clamp(si+d,0,SL.length-1); drawSlide(); };
+$('shNext').onclick=()=>go(1); $('shPrev').onclick=()=>go(-1); $('shExit').onclick=endShow;
+$('shDots').addEventListener('click',e=>{ const d=e.target.closest('[data-si]'); if(d){ si=+d.dataset.si; drawSlide(); } });
+document.addEventListener('keydown',e=>{ if($('show').classList.contains('hidden')) return;
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){ go(1); e.preventDefault(); }
+  if(e.key==='ArrowLeft'||e.key==='PageUp'){ go(-1); e.preventDefault(); }
+  if(e.key==='Escape') endShow(); });
 
-/* ---------- boot ---------- */
-drawPickRadius();
-if(!readHash()) setTimeout(()=>$('pickInp').focus(),50);
+/* ================= national reference ================= */
+const NAT={pop:0,pib:0,sal:0}; { let sw=0,oc=0; for(const r of R){ NAT.pop+=r[5]; NAT.pib+=r[10]; sw+=r[12]*r[13]; oc+=r[13]; } NAT.sal=oc?sw/oc:0; }
+
+/* ================= boot ================= */
+drawPicker();
 window.addEventListener('resize',()=>{ if(map) map.invalidateSize(); });
+window.__mm={S,render,met,region,setPersona,R,get AG(){return AG;},get LIST(){return LIST;},buildSlides};
+if(!readHash()) setTimeout(()=>$('pickInp').focus(),50);
+lastHash=location.hash;
+window.addEventListener('hashchange',()=>{ if(location.hash===lastHash) return; lastHash=location.hash; S.ex.clear(); S.extra.clear(); readHash(); });
 })();
 </script>
 </body>
