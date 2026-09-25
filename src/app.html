@@ -101,6 +101,7 @@ b,strong{font-weight:800}
 .rval{font-family:var(--sora);font-weight:800;font-size:19px;color:var(--or);min-width:76px}
 .radiusbar input[type=range]{flex:1;min-width:120px}
 .rquick{display:flex;gap:5px}
+.terr{position:absolute;top:12px;left:58px;z-index:500;background:#fff;border:1px solid var(--border);border-left:5px solid var(--or);border-radius:12px;padding:7px 12px;box-shadow:0 8px 20px #0000001a;cursor:help}.terr:empty{display:none}.terr .tv{display:flex;align-items:baseline;gap:6px;white-space:nowrap}.terr b{font-family:var(--sora);font-size:16px;color:var(--ink)}.terr small{font-size:11px;font-weight:700;color:var(--soft)}
 .rquick button{border:1.5px solid var(--border2);background:#fff;border-radius:8px;padding:4px 8px;font-weight:800;font-size:11.5px;cursor:pointer}
 .rquick button.on{border-color:var(--or);color:var(--or-d);background:var(--hover)}
 .rsel{height:30px;border:1.5px solid var(--border2);border-radius:8px;font:700 12px var(--man);padding:0 6px;background:#fff}
@@ -258,8 +259,12 @@ input[type=checkbox]{accent-color:var(--or);width:15px;height:15px;cursor:pointe
 .row{animation:fadeUp .5s ease-out both}
 .kpi{transition:transform .15s,box-shadow .15s}.kpi:hover{transform:translateY(-2px);box-shadow:0 10px 24px #0000000f}
 .tile{transition:transform .15s}.tile:hover{transform:translateY(-2px)}
-.why{display:flex;gap:10px;align-items:flex-start;background:#fbf8f4;border:1px dashed #e8dccd;border-radius:12px;padding:9px 13px;font-size:13px;color:#5d584f;font-weight:600;line-height:1.5;margin:-4px 0 18px}
-.why::before{content:"💡";flex:none}
+.why{display:flex;gap:12px;align-items:stretch;background:linear-gradient(90deg,#fff4ea,#fffaf5 60%);border:1px solid #ffdcbf;border-left:5px solid var(--or);border-radius:14px;padding:10px 14px;font-size:13.5px;color:#4d463e;font-weight:600;line-height:1.5;margin:-4px 0 18px}
+.why .wl{flex:none;align-self:flex-start;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--or);border-radius:999px;padding:4px 10px;white-space:nowrap}
+.why .wt{display:flex;flex-direction:column;gap:3px;min-width:0}.why .wt p{margin:0}.why .wt p+p{padding-top:3px;border-top:1px dashed #f4d6bd}
+.why b{color:var(--ink);background:#ffe6d2;border-radius:5px;padding:0 5px}
+.tch{display:inline-block;padding:1px 9px;border-radius:999px;font-weight:800;font-size:.9em;line-height:1.5}.tch.g{background:#dff5ea;color:#0b7a4b}.tch.y{background:#fdf0cf;color:#8a5a00}.tch.r{background:#fde2dc;color:#b3261e}.tch.o{background:#ffe6d2;color:#c24d00}.tch.k{background:#16130f;color:#fff}
+@media(max-width:640px){.why{flex-direction:column;gap:6px}}
 .why b{color:var(--ink)}
 .chap{font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px}
 .crit{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
@@ -388,7 +393,7 @@ input[type=checkbox]{accent-color:var(--or);width:15px;height:15px;cursor:pointe
 .chn .cp{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.chn .cp .pill{font-size:10.5px}
 .chn .cpub{font-size:11px;color:var(--faint);font-weight:700;margin-top:8px;border-top:1px solid var(--div);padding-top:6px}.chn .cpub span{color:var(--ink);font-weight:800}
 @media (max-width:1180px){.rf{grid-template-columns:1fr}}
-.note{font-size:12px;color:var(--soft);font-weight:600;line-height:1.5;margin-top:12px}.note b{color:var(--ink)}
+.note{font-size:12.5px;color:#4d463e;font-weight:600;line-height:1.5;margin-top:12px;background:#faf6f1;border:1px solid var(--border);border-left:4px solid #c9bcad;border-radius:12px;padding:9px 12px}.note:before{content:'ℹ️ ';}.note b{color:var(--ink)}
 /* ---------- closer page ---------- */
 .closer{min-height:100vh;background:#14110e;color:#f4efe8;padding:0 0 60px}
 .chdr{position:sticky;top:0;z-index:100;background:#14110e;border-bottom:1px solid #2b241d;padding:14px 28px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
@@ -438,11 +443,26 @@ input[type=checkbox]{accent-color:var(--or);width:15px;height:15px;cursor:pointe
 .closer .lightcard .tile.dark{background:#16130f}.closer .lightcard .tile.dark .v{color:#ff8a33}.closer .lightcard .tile.dark .l,.closer .lightcard .tile.dark .s{color:#cbbfb2}
 .closer .lightcard .gauges{grid-template-columns:1fr 1fr}
 
-#tip{position:fixed;z-index:6000;pointer-events:none;background:#16130f;color:#fff;border-radius:12px;padding:11px 14px;font-size:12.5px;font-weight:600;line-height:1.5;max-width:340px;border:1px solid #3a3027;box-shadow:0 10px 26px #0000003d;opacity:0;left:-999px;top:-999px}
-#tip b{color:#ff9a4d}
-#tip .tt{display:block;font-family:var(--sora);font-size:13.5px;color:#fff;margin-bottom:4px}
-#tip .tc{display:block;margin-top:7px;padding:6px 8px;background:#2b221a;border-radius:8px;font-size:11.5px;color:#e8ddd2}
-#tip .ts{display:block;margin-top:6px;font-size:10.5px;color:#a89a8b;font-weight:700}
+#tip{position:fixed;z-index:6000;pointer-events:none;background:#fff;color:var(--ink);border-radius:16px;font-size:12.5px;font-weight:600;line-height:1.5;width:max-content;max-width:370px;border:1px solid #eadfd2;box-shadow:0 18px 40px #16130f33,0 2px 6px #16130f14;opacity:0;left:-999px;top:-999px;overflow:hidden;transition:opacity .12s}
+#tip .th{display:flex;align-items:center;gap:10px;padding:11px 14px;background:linear-gradient(135deg,#16130f,#33271c);color:#fff}
+#tip .th i{flex:none;width:28px;height:28px;border-radius:9px;background:#ff6a00;display:grid;place-items:center;font-style:normal;font-size:15px;box-shadow:0 4px 10px #ff6a0066}
+#tip .th span{font-family:var(--sora);font-weight:800;font-size:14px;line-height:1.25}
+#tip .tbd{padding:12px 14px 4px}
+#tip .tl{font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.5;margin-bottom:8px}
+#tip .tp{display:grid;grid-template-columns:16px 1fr;gap:4px;align-items:start;background:#faf6f1;border-radius:9px;padding:6px 9px;margin-bottom:6px;color:#4d463e;font-size:12.5px}
+#tip .tp:before{content:'›';font-weight:900;color:#ff6a00;font-size:15px;line-height:1.2}
+#tip .tsc{border:1px solid #efe6db;border-radius:10px;padding:7px 9px 3px;margin-bottom:8px}
+#tip .tsc>small,#tip .tc>small{display:block;font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#9a8f82;margin-bottom:5px}
+#tip .tsr{display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:12px;color:#4d463e}
+#tip .tsr .tch{min-width:74px;text-align:center}
+#tip .tch{display:inline-block;padding:1px 8px;border-radius:999px;font-weight:800;font-size:11.5px;line-height:1.55}
+#tip .tch.g{background:#dff5ea;color:#0b7a4b}#tip .tch.y{background:#fdf0cf;color:#8a5a00}#tip .tch.r{background:#fde2dc;color:#b3261e}#tip .tch.o{background:#ffe6d2;color:#c24d00}#tip .tch.k{background:#16130f;color:#fff}
+#tip b{color:#c24d00}
+#tip b.n,#tip .tbd b{background:#fff0e3;color:#c24d00;border-radius:5px;padding:0 4px;font-weight:800}
+#tip .tc{margin:2px 0 10px;padding:8px 10px;background:#fff7ef;border:1px solid #ffdcbf;border-left:4px solid #ff6a00;border-radius:10px;font-size:12px;color:#3d352c;font-weight:700}
+#tip .tc em{font-style:normal;color:#ff6a00;font-weight:900;padding:0 2px}
+#tip .trg{margin:0 0 10px;padding:8px 10px;background:#16130f;color:#fff;border-radius:10px;font-size:12.5px}#tip .trg small{display:block;font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#ffb27a;margin-bottom:3px}#tip .trg b{background:#ff6a00;color:#fff;border-radius:5px;padding:0 4px}#tip .trg .tch{margin-left:4px}
+#tip .ts{display:flex;gap:6px;align-items:center;padding:7px 14px;background:#f7f4ef;border-top:1px solid #efe6db;font-size:10.5px;color:#7d7268;font-weight:700}
 .mini[data-tip],.tile[data-tip],.kpi[data-tip],.gauge[data-tip],.dem>div[data-tip],.opp>div[data-tip],.ringc[data-tip],.chn[data-tip],.rf-step[data-tip]{cursor:help;position:relative}
 .mini[data-tip]::after,.tile[data-tip]::after,.kpi[data-tip]::after,.gauge[data-tip]::after,.dem>div[data-tip]::after,.opp>div[data-tip]::after,.ringc[data-tip]::after,.chn[data-tip]::after{content:"?";position:absolute;top:8px;right:8px;width:16px;height:16px;border-radius:50%;background:#f1e9df;color:#9a8f82;font:800 10px/16px var(--man);text-align:center;opacity:.8}
 .kpi.dark[data-tip]::after,.tile.dark[data-tip]::after,.opp .c[data-tip]::after{background:#2b221a;color:#cbbfb2}
@@ -554,6 +574,7 @@ input[type=checkbox]{accent-color:var(--or);width:15px;height:15px;cursor:pointe
       <div class="mapcard">
         <div id="map"></div>
         <div class="maplegend" id="mapLegend"></div>
+        <div class="terr" id="terr"></div>
         <div class="radiusbar">
           <div><div class="rlab">Raio</div><div class="rval" id="rVal">50 km</div></div>
           <input type="range" id="rRange" min="0" max="250" step="5" value="50" aria-label="Raio em km">
@@ -648,7 +669,7 @@ function copy(t,msg){
   if(navigator.clipboard&&window.isSecureContext) navigator.clipboard.writeText(t).then(done,fb); else fb();
 }
 const tipEl=$('tip'); let tipOn=false;
-document.addEventListener('mouseover',e=>{ const t=e.target.closest&&e.target.closest('[data-tip]'); if(!t||!t.dataset.tip){ tipOn=false; tipEl.style.opacity=0; return; } tipEl.innerHTML=t.dataset.tip; tipOn=true; tipEl.style.opacity=1; });
+document.addEventListener('mouseover',e=>{ const t=e.target.closest&&e.target.closest('[data-tip]'); if(!t||!t.dataset.tip){ tipOn=false; tipEl.style.opacity=0; return; } tipEl.innerHTML=/class="t(h|bd)"/.test(t.dataset.tip)?t.dataset.tip:TT('',t.dataset.tip); tipOn=true; tipEl.style.opacity=1; });
 document.addEventListener('mousemove',e=>{ if(!tipOn) return; const w=tipEl.offsetWidth,h=tipEl.offsetHeight; let x=e.clientX+14,y=e.clientY-h-12; if(x+w>innerWidth-8) x=e.clientX-w-14; if(y<8) y=e.clientY+18; tipEl.style.left=x+'px'; tipEl.style.top=y+'px'; });
 
 /* ================= data ================= */
@@ -880,7 +901,7 @@ function menuAction(k){
 }
 
 /* ================= map ================= */
-let map,lyr,circle;
+let map,lyr,circle,terrLyr=null;
 function initMap(){
   if(map){ setTimeout(()=>map.invalidateSize(),60); return; }
   if(typeof L==='undefined'){ $('map').innerHTML='<div class="empty" style="padding:20px">Mapa indisponível sem internet.</div>'; return; }
@@ -892,6 +913,7 @@ function initMap(){
   map.on('click',()=>map.scrollWheelZoom.enable());
   map.on('zoomend moveend',placeLabels);
   map.createPane('polys').style.zIndex=410; map.createPane('bubbles').style.zIndex=620; map.createPane('labels2').style.zIndex=640;
+  for(const [n,z] of [['mask',415],['terr',600]]){ const pn=map.createPane(n); pn.style.zIndex=z; pn.style.pointerEvents='none'; }
   lyr=L.layerGroup().addTo(map);
 }
 const COLORS={
@@ -927,9 +949,8 @@ function drawMap(list,fit){
   if(!map) return;
   const tok=++mapTok;
   lyr.clearLayers(); if(circle){ circle.remove(); circle=null; }
-  [polyLyr,labLyr,bubLyr].forEach(l=>l&&map.removeLayer(l)); polyLyr=labLyr=bubLyr=null;
-  const s=R[S.sel];
-  if(S.radius>0) circle=L.circle([s[3],s[4]],{radius:S.radius*1000,color:'#16130f',weight:2,dashArray:'6 6',fill:false,interactive:false}).addTo(map);
+  [polyLyr,labLyr,bubLyr,terrLyr].forEach(l=>l&&map.removeLayer(l)); polyLyr=labLyr=bubLyr=terrLyr=null;
+  const s=R[S.sel]; terrInfo(list,null);
   const byIb=new Map(list.map(o=>[o.r[0],o])),ext=S.radius*1.5+40,near=new Map();
   for(const r of R){ if(byIb.has(r[0])||Math.abs(r[3]-s[3])>ext/100+0.5) continue; const d=hav(s,r); if(d<=ext) near.set(r[0],{r,d}); }
   const ufs=new Set([...list.map(o=>String(o.r[0]).slice(0,2)),...[...near.keys()].map(k=>String(k).slice(0,2))]);
@@ -947,7 +968,7 @@ function drawMap(list,fit){
   Promise.all([...ufs].map(loadUF)).then(cols=>{
     if(tok!==mapTok) return;
     const feats=[]; cols.forEach(fc=>fc&&fc.features&&fc.features.forEach(f=>{ const ib=+f.properties.codarea; if(byIb.has(ib)||near.has(ib)) feats.push(f); }));
-    if(!feats.length){ drawCircles(list,sc,near); return; }
+    if(!feats.length){ if(S.radius>0){ circle=L.circle([s[3],s[4]],{radius:S.radius*1000,color:'#ff6a00',weight:2.5,dashArray:'6 6',fill:false,interactive:false}).addTo(map); if(fit) map.fitBounds(circle.getBounds(),FITPAD); } drawCircles(list,sc,near); return; }
     polyLyr=L.geoJSON({type:'FeatureCollection',features:feats},{pane:'polys',
       style:f=>{ const ib=+f.properties.codarea,o=byIb.get(ib);
         if(o) return {fillColor:o.on?sc.col(sc.C.f(met(o.r),o)):'#e6e0d8',fillOpacity:o.on?.82:.5,color:o.sede?'#16130f':'#ffffff',weight:o.sede?3:1.2};
@@ -957,8 +978,39 @@ function drawMap(list,fit){
         l.bindPopup(()=>popHtml(r,d,o?(o.sede?'sede':(o.on?'on':'off')):'out'));
         l.on('mouseover',()=>{ l.setStyle({weight:3,color:'#16130f',fillOpacity:.95}); l.bringToFront(); });
         l.on('mouseout',()=>{ polyLyr&&polyLyr.resetStyle(l); }); }}).addTo(map);
+    // território real: contorno só da terra dos municípios ativos (sem o mar do círculo)
+    const T=outline(feats.filter(f=>{ const o=byIb.get(+f.properties.codarea); return o&&o.on; }));
+    if(T.lines.length){ const W=[[-60,-120],[-60,20],[20,20],[20,-120]];
+      terrLyr=L.layerGroup([
+        L.polygon([W,...T.lines],{pane:'mask',stroke:false,fillColor:'#f7f4ef',fillOpacity:.62,interactive:false}),
+        L.polyline(T.lines,{pane:'terr',color:'#ffffff',weight:8,opacity:.95,interactive:false,lineJoin:'round'}),
+        L.polyline(T.lines,{pane:'terr',color:'#ff6a00',weight:3.5,opacity:1,interactive:false,lineJoin:'round'})]).addTo(map);
+      terrInfo(list,T.area);
+      if(fit) map.fitBounds(L.latLngBounds(T.lines.flat()),FITPAD); }
   });
-  if(fit){ if(circle) map.fitBounds(circle.getBounds(),{paddingTopLeft:[20,20],paddingBottomRight:[20,90]}); else map.setView([s[3],s[4]],10); }
+  if(fit){ if(S.radius>0){ const b=L.latLngBounds(list.map(o=>[o.r[3],o.r[4]])); map.fitBounds(b.pad(.25),FITPAD); } else map.setView([s[3],s[4]],10); }
+}
+const FITPAD={paddingTopLeft:[20,20],paddingBottomRight:[20,90]};
+/* contorno do território: arestas que aparecem 1 vez são a borda externa (as internas se anulam) */
+function outline(feats){
+  const cnt=new Map(),K=p=>p[0].toFixed(5)+','+p[1].toFixed(5); let area=0;
+  for(const f of feats){ const g=f.geometry,ps=g.type==='MultiPolygon'?g.coordinates:[g.coordinates];
+    for(const pg of ps) pg.forEach((ring,ri)=>{ let a=0;
+      for(let i=0;i<ring.length-1;i++){ const A=ring[i],B=ring[i+1],ka=K(A),kb=K(B),k=ka<kb?ka+'|'+kb:kb+'|'+ka,e=cnt.get(k);
+        if(e) e.c++; else cnt.set(k,{c:1,a:A,b:B}); a+=(B[0]-A[0])*(B[1]+A[1]); }
+      area+=(ri?-1:1)*Math.abs(a/2)*111.32*111.32*Math.cos(ring[0][1]*Math.PI/180); }); }
+  const edges=[...cnt.values()].filter(e=>e.c===1),adj=new Map();
+  for(const e of edges) for(const q of [K(e.a),K(e.b)]){ if(!adj.has(q)) adj.set(q,[]); adj.get(q).push(e); }
+  const lines=[];
+  for(const e of edges){ if(e.u) continue; e.u=1; const ln=[e.a,e.b]; let cur=e.b;
+    for(;;){ const kc=K(cur),nx=adj.get(kc).find(x=>!x.u); if(!nx) break; nx.u=1; cur=K(nx.a)===kc?nx.b:nx.a; ln.push(cur); }
+    lines.push(ln.map(p=>[p[1],p[0]])); }
+  return {lines,area};
+}
+function terrInfo(list,area){
+  const el=$('terr'); if(!el) return; const n=list.filter(o=>o.on).length;
+  el.innerHTML=`<div class="rlab">Território analisado</div><div class="tv"><b>${area==null?'…':fmt(area)+' km²'}</b><small>${fmt(n)} ${n===1?'cidade':'cidades'} · só terra</small></div>`;
+  el.dataset.tip=TT('Território analisado',`O raio escolhe as cidades cujo centro fica a até ${S.radius||0} km da sede. O contorno {o:laranja} no mapa é o território real dessas cidades: só terra, sem contar o mar ou áreas fora da região.\nO que fica fora do contorno aparece apagado.`,area==null?'':`soma da área dos ${fmt(n)} municípios = ${fmt(area)} km²`,'IBGE — Malha municipal');
 }
 function tipHtml(r,d,sc,v){ const z=met(r); return `<b>${esc(r[1])}</b> · ${d?fmt(d)+' km':'sede'}<br>${fmt(z.n)} usinas · ${fmt1(z.ritmo)} novas/mês<br>${sc.C.label}: <b>${v==null?'—':sc.C.fmt(v)}</b>`; }
 function drawCircles(list,sc,near){
@@ -1022,7 +1074,19 @@ function compute(){ const list=region(); LIST=list; AG=aggregate(list.filter(o=>
 /* ================= v5 helpers ================= */
 const FMTS={i:fmt,d:fmt1,m:money,p:v=>pct(v,1)};
 // explicação rica para o tooltip: título, o que é, como foi calculado e fonte
-const TT=(t,b,calc,src)=>`<span class="tt">${t}</span>${b}${calc?`<span class="tc">🧮 ${calc}</span>`:''}${src?`<span class="ts">Fonte: ${src}</span>`:''}`;
+const TIC=[[/usina|base|instalad/i,'⚡'],[/venda|kit|mercado/i,'🛒'],[/empresa|concorr|instalador/i,'🏢'],[/receita|pós-venda|faturamento|marco|R\$|dinheiro|valor/i,'💰'],[/sol\b|sol da|geração|kWp|kWh/i,'☀️'],[/tarifa|conta|energia|fio b|payback|reajuste/i,'💡'],[/cliente|casa|sem solar|penetra|público|popula|salário|pib|agr/i,'🏠'],[/sdr|lead|funil|visita|qualifica|meta|contato|canal|indica|porta|b2b|tráfego|sorteio|rural|ação/i,'🎯'],[/score|ponto|critério|cidade/i,'🏆'],[/demanda|cresc|ritmo/i,'📈'],[/territ|raio|mapa/i,'🗺️']];
+const TCH=s=>s.replace(/\{([gyrok]):([^}]+)\}/g,'<span class="tch $1">$2</span>');
+function tipNums(s){ let d=0; return s.split(/(<[^>]+>)/).map((x,i)=>{ if(i%2){ if(/^<(b|span)\b/.test(x)) d++; else if(/^<\/(b|span)>/.test(x)) d--; return x; }
+  return d?x:x.replace(/(?<![\w/])((?:R\$\s?)?[▲▼+−-]?\d[\d.,]*(?:\s?(?:%|kWp|kWh|km²|km|mil|anos|pontos|pts))?\+?)/g,'<b class="n">$1</b>'); }).join(''); }
+const SCALE={Verde:'g',Amarelo:'y',Vermelho:'r'};
+function TT(t,b,calc,src){
+  const ic=(TIC.find(([re])=>re.test(t))||[0,'📊'])[1];
+  const parts=TCH(b||'').split(/\n|<br><br>|(?<=[.!?])\s+(?=[A-ZÁÉÍÓÚÂÊÔÃÕÇ“])/).map(x=>x.trim()).filter(Boolean);
+  const sc=[],pts=[]; let lead='';
+  parts.forEach((x,i)=>{ const m=x.match(/^(Verde|Amarelo|Vermelho)\s*[:=]\s*(.*)$/),rg=x.match(/^Na sua região:\s*(.*)$/); if(rg) pts.push('§'+rg[1]); else if(m) sc.push(`<div class="tsr"><span class="tch ${SCALE[m[1]]}">${m[1]}</span><span>${tipNums(m[2])}</span></div>`); else if(!lead&&i===0) lead=x; else pts.push(x); });
+  const calcH=calc?`<div class="tc"><small>🧮 Como calculamos</small>${tipNums(calc).replace(/\s([×÷=+−])\s/g,' <em>$1</em> ')}</div>`:'';
+  return `${t?`<div class="th"><i>${ic}</i><span>${t}</span></div>`:''}<div class="tbd">${lead?`<div class="tl">${tipNums(lead)}</div>`:''}${pts.filter(x=>x[0]!=='§').map(x=>`<div class="tp"><span>${tipNums(x)}</span></div>`).join('')}${sc.length?`<div class="tsc"><small>🎨 Como ler as cores</small>${sc.join('')}</div>`:''}${calcH}${pts.filter(x=>x[0]==='§').map(x=>`<div class="trg"><small>📍 Na sua região</small>${x.slice(1)}</div>`).join('')}</div>${src?`<div class="ts">📚 Fonte: ${src}</div>`:''}`;
+}
 const cnt=(v,f='i')=>`<span data-cnt="${v}" data-f="${f}">${FMTS[f](v)}</span>`;
 function animateCounts(root){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -1078,8 +1142,8 @@ function scoreTable(list,n=10){
   const w=P().w,act=CRIT.filter(([k])=>w[k]);
   const rk=list.filter(o=>o.on).sort((a,b)=>b.score-a.score).slice(0,n);
   const raw=(k,z)=>k==='n'?(S.persona==='inv'?kwF(z.kw):fmt(z.n)+' usinas'):k==='r'?fmt1(z.ritmo)+' novas/mês':k==='g'?(z.growth==null?'sem histórico':gtxt(z.growth)+' em 12m'):k==='s'?fmt(z.space)+' '+spaceInfo(AG).label:fmt(z.old)+' usinas antigas';
-  return `<div class="crit">${act.map(([k,l,c])=>`<span data-tip="${esc(CRIT_TIP[k])}"><i style="background:${c}"></i>${l}<small>até ${Math.round(w[k]*100)} pts</small></span>`).join('')}</div>
-  <div class="tscroll"><table class="stbl"><thead><tr><th>#</th><th>Cidade</th><th>Composição do score</th>${act.map(([k,l])=>`<th data-tip="${esc(CRIT_TIP[k])}">${l}</th>`).join('')}<th>Total</th></tr></thead><tbody>
+  return `<div class="crit">${act.map(([k,l,c])=>`<span data-tip="${esc(TT(l,CRIT_TIP[k],'',''))}"><i style="background:${c}"></i>${l}<small>até ${Math.round(w[k]*100)} pts</small></span>`).join('')}</div>
+  <div class="tscroll"><table class="stbl"><thead><tr><th>#</th><th>Cidade</th><th>Composição do score</th>${act.map(([k,l])=>`<th data-tip="${esc(TT(l,CRIT_TIP[k],'',''))}">${l}</th>`).join('')}<th>Total</th></tr></thead><tbody>
   ${rk.map((o,i)=>{ const z=met(o.r); return `<tr class="${i<3?'top3':''}"><td><span class="rn">${i+1}</span></td><td class="cn">${esc(o.r[1])}<small>${o.sede?'sede':fmt(o.d)+' km'}</small></td>
     <td><div class="sbar">${act.map(([k,l,c],j)=>o.parts[k]?`<i style="width:${o.parts[k]}%;background:${c};animation-delay:${i*40+j*60}ms" data-tip="<b>${l}</b>: ${o.parts[k]} pts<br>${esc(raw(k,z))}"></i>`:'').join('')}</div></td>
     ${act.map(([k,l,c])=>`<td data-tip="${esc(raw(k,z))}"><span class="pt"><i style="background:${c}"></i>${o.parts[k]}</span></td>`).join('')}<td><span class="stot">${o.score}</span></td></tr>`; }).join('')}
@@ -1118,8 +1182,11 @@ function metaCheck(A){
     `A meta de <b>${fmt1(L.meta)} vendas/mês</b> é <b>realista</b>: ${pct(sh,0)} das vendas da região. Precisa de <b>${fmt(L.leadsMeta)} leads/mês</b> com ${pct(L.conv,0)} de conversão.`][st];
   return `<div class="metachk st${st}"><span class="mi">${['🔴','🟡','🟢'][st]}</span><span>${msg}</span></div>`;
 }
-const GTIP={'Demanda de kit':'Compara as vendas dos últimos 12 meses com os 12 anteriores. Verde: cresceu 10%+. Amarelo: estável. Vermelho: caiu 10%+.','Espaço livre':'Quantos % do público já têm solar. Verde: menos de 15%. Amarelo: 15–30%. Vermelho: mais de 30% (mercado mais maduro).','Concorrência':'Vendas por mês divididas pelo número de empresas solares. Verde: 5+ por empresa (baixa concorrência). Amarelo: 2–5. Vermelho: menos de 2.','Base para pós-venda':'Parte da base com usinas antigas. Verde: 30%+. Amarelo: 15–30%. Vermelho: menos de 15%.'};
-const gaugesHtml=D_=>`<div class="gauges">${D_.g.map(x=>`<div class="gauge st${x.st}" data-tip="${esc(TT(x.t,GTIP[x.t]||'','',''))}"><div class="gt">${x.t}</div><div class="gs"><i>${ST_ICON[x.st]}</i>${x.lab}</div><div class="meter">${[0,1,2].map(i=>`<span class="${i===x.st?'on':''}" style="background:${ST_COL[i]}"></span>`).join('')}</div><div class="gd">${x.d}</div></div>`).join('')}</div>`;
+const GTIP={'Demanda de kit':'Mostra se as vendas de energia solar na região estão subindo ou caindo.\nCompara os últimos 12 meses com os 12 meses anteriores.\nVerde: cresceu 10% ou mais\nAmarelo: variou menos de 10%\nVermelho: caiu 10% ou mais',
+  'Espaço livre':'Mostra quanto do público ainda não tem solar: quem ainda pode comprar.\nVerde: menos de 15% já têm solar\nAmarelo: entre 15% e 30%\nVermelho: mais de 30% (mercado maduro, venda mais disputada)',
+  'Concorrência':'Mostra quantas vendas sobram para cada empresa solar da região.\nMuitas vendas por empresa = menos disputa.\nVerde: 5 ou mais vendas/mês por empresa\nAmarelo: entre 2 e 5\nVermelho: menos de 2 (muita empresa para pouca venda)',
+  'Base para pós-venda':'Mostra quanto da base instalada já é antiga: clientes que mais precisam de manutenção e muitas vezes estão sem assistência.\nVerde: 30% ou mais das usinas são antigas\nAmarelo: entre 15% e 30%\nVermelho: menos de 15%'};
+const gaugesHtml=D_=>`<div class="gauges">${D_.g.map(x=>`<div class="gauge st${x.st}" data-tip="${esc(TT(x.t,(GTIP[x.t]||'')+'\nNa sua região: '+x.d+' → {'+['r','y','g'][x.st]+':'+x.lab+'}','',''))}"><div class="gt">${x.t}</div><div class="gs"><i>${ST_ICON[x.st]}</i>${x.lab}</div><div class="meter">${[0,1,2].map(i=>`<span class="${i===x.st?'on':''}" style="background:${ST_COL[i]}"></span>`).join('')}</div><div class="gd">${x.d}</div></div>`).join('')}</div>`;
 
 /* ---------- v6: Funil Reverso e sopa de canais (metodologia Aceleração Comercial SolarZ) ---------- */
 const CH_COL=['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#4a3aa7'];
@@ -1235,7 +1302,7 @@ $('cities').addEventListener('change',e=>{ const c=e.target.closest('[data-t]');
 
 /* ================= visual blocks ================= */
 let WHY={};
-const row=(key,kicker,headline,tip,left,right)=>`<section class="row" id="sec-${key}"><div class="rhead"><span class="rnum"></span>${CHAPS[key]?`<span class="chap">${CHAPS[key]}</span>`:''}<span class="rk">${kicker}</span>${tip?`<i class="info" data-tip="${esc(tip)}">i</i>`:''}<h2>${headline}</h2></div>${WHY[key]?`<div class="why"><span>${WHY[key]}</span></div>`:''}<div class="rbody"><div style="min-width:0">${left}</div><div style="min-width:0">${right}</div></div></section>`;
+const row=(key,kicker,headline,tip,left,right)=>`<section class="row" id="sec-${key}"><div class="rhead"><span class="rnum"></span>${CHAPS[key]?`<span class="chap">${CHAPS[key]}</span>`:''}<span class="rk">${kicker}</span>${tip?`<i class="info" data-tip="${esc(tip)}">i</i>`:''}<h2>${headline}</h2></div>${WHY[key]?`<div class="why"><span class="wl">💡 Como ler</span><div class="wt">${TCH(WHY[key]).split(/(?<=[.!?])\s+(?=[A-ZÁÉÍÓÚÂÊÔÃÕÇ“])/).map(x=>`<p>${x}</p>`).join('')}</div></div>`:''}<div class="rbody"><div style="min-width:0">${left}</div><div style="min-width:0">${right}</div></div></section>`;
 const big=(v,l,or,tip)=>`<div class="bign ${or?'or':''} ${/^[A-Za-zÀ-ÿ]/.test(String(v).replace(/<[^>]+>/g,''))?'txt':''}" ${tip?`data-tip="${esc(tip)}"`:''}>${v}</div><div class="bigl">${l}</div>`;
 const minis=items=>`<div class="minis">${items.map(([v,l,tip])=>`<div class="mini" ${tip?`data-tip="${esc(tip)}"`:''}><div class="v">${v}</div><div class="l">${l}</div></div>`).join('')}</div>`;
 const tile=(l,v,s,cls='',tip='')=>`<div class="tile ${cls}" ${tip?`data-tip="${esc(tip)}"`:''}><div class="l">${l}</div><div class="v">${v}</div>${s?`<div class="s">${s}</div>`:''}</div>`;
@@ -1267,7 +1334,7 @@ function renderRows(list){
   const idade=A.n?A.y.reduce((s,v,i)=>s+v*(2026-(Y0+i)),0)/A.n:0;
   const SRC_ANEEL='ANEEL — Geração Distribuída (conexões até '+mLabel(D.asOf)+')',SRC_IBGE='IBGE — Censo 2022',SRC_PB='Playbook Aceleração Comercial SolarZ v3.0';
   WHY={
-    diag:'Resumo honesto da região em cores: <b>verde</b> = favorável, <b>amarelo</b> = atenção, <b>vermelho</b> = desfavorável. Mostra se ainda tem mercado para vender kit ou se a estratégia precisa mudar.',
+    diag:'Resumo honesto da região em 3 cores: {g:✓ verde} favorável · {y:~ amarelo} atenção · {r:! vermelho} desfavorável. Mostra se ainda tem mercado para vender kit ou se a estratégia precisa mudar.',
     venda:'Cada barra é um mês: quantas usinas novas foram ligadas na região, <b>somando todas as empresas</b>. Barra listrada = mês que a ANEEL ainda está registrando.',
     nova:'Quem ainda <b>não tem solar</b> × tamanho médio do kit vendido no último ano × preço por kWp = o tamanho do mercado de <b>venda de kit</b> que ainda existe.',
     plano:'O <b>Funil Reverso</b> começa pela meta de vendas e sobe até quantos <b>leads</b> e <b>pré-vendedores</b> são necessários. É o primeiro passo da Aceleração Comercial.',
@@ -1382,7 +1449,7 @@ function renderRows(list){
 
   const DG=diagnose(A);
   X.diag=row('diag','Termômetro do mercado',DG.V[1],'',
-    `<div class="verdict v${DG.v}" data-tip="${esc(TT('Como o veredito é calculado','Média dos medidores de venda (demanda, espaço livre e concorrência). Verde = 2 pontos, amarelo = 1, vermelho = 0.','média ≥ 1,4 = ainda tem mercado · 0,8–1,4 = disputado · < 0,8 = demanda limitada',''))}"><div class="vi">${DG.V[0]}</div><h3>${DG.V[1]}</h3><p>${DG.V[2]}</p></div>`,gaugesHtml(DG));
+    `<div class="verdict v${DG.v}" data-tip="${esc(TT('Como o veredito é calculado','Junta os 3 medidores de venda (demanda, espaço livre e concorrência) numa nota só.\nVerde: vale 2 pontos\nAmarelo: vale 1 ponto\nVermelho: vale 0\nMédia 1,4 ou mais = {g:ainda tem mercado} · de 0,8 a 1,4 = {y:disputado} · abaixo de 0,8 = {r:demanda limitada}','média das notas dos 3 medidores',''))}"><div class="vi">${DG.V[0]}</div><h3>${DG.V[1]}</h3><p>${DG.V[2]}</p></div>`,gaugesHtml(DG));
   const L=leadInfo(A);
   if(L.show) X.lead=row('lead',L.name?`${esc(L.name)} no mercado`:'Sua empresa no mercado',`${pct(L.shareBase,1)} da base instalada e ${pct(L.shareSales,1)} das vendas da região`,'',
     big(fmt(L.iu),'usinas instaladas por você',false,TT('Sua base instalada','Usinas instaladas pela empresa (informado na reunião).','','Informado pela empresa'))+minis([[fmt1(L.im),'vendas por mês hoje',TT('Vendas atuais','Quantas usinas a empresa vende por mês hoje.','','Informado pela empresa')],[L.avgM!=null?fmt1(L.avgM):'—','média por empresa/mês',TT('Média do mercado','Quanto uma empresa solar da região vende por mês, em média.','vendas do mercado ÷ empresas solares','ANEEL × Receita')],[fmt(Math.max(0,A.n-L.iu)),'usinas de outras empresas',TT('Base dos concorrentes','Usinas da região instaladas por outras empresas: potenciais clientes de pós-venda (inclusive órfãos).','total da região − sua base','ANEEL')],[fmt(L.leadsNow),'leads/mês que você atende',TT('Leads atuais estimados','Quantos leads frios por mês explicam suas vendas atuais, pelas taxas do funil.',`${fmt1(L.im)} vendas ÷ ${pct(L.conv,1)}`,'')]]),
