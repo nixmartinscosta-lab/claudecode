@@ -4,11 +4,14 @@ Abra **`mapa-mercado-inteligencia.html`** no navegador (duplo clique) ou hospede
 Arquivo único (~3 MB) com os dados de 5.570 municípios embutidos e comprimidos. Internet só para o mapa e as fontes.
 
 ## Como usar na reunião
-1. Escolha **cidade**, **raio** e **perfil do integrador** (Residencial, Empresas, Agro, Investidor/usinas, O&M/limpeza ou Visão geral).
-2. Ajuste no topo: **Classes de consumo**, **Ritmo de venda** (média de 3, 6 ou 12 meses) e **Base antiga** (conectadas até 2019–2023).
-3. No mapa: arraste o **raio**, filtre **cidades com X+ usinas**, troque a **cor das bolinhas** (score, crescimento, penetração, base antiga, ritmo, irradiação) e clique nas cinzas para incluir.
-4. **▶ Apresentar** abre 8 slides em tela cheia (← → para navegar, Esc para sair).
-5. **Copiar link** guarda tudo (cidade, raio, perfil, filtros, cidades incluídas/excluídas). **PDF** para enviar depois.
+**Tela do cliente** (a que você compartilha): só dados visuais, sem roteiro interno.
+1. Escolha **cidade**, **raio** e **perfil do integrador**.
+2. Topo: **Perfil**, **Classes**, **Ritmo de venda** (3/6/12 meses) e **Base antiga** (até 2019–2023).
+3. Mapa: raio, “cidades com X+ usinas”, cor por métrica; clique nas cidades cinza para incluir. Etiquetas abaixo do mapa tiram/incluem cidades com um clique.
+4. **▶ Apresentar**: 8 slides em tela cheia (← →, Esc).
+5. **⋯ Mais**: painel do closer, copiar link, PDF, nova consulta.
+
+**Painel do closer** (⋯ Mais → Painel do closer): abre numa **aba separada** — não compartilhe. Tem roteiro com os números da região, perguntas de diagnóstico, fatia do integrador, objeções e respostas, cola de números, lista de empresas e botões para copiar (WhatsApp/Excel). Acompanha automaticamente o que você muda na tela do cliente. No Meet, compartilhe **só a aba** do cliente.
 
 ## O que o perfil muda
 | Perfil | Classes | Espaço de mercado | Plano sugerido | Ordem das seções |
