@@ -368,6 +368,27 @@ input[type=checkbox]{accent-color:var(--or);width:15px;height:15px;cursor:pointe
 .metachk b{font-family:var(--sora)}
 .metachk.st2{background:#e8f5ee;color:#14532d}.metachk.st1{background:#fff4dc;color:#6b4700}.metachk.st0{background:#fdecec;color:#7f1d1d}
 
+/* funil reverso + canais */
+.rf{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;align-items:start}
+.rf-funnel{display:flex;flex-direction:column;align-items:center;gap:4px}
+.rf-step{display:flex;align-items:center;gap:10px;padding:11px 16px;border-radius:12px;color:#fff;font-weight:800;animation:fadeUp .5s both;min-width:0}
+.rf-step:nth-child(1){background:#8f3a00}.rf-step:nth-child(3){background:#c24f00}.rf-step:nth-child(5){background:#ff6a00}.rf-step:nth-child(7){background:#16130f}
+.rf-step .ri{font-size:18px}.rf-step .rl{font-size:13px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rf-step .rv{font-family:var(--sora);font-size:22px}
+.rf-step .rh{font-size:11px;font-weight:800;background:#ffffff26;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.rf-op{font-size:11.5px;font-weight:800;color:var(--soft);background:#fff;border:1px dashed #e0d4c6;border-radius:999px;padding:2px 10px}
+.rf-note{font-size:11.5px;color:var(--faint);font-weight:700;margin-top:6px}
+.rf-side{display:flex;flex-direction:column;gap:10px}
+.chs{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px}
+.chn{background:#fff;border:1.5px solid var(--div);border-radius:14px;padding:12px 14px;transition:transform .15s}
+.chn:hover{transform:translateY(-2px);box-shadow:0 10px 22px #0000000f}
+.chn .cn{font-size:12.5px;font-weight:800;padding-right:18px}
+.chn .cv{font-family:var(--sora);font-size:24px;font-weight:800;margin:6px 0 2px}.chn .cv small{font-size:11px;color:var(--soft);font-family:var(--man)}
+.chn .cr{font-size:12px;color:var(--soft);font-weight:700}.chn .cr b{color:var(--ink)}
+.chn .cp{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.chn .cp .pill{font-size:10.5px}
+.chn .cpub{font-size:11px;color:var(--faint);font-weight:700;margin-top:8px;border-top:1px solid var(--div);padding-top:6px}.chn .cpub span{color:var(--ink);font-weight:800}
+@media (max-width:1180px){.rf{grid-template-columns:1fr}}
+.note{font-size:12px;color:var(--soft);font-weight:600;line-height:1.5;margin-top:12px}.note b{color:var(--ink)}
 /* ---------- closer page ---------- */
 .closer{min-height:100vh;background:#14110e;color:#f4efe8;padding:0 0 60px}
 .chdr{position:sticky;top:0;z-index:100;background:#14110e;border-bottom:1px solid #2b241d;padding:14px 28px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
@@ -417,8 +438,16 @@ input[type=checkbox]{accent-color:var(--or);width:15px;height:15px;cursor:pointe
 .closer .lightcard .tile.dark{background:#16130f}.closer .lightcard .tile.dark .v{color:#ff8a33}.closer .lightcard .tile.dark .l,.closer .lightcard .tile.dark .s{color:#cbbfb2}
 .closer .lightcard .gauges{grid-template-columns:1fr 1fr}
 
-#tip{position:fixed;z-index:6000;pointer-events:none;background:#16130f;color:#fff;border-radius:10px;padding:8px 11px;font-size:12px;font-weight:600;line-height:1.45;max-width:300px;box-shadow:0 10px 26px #0000003d;opacity:0;left:-999px;top:-999px}
+#tip{position:fixed;z-index:6000;pointer-events:none;background:#16130f;color:#fff;border-radius:12px;padding:11px 14px;font-size:12.5px;font-weight:600;line-height:1.5;max-width:340px;border:1px solid #3a3027;box-shadow:0 10px 26px #0000003d;opacity:0;left:-999px;top:-999px}
 #tip b{color:#ff9a4d}
+#tip .tt{display:block;font-family:var(--sora);font-size:13.5px;color:#fff;margin-bottom:4px}
+#tip .tc{display:block;margin-top:7px;padding:6px 8px;background:#2b221a;border-radius:8px;font-size:11.5px;color:#e8ddd2}
+#tip .ts{display:block;margin-top:6px;font-size:10.5px;color:#a89a8b;font-weight:700}
+.mini[data-tip],.tile[data-tip],.kpi[data-tip],.gauge[data-tip],.dem>div[data-tip],.opp>div[data-tip],.ringc[data-tip],.chn[data-tip],.rf-step[data-tip]{cursor:help;position:relative}
+.mini[data-tip]::after,.tile[data-tip]::after,.kpi[data-tip]::after,.gauge[data-tip]::after,.dem>div[data-tip]::after,.opp>div[data-tip]::after,.ringc[data-tip]::after,.chn[data-tip]::after{content:"?";position:absolute;top:8px;right:8px;width:16px;height:16px;border-radius:50%;background:#f1e9df;color:#9a8f82;font:800 10px/16px var(--man);text-align:center;opacity:.8}
+.kpi.dark[data-tip]::after,.tile.dark[data-tip]::after,.opp .c[data-tip]::after{background:#2b221a;color:#cbbfb2}
+.bign[data-tip]{cursor:help;text-decoration:underline dotted #d8cabb;text-underline-offset:8px;text-decoration-thickness:2px}
+.hint{display:inline-flex;gap:6px;align-items:center;font-size:12px;font-weight:700;color:var(--soft);background:#fff;border:1px dashed #e0d4c6;border-radius:999px;padding:5px 11px;margin-left:auto}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#16130f;color:#fff;border-radius:12px;padding:12px 18px;font-weight:700;font-size:13px;opacity:0;transition:.25s;z-index:7000;pointer-events:none;border:1px solid #3a3027}
 .toast.on{opacity:1;transform:translateX(-50%)}
 .leaflet-container{font-family:var(--man)}
@@ -574,16 +603,16 @@ const MES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','de
 const PR=0.78, TAX=1.30, FIOB=0.80, DISP=50*12; // FIOB: desconto por Fio B + perdas de compensação; DISP: custo de disponibilidade (kWh/ano)
 const FIOB_STEPS=[[2023,15],[2024,30],[2025,45],[2026,60],[2027,75],[2028,90]];
 const PERSONAS={
-  todos:{label:'Visão geral',desc:'Todo o mercado solar da região',cls:[0,1,2,3,4],ticket:35,space:'casa',order:['venda','nova','conc','espaco','agora','alvos','base','energia','receita','perfil'],w:{n:.35,r:.25,g:.15,s:.25}},
-  res:{label:'Residencial',desc:'Casas: volume alto, ticket menor',cls:[0],ticket:35,space:'casa',order:['nova','venda','espaco','conc','agora','alvos','base','receita','energia','perfil'],w:{n:.3,r:.25,g:.15,s:.3}},
-  emp:{label:'Empresas',desc:'Comércio e indústria: contratos B2B',cls:[1,3],ticket:120,space:'emp',order:['nova','perfil','alvos','conc','venda','espaco','agora','base','energia','receita'],w:{n:.3,r:.2,g:.15,s:.35}},
-  agro:{label:'Agro',desc:'Propriedades rurais: sistemas maiores',cls:[2],ticket:80,space:'agro',order:['nova','espaco','venda','conc','agora','alvos','base','receita','energia','perfil'],w:{n:.3,r:.2,g:.15,s:.35}},
-  inv:{label:'Investidor / usinas',desc:'Usinas de solo, remoto e compartilhada',cls:[0,1,2,3,4],ticket:250,space:'casa',order:['energia','perfil','alvos','conc','base','receita','nova','venda','espaco','agora'],w:{n:.4,r:.25,g:.15,s:.2}},
-  om:{label:'O&M / limpeza',desc:'Serviço: a base instalada é o mercado',cls:[0,1,2,3,4],ticket:35,space:'casa',order:['base','energia','receita','conc','alvos','perfil','venda','nova','espaco','agora'],w:{n:.45,o:.25,r:.15,g:.15}}
+  todos:{label:'Visão geral',desc:'Todo o mercado solar da região',cls:[0,1,2,3,4],ticket:35,space:'casa',order:['venda','nova','plano','canais','conc','espaco','agora','alvos','base','energia','receita','perfil'],w:{n:.35,r:.25,g:.15,s:.25}},
+  res:{label:'Residencial',desc:'Casas: volume alto, ticket menor',cls:[0],ticket:35,space:'casa',order:['nova','plano','canais','venda','espaco','conc','agora','alvos','base','receita','energia','perfil'],w:{n:.3,r:.25,g:.15,s:.3}},
+  emp:{label:'Empresas',desc:'Comércio e indústria: contratos B2B',cls:[1,3],ticket:120,space:'emp',order:['nova','plano','canais','perfil','alvos','conc','venda','espaco','agora','base','energia','receita'],w:{n:.3,r:.2,g:.15,s:.35}},
+  agro:{label:'Agro',desc:'Propriedades rurais: sistemas maiores',cls:[2],ticket:80,space:'agro',order:['nova','plano','canais','espaco','venda','conc','agora','alvos','base','receita','energia','perfil'],w:{n:.3,r:.2,g:.15,s:.35}},
+  inv:{label:'Investidor / usinas',desc:'Usinas de solo, remoto e compartilhada',cls:[0,1,2,3,4],ticket:250,space:'casa',order:['energia','perfil','alvos','conc','base','receita','nova','plano','canais','venda','espaco','agora'],w:{n:.4,r:.25,g:.15,s:.2}},
+  om:{label:'O&M / limpeza',desc:'Serviço: a base instalada é o mercado',cls:[0,1,2,3,4],ticket:35,space:'casa',order:['base','energia','receita','conc','alvos','perfil','venda','nova','plano','canais','espaco','agora'],w:{n:.45,o:.25,r:.15,g:.15}}
 };
 const CRIT=[['n','Base instalada','#eb6834'],['r','Ritmo de venda','#2a78d6'],['g','Crescimento','#1baf7a'],['s','Espaço livre','#4a3aa7'],['o','Base antiga','#eda100']];
-const CHAPS={diag:'Diagnóstico',lead:'Sua empresa',venda:'Mercado',conc:'Mercado',perfil:'Mercado',base:'Pós-venda',nova:'Venda nova',espaco:'Venda nova',agora:'Venda nova',energia:'Pós-venda',receita:'Pós-venda',alvos:'Estratégia'};
-const NAV={diag:'Termômetro',lead:'Sua empresa',conc:'Concorrência',nova:'O que ainda dá pra vender',base:'Base instalada',venda:'Ritmo de venda',espaco:'Espaço de mercado',agora:'Por que agora',energia:'Monitoramento',receita:'Receita',perfil:'Clientes',alvos:'Onde atacar'};
+const CHAPS={plano:'Venda nova',canais:'Venda nova',diag:'Diagnóstico',lead:'Sua empresa',venda:'Mercado',conc:'Mercado',perfil:'Mercado',base:'Pós-venda',nova:'Venda nova',espaco:'Venda nova',agora:'Venda nova',energia:'Pós-venda',receita:'Pós-venda',alvos:'Estratégia'};
+const NAV={plano:'Funil Reverso',canais:'Sopa de canais',diag:'Termômetro',lead:'Sua empresa',conc:'Concorrência',nova:'O que ainda dá pra vender',base:'Base instalada',venda:'Ritmo de venda',espaco:'Espaço de mercado',agora:'Por que agora',energia:'Monitoramento',receita:'Receita',perfil:'Clientes',alvos:'Onde atacar'};
 
 /* ================= helpers ================= */
 const $=id=>document.getElementById(id);
@@ -634,12 +663,13 @@ const R=D.rows,M=D.months,ST=D.stable,Y0=D.y0,NY=2026-Y0+1;
 const byIbge=new Map();
 R.forEach((r,i)=>{ r.k=norm(r[1]); byIbge.set(r[0],i); });
 const HAS_CNPJ=R.some(r=>r[19]);
+const NAT={sal:0}; { let sw=0,oc=0; for(const r of R){ sw+=r[12]*r[13]; oc+=r[13]; } NAT.sal=oc?sw/oc:0; }
 let CONC_HI=5,CONC_LO=2; // vendas/mês por empresa: p75 e p25 das cidades brasileiras (Receita × ANEEL)
 // r: 0 ibge 1 nome 2 uf 3 lat 4 lon 5 pop 6 pop2010 7 domicílios 8 casas 9 casas próprias 10 PIB(mil) 11 empresas 12 salário 13 ocupados 14 estab.agro 15 PAM(mil) 16 irradiação 17 irr.pior mês 18 ANEEL
 
 /* ================= state ================= */
 const S={view:'dash',sel:null,radius:50,minN:1,ex:new Set(),extra:new Set(),sort:'score',dir:-1,persona:'todos',cls:[0,1,2,3,4],win:12,oldY:2022,color:'score',tl:'m',showTable:false,showAll:false,
-  calc:{cap:5,ticket:35,clean:250,cleanPct:30,price:3000,intU:'',intM:'',leadName:'',conv:10,meta:'',showLead:false}};
+  calc:{cap:5,ticket:35,clean:250,cleanPct:30,price:3000,intU:'',intM:'',leadName:'',conv:10,meta:'',showLead:false,qual:10,showr:70,close:30,sdrCap:40}};
 const store={ get(k){ try{ return JSON.parse(localStorage.getItem(k)||'null'); }catch(e){ return null; } }, set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); return true; }catch(e){ return false; } } };
 { const c=store.get('mm4calc'); if(c) Object.assign(S.calc,c); }
 const saveCalc=()=>{ store.set('mm4calc',S.calc); };
@@ -991,6 +1021,8 @@ function compute(){ const list=region(); LIST=list; AG=aggregate(list.filter(o=>
 
 /* ================= v5 helpers ================= */
 const FMTS={i:fmt,d:fmt1,m:money,p:v=>pct(v,1)};
+// explicação rica para o tooltip: título, o que é, como foi calculado e fonte
+const TT=(t,b,calc,src)=>`<span class="tt">${t}</span>${b}${calc?`<span class="tc">🧮 ${calc}</span>`:''}${src?`<span class="ts">Fonte: ${src}</span>`:''}`;
 const cnt=(v,f='i')=>`<span data-cnt="${v}" data-f="${f}">${FMTS[f](v)}</span>`;
 function animateCounts(root){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -1008,8 +1040,8 @@ function sellInfo(A){
   return {seg,tam,clients,soldYear,years:soldYear?clients/soldYear:null};
 }
 function leadInfo(A){
-  const C=S.calc,iu=+C.intU||0,im=+C.intM||0,conv=clamp(+C.conv||10,1,100)/100,meta=+C.meta||0;
-  return {name:(C.leadName||'').trim(),iu,im,conv,meta,has:!!(iu||im),show:!!C.showLead&&!!(iu||im),
+  const C=S.calc,iu=+C.intU||0,im=+C.intM||0,rq=clamp(+C.qual||10,1,100)/100,rs=clamp(+C.showr||70,1,100)/100,rc=clamp(+C.close||30,1,100)/100,conv=rq*rs*rc,meta=+C.meta||0;
+  return {name:(C.leadName||'').trim(),iu,im,conv,rq,rs,rc,cap:clamp(+C.sdrCap||40,5,200),meta,has:!!(iu||im),show:!!C.showLead&&!!(iu||im),
     shareBase:A.n?iu/A.n:0,shareSales:A.ritmo?im/A.ritmo:0,leadsNow:im/conv,leadsMeta:meta/conv,mktLeads:A.ritmo/conv,
     avgU:A.integ?A.n/A.integ:null,avgM:A.integ?A.ritmo/A.integ:null,own:iu*C.ticket*0.3,shareMeta:A.ritmo&&meta?meta/A.ritmo:null};
 }
@@ -1086,8 +1118,76 @@ function metaCheck(A){
     `A meta de <b>${fmt1(L.meta)} vendas/mês</b> é <b>realista</b>: ${pct(sh,0)} das vendas da região. Precisa de <b>${fmt(L.leadsMeta)} leads/mês</b> com ${pct(L.conv,0)} de conversão.`][st];
   return `<div class="metachk st${st}"><span class="mi">${['🔴','🟡','🟢'][st]}</span><span>${msg}</span></div>`;
 }
-const gaugesHtml=D_=>`<div class="gauges">${D_.g.map(x=>`<div class="gauge st${x.st}"><div class="gt">${x.t}</div><div class="gs"><i>${ST_ICON[x.st]}</i>${x.lab}</div><div class="meter">${[0,1,2].map(i=>`<span class="${i===x.st?'on':''}" style="background:${ST_COL[i]}"></span>`).join('')}</div><div class="gd">${x.d}</div></div>`).join('')}</div>`;
+const GTIP={'Demanda de kit':'Compara as vendas dos últimos 12 meses com os 12 anteriores. Verde: cresceu 10%+. Amarelo: estável. Vermelho: caiu 10%+.','Espaço livre':'Quantos % do público já têm solar. Verde: menos de 15%. Amarelo: 15–30%. Vermelho: mais de 30% (mercado mais maduro).','Concorrência':'Vendas por mês divididas pelo número de empresas solares. Verde: 5+ por empresa (baixa concorrência). Amarelo: 2–5. Vermelho: menos de 2.','Base para pós-venda':'Parte da base com usinas antigas. Verde: 30%+. Amarelo: 15–30%. Vermelho: menos de 15%.'};
+const gaugesHtml=D_=>`<div class="gauges">${D_.g.map(x=>`<div class="gauge st${x.st}" data-tip="${esc(TT(x.t,GTIP[x.t]||'','',''))}"><div class="gt">${x.t}</div><div class="gs"><i>${ST_ICON[x.st]}</i>${x.lab}</div><div class="meter">${[0,1,2].map(i=>`<span class="${i===x.st?'on':''}" style="background:${ST_COL[i]}"></span>`).join('')}</div><div class="gd">${x.d}</div></div>`).join('')}</div>`;
 
+/* ---------- v6: Funil Reverso e sopa de canais (metodologia Aceleração Comercial SolarZ) ---------- */
+const CH_COL=['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#4a3aa7'];
+function targetInfo(A){
+  const L=leadInfo(A),useLead=L.show&&L.meta>0;
+  const T=useLead?L.meta:Math.max(1,Math.round(A.ritmo*0.10*10)/10);
+  const kit=A.w12?A.kw12/A.w12*S.calc.price:0;
+  return {L,useLead,T,kit,label:useLead?`meta de ${fmt1(T)} vendas/mês${L.name?' da '+esc(L.name):''}`:`exemplo: conquistar 10% das vendas da região (${fmt1(T)}/mês)`};
+}
+function rfCalc(v,L){ const reun=v/L.rc,sql=reun/L.rs,leads=sql/L.rq; return {v,reun,sql,leads,sdr:Math.max(1,Math.ceil(reun/L.cap))}; }
+function chPlan(A,T,L){
+  const base=L.iu||A.n;
+  const ch=[
+    {k:'ind',n:'Indicação do pós-venda',ic:'🤝',sh:.22,v2a:.60,a2s:.27,cost:'R$ 0',pub:base,pubL:L.iu?'usinas da sua carteira':'usinas instaladas na região',tip:'Clientes satisfeitos indicam amigos e vizinhos. É o canal que mais converte: a pessoa já chega confiando. Regra da Aceleração: peça 3 indicações ao fim de todo contato.'},
+    {k:'rota',n:'Porta a porta em rotas',ic:'🏘️',sh:.18,v2a:.15,a2s:.055,cost:'R$ 0 (time próprio)',pub:A.semCasa,pubL:'casas próprias sem solar',tip:'Rotas planejadas em bairros com casas próprias, usando obras em andamento como prova social ("estamos instalando aqui do lado").'},
+    {k:'b2b',n:'B2B presencial',ic:'🏢',sh:.10,v2a:.40,a2s:.15,cost:'R$ 0 (time próprio)',pub:A.semEmp,pubL:'empresas sem solar',tip:'O vendedor visita pessoalmente pequenos negócios (6–8 por dia). Por telefone quase não funciona para empresário.'},
+    {k:'rural',n:'Zona rural (fim de tarde)',ic:'🌾',sh:.08,v2a:.275,a2s:.115,cost:'R$ 100–300 por ação',pub:A.semAgro,pubL:'propriedades rurais sem solar',tip:'Abordagem por volta das 17h, quando o produtor chega do trabalho. Alto consumo (R$ 250+ de conta) e quase nenhuma empresa explora.'},
+    {k:'acao',n:'Ação presencial (supermercado/feira)',ic:'🛒',sh:.12,v2a:.20,a2s:.075,cost:'R$ 500–1.500 por ação',pub:A.semCasa,pubL:'casas próprias sem solar',tip:'Estande com QR Code e simulação na hora. Hierarquia: 1) fechar na hora, 2) marcar visita, 3) capturar contato.'},
+    {k:'sort',n:'Sorteio / campanha',ic:'🎁',sh:.15,v2a:.075,a2s:.02,cost:'R$ 1.500–3.000 por ciclo',pub:A.pop?Math.round(A.dom):0,pubL:'domicílios da região',tip:'Gera volume rápido de leads, mas converte pouco (1–2%). É complemento ("plano C"), nunca o canal principal.'},
+    {k:'traf',n:'Tráfego pago',ic:'📣',sh:.15,v2a:null,a2s:null,cost:'orçamento de anúncios',pub:A.pop,pubL:'habitantes',tip:'Volume de leads pela internet. Nunca deve ser o único canal: quando o anúncio para, a demanda para.'}];
+  // canal sem público na região → a fatia vai para o porta a porta
+  ch.forEach(c=>{ if(!c.pub&&c.k!=='rota'){ ch[1].sh+=c.sh; c.sh=0; } });
+  ch.forEach(c=>{ c.vend=T*c.sh; c.agend=c.a2s?c.vend/c.a2s:null; c.cont=c.agend&&c.v2a?c.agend/c.v2a:null; c.per100=c.v2a&&c.a2s?100*c.v2a*c.a2s:null; });
+  return ch.filter(c=>c.sh>0);
+}
+function rfHtml(A,TI){
+  const L=TI.L,M_=rfCalc(TI.T,L),H=L.im?rfCalc(L.im,L):null,sl=sellInfo(A);
+  const steps=[
+    ['🧊','Leads frios por mês',M_.leads,H&&H.leads,`× ${pct(L.rq,0)} viram qualificados`,'Leads frios','Todos os contatos que entram (indicações, porta a porta, campanhas, anúncios). Ainda não sabemos se têm perfil para comprar.',`${fmt(M_.sql)} qualificados ÷ ${pct(L.rq,0)} de qualificação = ${fmt(M_.leads)} leads`],
+    ['✅','Leads qualificados (SQL)',M_.sql,H&&H.sql,`× ${pct(L.rs,0)} comparecem à visita`,'Leads qualificados','Leads que o pré-vendedor (SDR) confirmou: têm conta de luz relevante, imóvel próprio e interesse real.',`${fmt(M_.reun)} visitas ÷ ${pct(L.rs,0)} de comparecimento = ${fmt(M_.sql)}`],
+    ['🤝','Visitas / reuniões de venda',M_.reun,H&&H.reun,`× ${pct(L.rc,0)} fecham a compra`,'Visitas e reuniões','Encontros do vendedor com o cliente para apresentar a proposta.',`${fmt1(M_.v)} vendas ÷ ${pct(L.rc,0)} de fechamento = ${fmt(M_.reun)} visitas`],
+    ['🎯','Vendas/mês',M_.v,H&&H.v,'','Vendas (a meta)',`O ponto de partida do Funil Reverso: quantas vendas por mês ${TI.useLead?'a empresa quer':'são necessárias para ter 10% do mercado'}. Faturamento estimado: ${money(M_.v*TI.kit)}/mês (kit médio da região ${money(TI.kit)}).`,'']];
+  const W=[100,86,72,58];
+  const leadsYear=M_.leads*12,cov=sl.clients?leadsYear/sl.clients:0,cst=cov<=0.3?2:cov<=0.6?1:0;
+  return `<div class="rf">
+    <div class="rf-funnel">${steps.map(([ic,l,v,h,op,tt,b,calc],i)=>`<div class="rf-step" style="width:${W[i]}%;animation-delay:${i*90}ms" data-tip="${esc(TT(tt,b,calc,'Metodologia Funil Reverso — Aceleração Comercial SolarZ'))}">
+        <span class="ri">${ic}</span><span class="rl">${l}</span><span class="rv">${i===3?fmt1(v):fmt(v)}</span>${h!=null?`<span class="rh">hoje ${i===3?fmt1(h):fmt(h)}</span>`:''}</div>${op?`<div class="rf-op">${op}</div>`:''}`).join('')}
+      <div class="rf-note">⬆ Funil Reverso: a conta começa na meta (embaixo) e sobe até os leads necessários.</div></div>
+    <div class="rf-side">
+      <div class="tile dark" data-tip="${esc(TT('Pré-vendedores (SDR) necessários','O SDR é quem liga, qualifica e agenda visitas para o vendedor. Referência da Aceleração: cada SDR entrega cerca de '+L.cap+' reuniões qualificadas por mês.',`${fmt(M_.reun)} visitas ÷ ${L.cap} por SDR = ${M_.sdr} SDR(s)`,'OTE da Aceleração Comercial SolarZ'))}"><div class="l">SDRs necessários</div><div class="v">${M_.sdr}</div><div class="s">${fmt(M_.reun)} visitas/mês ÷ ${L.cap} por SDR</div></div>
+      <div class="tile hl" data-tip="${esc(TT('Faturamento da meta','Quanto a meta representa em vendas de kit por mês.',`${fmt1(M_.v)} vendas × ${money(TI.kit)} (kit médio vendido na região nos últimos 12 meses)`,'ANEEL (potência vendida) × preço por kWp'))}"><div class="l">Faturamento da meta</div><div class="v">${money(M_.v*TI.kit)}</div><div class="s">por mês · kit médio ${money(TI.kit)}</div></div>
+      <div class="tile" data-tip="${esc(TT('A meta cabe na região?','Compara os leads que você precisa abordar em 1 ano com o total de clientes que ainda não têm solar. Se passar de 60%, a região é pequena para a meta: amplie o raio.',`${fmt(M_.leads)} leads × 12 meses ÷ ${fmt(sl.clients)} clientes sem solar = ${pct(cov,0)}`,'IBGE (Censo, CEMPRE, Censo Agro) × ANEEL'))}"><div class="l">Região abordada por ano</div><div class="v" style="color:${['#b93a3a','#a86b00','#177a43'][cst]}">${pct(cov,0)}</div><div class="s">${['🔴 região pequena para a meta','🟡 exige muitos canais','🟢 cabe com folga'][cst]}</div></div>
+    </div></div>${TI.useLead?metaCheck(A):''}`;
+}
+function channelsHtml(A,TI){
+  const ch=chPlan(A,TI.T,TI.L),tot=ch.reduce((s,c)=>s+(c.cont||0),0);
+  return `<div class="vsub"><span>Mix de canais para ${fmt1(TI.T)} vendas/mês</span><span style="text-transform:none;letter-spacing:0">passe o mouse em cada parte</span></div>
+   <div class="stack" style="height:34px">${ch.map((c,i)=>`<i style="flex:${c.sh};background:${CH_COL[i]}" data-tip="${esc(TT(c.n,`${pct(c.sh,0)} das vendas vêm deste canal: ${fmt1(c.vend)} vendas/mês.`,'',''))}"></i>`).join('')}</div>
+   <div class="legend">${ch.map((c,i)=>`<span><i style="background:${CH_COL[i]}"></i>${c.n} ${pct(c.sh,0)}</span>`).join('')}</div>
+   <div class="chs">${ch.map((c,i)=>`<div class="chn" style="border-top:4px solid ${CH_COL[i]}" data-tip="${esc(TT(c.ic+' '+c.n,c.tip+(c.per100!=null?`<br><br>A cada 100 contatos: ${fmt(100*c.v2a)} agendam e <b>${fmt1(c.per100)} compram</b>.`:''),c.cont!=null?`${fmt1(c.vend)} vendas ÷ ${pct(c.a2s,1)} (agendamento→venda) ÷ ${pct(c.v2a,0)} (contato→agendamento) = ${fmt(c.cont)} contatos/mês`:'Conversão varia muito por campanha: medir custo por lead e taxa de qualificação.','Cardápio de canais validado — Playbook Aceleração Comercial SolarZ (28+ empresas)'))}">
+      <div class="cn">${c.ic} ${c.n}</div>
+      <div class="cv">${fmt1(c.vend)}<small> vendas/mês</small></div>
+      <div class="cr">${c.cont!=null?`<b>${fmt(c.cont)}</b> contatos/mês`:'medir custo por lead'}</div>
+      <div class="cp">${c.per100!=null?`<span class="pill or">${fmt1(c.per100)} vendas a cada 100</span>`:'<span class="pill flat">variável</span>'}<span class="pill flat">${c.cost}</span></div>
+      <div class="cpub"><span>${kShort(c.pub)}</span> ${c.pubL}</div></div>`).join('')}</div>
+   <div class="note">Contatos totais estimados: <b>${fmt(tot)}/mês</b> (sem contar tráfego pago). Taxas: médias do cardápio validado da Aceleração Comercial SolarZ; ajuste com os números reais após 30 dias.</div>`;
+}
+
+function solutionsHtml(A){
+  const DG=diagnose(A),L=leadInfo(A),TI=targetInfo(A),rf=rfCalc(TI.T,L),g=Object.fromEntries(DG.g.map(x=>[x.t,x.st])),out=[];
+  if(L.im&&TI.useLead&&TI.T>L.im*1.3) out.push(['🎯','Funil Reverso + pré-venda',`A meta exige ${fmt(rf.leads)} leads/mês e ${rf.sdr} SDR(s). Entregável: Funil Reverso, OTE do SDR e metas de execução semanais.`]);
+  if((g['Demanda de kit']??1)<=1||(g['Concorrência']??1)===0) out.push(['🍲','Sopa de canais',`Demanda ${g['Demanda de kit']===0?'em queda':'estável'}${g['Concorrência']===0?' e concorrência alta':''}: estruturar 3+ canais (indicação, porta a porta, B2B, zona rural) com protocolo e APA.`]);
+  if(A.semAgro>200) out.push(['🌾','Ação em zona rural',`${fmt(A.semAgro)} propriedades rurais sem solar: canal pouco explorado, conversão de 8–15% após agendamento.`]);
+  if((g['Base para pós-venda']??0)>=1) out.push(['🛠️','Pós-venda SolarZ + receita recorrente',`${fmt(A.old)} usinas antigas na região: monitoramento, resgate de órfãos e indicação (20–25% das vendas). 1º marco: R$ 2.000/mês.`]);
+  if((g['Concorrência']??2)<=1) out.push(['💎','Proposta de valor',`${HAS_CNPJ?fmt(A.integ)+' empresas solares disputando':'Mercado disputado'}: diferenciação e time falando a mesma língua.`]);
+  out.push(['📊','CRM + metas de execução','Previsibilidade: meta semanal de prospecções, visitas e indicações acompanhada toda semana.']);
+  return `<div class="qs" style="gap:8px;display:flex;flex-direction:column">${out.map(([i,t,d])=>`<div style="background:#231d18;border-radius:12px;padding:10px 12px"><div style="font-weight:800;color:#fff;font-size:13.5px">${i} ${t}</div><div style="font-size:12.5px;color:#cbbfb2;margin-top:3px;line-height:1.5">${d}</div></div>`).join('')}</div>`;
+}
 /* ================= render: tela do cliente ================= */
 function render(fit){
   const list=compute();
@@ -1100,13 +1200,13 @@ function renderKpis(anim){
   const A=AG,co=calcOut(A),sl=sellInfo(A),sp=spaceInfo(A);
   const k=(i,l,v,s,cls='',tip='')=>`<div class="kpi ${cls}" ${tip?`data-tip="${esc(tip)}"`:''}><div class="kh"><i>${i}</i>${l}</div><div class="kv">${v}</div><div class="ks">${s}</div></div>`;
   $('kgrid').innerHTML=
-    k('⚡','Usinas instaladas',cnt(A.n),`${kwpF(A.kw)}${S.cls.length<5?' · '+clsLabel():''}`,'','Todas as usinas solares já ligadas na região (ANEEL)')
-   +k('↗','Vendas do mercado',cnt(A.ritmo,'d')+'<small style="font-size:.45em;color:var(--faint)"> /mês</small>',`${pill(A.growth)} em 12 meses`,'',`Usinas novas ligadas por mês, somando todas as empresas (média de ${S.win} meses até ${mLabel(M[ST])})`)
-   +k(P().space==='emp'?'▦':P().space==='agro'?'❀':'⌂','Ainda sem solar',cnt(sl.clients),`clientes potenciais · ${sl.years?'~'+fmt(sl.years)+' anos de mercado':''}`,'','Casas próprias + empresas + propriedades rurais que ainda não têm solar')
-   +k('🛒','Venda nova possível',cnt(sl.tam,'m'),`em kits ainda por vender`,'','Clientes sem solar × tamanho médio vendido × preço por kWp')
-   +(HAS_CNPJ?k('🏢','Empresas solares',cnt(A.integ),`1 para cada ${A.integ?fmt(A.n/A.integ):'—'} usinas`,'','Empresas com CNPJ ativo e “solar” no nome (Receita Federal)')
+    k('⚡','Usinas instaladas',cnt(A.n),`${kwpF(A.kw)}${S.cls.length<5?' · '+clsLabel():''}`,'',TT('Usinas instaladas','Todas as usinas solares já ligadas nas cidades da análise. Cada uma é um cliente que precisa de pós-venda.','soma das usinas conectadas às distribuidoras','ANEEL — Geração Distribuída'))
+   +k('↗','Vendas do mercado',cnt(A.ritmo,'d')+'<small style="font-size:.45em;color:var(--faint)"> /mês</small>',`${pill(A.growth)} em 12 meses`,'',TT('Vendas do mercado por mês','Usinas novas ligadas por mês na região, somando todas as empresas.',`média de ${S.win} meses até ${mLabel(M[ST])}; seta = 12 meses vs 12 anteriores`,'ANEEL'))
+   +k(P().space==='emp'?'▦':P().space==='agro'?'❀':'⌂','Ainda sem solar',cnt(sl.clients),`clientes potenciais · ${sl.years?'~'+fmt(sl.years)+' anos de mercado':''}`,'',TT('Ainda sem solar','Casas próprias + empresas + propriedades rurais que ainda não têm solar: o mercado de venda de kit.',`anos de mercado = ${fmt(sl.clients)} ÷ ${fmt(sl.soldYear)} vendas por ano`,'IBGE (Censo 2022, CEMPRE, Censo Agro) × ANEEL'))
+   +k('🛒','Venda nova possível',cnt(sl.tam,'m'),`em kits ainda por vender`,'',TT('Venda nova possível','Quanto ainda dá para faturar vendendo kits na região.',`clientes sem solar × kit médio vendido em 12 meses × R$ ${fmt(S.calc.price)}/kWp`,'ANEEL × IBGE'))
+   +(HAS_CNPJ?k('🏢','Empresas solares',cnt(A.integ),`1 para cada ${A.integ?fmt(A.n/A.integ):'—'} usinas`,'',TT('Empresas solares (concorrência)','Empresas com CNPJ ativo e “solar” no nome que atuam com instalação elétrica, engenharia ou material elétrico.','contagem nas cidades da análise','Receita Federal — CNPJ'))
             :k('⏳','Usinas antigas',cnt(A.old),`<span class="pill or">${A.n?pct(A.old/A.n,0):'—'} da base</span> até ${S.oldY}`))
-   +k('💰','Pós-venda possível',cnt(co.mrr,'m')+'<small style="font-size:.45em;color:#d8ccbf"> /mês</small>',`${S.calc.cap}% da base × ${moneyFull(S.calc.ticket)}`,'dark','Receita recorrente: % das usinas da região num plano mensal');
+   +k('💰','Pós-venda possível',cnt(co.mrr,'m')+'<small style="font-size:.45em;color:#d8ccbf"> /mês</small>',`${S.calc.cap}% da base × ${moneyFull(S.calc.ticket)}`,'dark',TT('Pós-venda possível','Receita que entra todo mês se uma parte das usinas da região virar cliente de um plano de acompanhamento.',`${fmt(A.n)} usinas × ${S.calc.cap}% × ${moneyFull(S.calc.ticket)}/mês`,'Simulação (ajuste na linha Receita)'));
   if(anim) animateCounts($('kgrid'));
 }
 function renderCities(list){
@@ -1136,7 +1236,7 @@ $('cities').addEventListener('change',e=>{ const c=e.target.closest('[data-t]');
 /* ================= visual blocks ================= */
 let WHY={};
 const row=(key,kicker,headline,tip,left,right)=>`<section class="row" id="sec-${key}"><div class="rhead"><span class="rnum"></span>${CHAPS[key]?`<span class="chap">${CHAPS[key]}</span>`:''}<span class="rk">${kicker}</span>${tip?`<i class="info" data-tip="${esc(tip)}">i</i>`:''}<h2>${headline}</h2></div>${WHY[key]?`<div class="why"><span>${WHY[key]}</span></div>`:''}<div class="rbody"><div style="min-width:0">${left}</div><div style="min-width:0">${right}</div></div></section>`;
-const big=(v,l,or)=>`<div class="bign ${or?'or':''} ${/^[A-Za-zÀ-ÿ]/.test(String(v).replace(/<[^>]+>/g,''))?'txt':''}">${v}</div><div class="bigl">${l}</div>`;
+const big=(v,l,or,tip)=>`<div class="bign ${or?'or':''} ${/^[A-Za-zÀ-ÿ]/.test(String(v).replace(/<[^>]+>/g,''))?'txt':''}" ${tip?`data-tip="${esc(tip)}"`:''}>${v}</div><div class="bigl">${l}</div>`;
 const minis=items=>`<div class="minis">${items.map(([v,l,tip])=>`<div class="mini" ${tip?`data-tip="${esc(tip)}"`:''}><div class="v">${v}</div><div class="l">${l}</div></div>`).join('')}</div>`;
 const tile=(l,v,s,cls='',tip='')=>`<div class="tile ${cls}" ${tip?`data-tip="${esc(tip)}"`:''}><div class="l">${l}</div><div class="v">${v}</div>${s?`<div class="s">${s}</div>`:''}</div>`;
 function vbars(items,opt={}){
@@ -1157,124 +1257,161 @@ function monthsItems(A,n=24){
   const off=M.length-n; return M.slice(off).map((m,i)=>{ const k=i+off,lag=k>ST; return {v:A.m[k],label:mLabel(m),cls:lag?'lag':'',tip:`<b>${mLabel(m)}</b>: ${fmt(A.m[k])} usinas${lag?'<br>ANEEL ainda registrando':''}`}; });
 }
 const rings3=A=>{ const f=P().space; return `<div class="rings">${[['casa','⌂ Casas próprias',A.casaP?A.c[0]/A.casaP:0,A.semCasa,A.casaP],['emp','▦ Empresas',A.emp?(A.c[1]+A.c[3])/A.emp:0,A.semEmp,A.emp],['agro','❀ Propriedades rurais',A.agro?A.c[2]/A.agro:0,A.semAgro,A.agro]]
-  .map(([k,t,pp,nn,tt])=>`<div class="ringc ${f===k?'focus':''}"><h4>${t}</h4>${ring(pp,'COM SOLAR')}<div class="rv">${fmt(nn)}</div><div class="rl">sem solar · de ${kShort(tt)}</div></div>`).join('')}</div>`; };
+  .map(([k,t,pp,nn,tt])=>`<div class="ringc ${f===k?'focus':''}" data-tip="${esc(TT(t.replace(/^\S+ /,''),`${pct(pp)} já têm solar. <b>${fmt(nn)}</b> ainda não têm, de ${fmt(tt)} no total.`,'usinas da classe ÷ total do público',k==='casa'?'IBGE Censo 2022 (casas próprias)':k==='emp'?'IBGE CEMPRE (empresas)':'IBGE Censo Agro (propriedades)'))}"><h4>${t}</h4>${ring(pp,'COM SOLAR')}<div class="rv">${fmt(nn)}</div><div class="rl">sem solar · de ${kShort(tt)}</div></div>`).join('')}</div>`; };
 const fioB=()=>`<div class="timeline">${FIOB_STEPS.map(([y,v])=>`<div class="${y<2026?'past':y===2026?'now':''}"><b>${v}%</b>${y}</div>`).join('')}</div>`;
 const SL_FMT={cap:v=>v+'%',ticket:v=>'R$ '+v,clean:v=>'R$ '+fmt(v),cleanPct:v=>v+'%',price:v=>'R$ '+fmt(v)};
 const slider=(k,l,min,max,step,v)=>`<div class="slider"><div class="top"><label for="sl_${k}">${l}</label><b id="sv_${k}">${SL_FMT[k](v)}</b></div><input id="sl_${k}" type="range" data-k="${k}" min="${min}" max="${max}" step="${step}" value="${v}"></div>`;
 
 function renderRows(list){
-  const A=AG,C=S.calc,p=P(),sp=spaceInfo(A),co=calcOut(A),pb=payback(A),stLbl=mLabel(M[ST]),old=A.n?A.old/A.n:0;
+  const A=AG,C=S.calc,p=P(),sp=spaceInfo(A),co=calcOut(A),pb=payback(A),stLbl=mLabel(M[ST]),old=A.n?A.old/A.n:0,sl=sellInfo(A),TI=targetInfo(A);
   const idade=A.n?A.y.reduce((s,v,i)=>s+v*(2026-(Y0+i)),0)/A.n:0;
+  const SRC_ANEEL='ANEEL — Geração Distribuída (conexões até '+mLabel(D.asOf)+')',SRC_IBGE='IBGE — Censo 2022',SRC_PB='Playbook Aceleração Comercial SolarZ v3.0';
   WHY={
-    venda:'Cada barra é um mês: quantas usinas novas foram ligadas na região, <b>somando todas as empresas</b>. Barra listrada = mês que a ANEEL ainda está registrando (o número vai subir).',
-    nova:'Quem ainda <b>não tem solar</b> × tamanho médio do kit vendido no último ano × preço por kWp. É o tamanho do mercado de <b>venda de kit</b> que ainda existe na região.',
-    conc:'Empresas com <b>CNPJ ativo e “solar” no nome</b> que atuam com instalação elétrica, engenharia ou material elétrico (Receita Federal). É uma estimativa: nem todo integrador usa “solar” no nome.',
+    diag:'Resumo honesto da região em cores: <b>verde</b> = favorável, <b>amarelo</b> = atenção, <b>vermelho</b> = desfavorável. Mostra se ainda tem mercado para vender kit ou se a estratégia precisa mudar.',
+    venda:'Cada barra é um mês: quantas usinas novas foram ligadas na região, <b>somando todas as empresas</b>. Barra listrada = mês que a ANEEL ainda está registrando.',
+    nova:'Quem ainda <b>não tem solar</b> × tamanho médio do kit vendido no último ano × preço por kWp = o tamanho do mercado de <b>venda de kit</b> que ainda existe.',
+    plano:'O <b>Funil Reverso</b> começa pela meta de vendas e sobe até quantos <b>leads</b> e <b>pré-vendedores</b> são necessários. É o primeiro passo da Aceleração Comercial.',
+    canais:'Nenhum canal sozinho sustenta a meta: a soma de vários canais (<b>“sopa de canais”</b>) é o que dá previsibilidade. As taxas são médias validadas pela Aceleração em 28+ empresas.',
+    conc:'Empresas com <b>CNPJ ativo e “solar” no nome</b> na região (Receita Federal). É uma estimativa: nem todo integrador usa “solar” no nome.',
     espaco:'O anel mostra quantos % <b>já têm solar</b>. O número laranja é quem <b>ainda não tem</b> — o próximo cliente de venda de kit.',
     agora:'A conta de luz sobe todo ano e a cobrança do <b>Fio B</b> também. Quem instala antes paga menos Fio B e <b>economiza por mais tempo</b>.',
-    alvos:'Cada cidade ganha pontos em cada critério, <b>comparada com a melhor cidade da região</b> (que leva o máximo). A soma vai até <b>100</b>. Passe o mouse nas barras para ver os números.',
-    base:'Cada barra mostra quantas usinas foram ligadas naquele ano. <b>Barras escuras = usinas antigas</b>: mais chance de estarem sem assistência de quem instalou.',
-    energia:'Quanto as usinas da região economizam por mês na conta de luz. Usina parada sem ninguém ver = <b>dinheiro perdido pelo cliente</b>.',
-    receita:'Arraste as barras: quantos % das usinas da região viram <b>cliente de um plano mensal</b>. Embaixo, a comparação entre <b>pós-venda</b> e <b>venda nova</b>.',
+    alvos:'Cada cidade ganha pontos em cada critério, <b>comparada com a melhor cidade da região</b>. A soma vai até <b>100</b>.',
+    base:'Cada barra mostra quantas usinas foram ligadas naquele ano. <b>Barras escuras = usinas antigas</b>: mais chance de estarem sem assistência.',
+    energia:'Quanto as usinas da região economizam por mês. Usina parada sem ninguém ver = <b>dinheiro perdido pelo cliente</b>.',
+    receita:'Arraste as barras: quantos % das usinas viram <b>cliente de um plano mensal</b> de acompanhamento. É receita que entra todo mês, sem depender de venda nova.',
     perfil:'Quem são os donos das usinas: <b>casa, comércio, rural ou indústria</b>, o tamanho dos sistemas e como a energia é compensada.',
-    lead:'Seus números comparados com <b>todo o mercado da região</b>: quanto já é seu, quanto os concorrentes vendem e <b>quantos leads</b> você precisa para crescer.'
+    lead:'Seus números comparados com <b>todo o mercado da região</b>: quanto já é seu e quanto ainda dá para conquistar.'
   };
   const X={};
 
-  X.base=row('base','Base instalada',`${pct(old,0)} das usinas têm ${2026-S.oldY}+ anos`,'Ano de conexão na distribuidora (ANEEL).',
-    big(fmt(A.old),`usinas conectadas até ${S.oldY}`,true)+minis([[fmt1(idade)+' anos','idade média'],[fmt(A.y[2023-Y0]+A.y[2024-Y0]),'conectadas em 2023–24'],[fmt(A.y[2025-Y0]+A.y[2026-Y0]),'em 2025–26'],[fmt(A.n),'total na região']]),
+  X.base=row('base','Base instalada',`${pct(old,0)} das usinas têm ${2026-S.oldY}+ anos`,'',
+    big(fmt(A.old),`usinas conectadas até ${S.oldY}`,true,TT('Usinas antigas',`Usinas ligadas até ${S.oldY}. Quanto mais antiga, maior a chance de o instalador original ter fechado ou não dar mais assistência — é o chamado <b>cliente órfão</b>.`,`soma das usinas conectadas de 2012 a ${S.oldY}`,SRC_ANEEL))
+    +minis([[fmt1(idade)+' anos','idade média',TT('Idade média da base','Em média, há quantos anos as usinas da região estão funcionando.','média ponderada do ano de conexão de cada usina',SRC_ANEEL)],
+      [fmt(A.y[2023-Y0]+A.y[2024-Y0]),'conectadas em 2023–24',TT('Usinas de 2023–24','Estão entrando na fase de primeira limpeza e revisão: bom momento para oferecer manutenção.','',SRC_ANEEL)],
+      [fmt(A.y[2025-Y0]+A.y[2026-Y0]),'em 2025–26',TT('Usinas recentes','Ligadas nos últimos 2 anos. Ainda estão com o instalador que vendeu.','',SRC_ANEEL)],
+      [fmt(A.n),'total na região',TT('Total de usinas','Todas as usinas solares ligadas nas cidades da análise.','',SRC_ANEEL)]]),
     `<div class="vsub"><span>Usinas por ano de conexão</span></div>${vbars(yearsItems(A))}
-     <div class="legend"><span><i style="background:var(--s5)"></i>Até ${S.oldY}</span><span><i style="background:var(--s3)"></i>${S.oldY<2024?`${S.oldY+1}–2024`:'2024'}</span><span><i style="background:var(--s2)"></i>2025–26</span></div>`);
+     <div class="legend"><span><i style="background:var(--s5)"></i>Até ${S.oldY} (antigas)</span><span><i style="background:var(--s3)"></i>${S.oldY<2024?`${S.oldY+1}–2024`:'2024'}</span><span><i style="background:var(--s2)"></i>2025–26</span></div>`);
 
   const hv=A.growth!=null&&A.growth<=-0.15?`Venda nova caiu ${pct(-A.growth,0)} em 12 meses`:A.growth!=null&&A.growth>=0.15?`Mercado cresceu ${pct(A.growth,0)} em 12 meses`:`${fmt1(A.ritmo)} novas usinas por mês`;
-  X.venda=row('venda','Ritmo de venda',hv,`Média dos últimos ${S.win} meses consolidados (até ${stLbl}). Meses recentes ainda estão sendo registrados pela ANEEL.`,
-    big(fmt1(A.ritmo),`novas usinas / mês<br>${pill(A.growth,' em 12 meses')}`)+minis([[money(A.kw12*C.price),'venda nova por ano','Potência dos últimos 12 meses × preço médio por kWp'],[kwpF(A.kw12/12),'instalados por mês']]),
+  X.venda=row('venda','Ritmo de venda',hv,'',
+    big(fmt1(A.ritmo),`novas usinas / mês<br>${pill(A.growth,' em 12 meses')}`,false,TT('Vendas do mercado por mês','Quantas usinas novas são ligadas por mês na região, somando todas as empresas (inclusive concorrentes).',`média dos últimos ${S.win} meses já registrados (até ${stLbl}); crescimento = 12 meses ÷ 12 meses anteriores`,SRC_ANEEL))
+    +minis([[money(A.kw12*C.price),'venda nova por ano',TT('Dinheiro movimentado em kits','Quanto o mercado da região fatura por ano vendendo sistemas novos.',`${kwpF(A.kw12)} vendidos em 12 meses × R$ ${fmt(C.price)}/kWp`,SRC_ANEEL)],
+      [kwpF(A.kw12/12),'instalados por mês',TT('Potência instalada por mês','Soma da potência de todos os sistemas ligados por mês.','potência dos últimos 12 meses ÷ 12',SRC_ANEEL)]]),
     `<div class="vsub"><span>${S.tl==='m'?'Novas usinas por mês':'Novas usinas por ano'}</span><span class="tabs noprint"><button data-tl="m" class="${S.tl==='m'?'on':''}">24 meses</button><button data-tl="y" class="${S.tl==='y'?'on':''}">Por ano</button></span></div>
      ${S.tl==='m'?vbars(monthsItems(A),{every:3})+`<div class="legend"><span><i style="background:var(--s3)"></i>Consolidado</span><span><i style="background:repeating-linear-gradient(135deg,#ffc299 0 3px,#ffe8d9 3px 6px)"></i>Ainda sendo registrado</span></div>`
-       :vbars(A.y.map((v,i)=>({v,label:String(Y0+i),cls:Y0+i===2026?'lag':'',tip:`<b>${Y0+i}</b>: ${fmt(v)} usinas`})).slice(2017-Y0))}`);
+       :vbars(A.y.map((v,i)=>({v,label:String(Y0+i),cls:Y0+i===2026?'lag':'',tip:`<b>${Y0+i}</b>: ${fmt(v)} usinas ligadas`})).slice(2017-Y0))}`);
 
-  X.espaco=row('espaco','Espaço de mercado',`${fmt(sp.n)} ${sp.label}`,'Casas próprias (Censo 2022), empresas (IBGE CEMPRE) e propriedades rurais (Censo Agro 2017) ainda sem solar.',
-    big(sp.tot?pct(sp.has/sp.tot):'—',`das ${sp.seg} já têm solar`,true)+minis([[fmt(A.pop),`habitantes · ${grow(A.popG)} desde 2010`],[A.sal?moneyFull(A.sal):'—','salário médio','Salário médio formal — IBGE CEMPRE'],[A.pop?money(A.pib*1000/A.pop):'—','PIB per capita'],[money(A.pam*1000),'produção agrícola/ano','IBGE PAM']]),
+  X.espaco=row('espaco','Espaço de mercado',`${fmt(sp.n)} ${sp.label}`,'',
+    big(sp.tot?pct(sp.has/sp.tot):'—',`das ${sp.seg} já têm solar`,true,TT('Penetração do solar',`De cada 100 ${sp.seg}, quantas já têm energia solar. Quanto menor, mais espaço para vender.`,`${fmt(sp.has)} com solar ÷ ${fmt(sp.tot)} no total`,SRC_ANEEL+' × IBGE'))
+    +minis([[fmt(A.pop),`habitantes · ${grow(A.popG)} desde 2010`,TT('População e crescimento','Quantas pessoas moram na região e quanto a população cresceu desde 2010. Cidade que cresce = casas novas = novos clientes.','Censo 2022 ÷ Censo 2010','IBGE')],
+      [A.sal?moneyFull(A.sal):'—','salário médio',TT('Salário médio','Salário médio mensal dos trabalhadores com carteira na região. Indica poder de compra.',`Brasil: ${moneyFull(NAT.sal||0)}`,'IBGE — CEMPRE 2021')],
+      [A.pop?money(A.pib*1000/A.pop):'—','PIB por habitante',TT('PIB por habitante','Riqueza gerada na região dividida pela população. Mais alto = mais capacidade de investir em solar.','PIB 2023 ÷ população','IBGE — PIB dos Municípios')],
+      [money(A.pam*1000),'produção agrícola/ano',TT('Produção agrícola','Valor de tudo que as lavouras da região produzem por ano. Agro forte = produtor capitalizado para o solar rural.','','IBGE — Produção Agrícola Municipal')]]),
     rings3(A));
 
-  X.agora=row('agora','Por que agora',A.reaj!=null?`Conta de luz ${plusPct(A.reaj)} em 12 meses`:'Conta de luz subindo','Tarifa B1 residencial homologada pela ANEEL (distribuidora de cada cidade), comparada com 12 meses antes. Payback simplificado: sistema típico, sol NASA, 78% de performance, impostos, Fio B e custo de disponibilidade; sem financiamento.',
-    big(plusPct(A.reaj),'reajuste da tarifa em 12 meses',true)+minis([['R$ '+(A.tar*TAX/1000).toFixed(2).replace('.',','),'por kWh com impostos'],[pb.years?fmt1(pb.years)+' anos':'—',`payback · ${fmt1(pb.kwp)} kWp`],[fmt1(A.hsp),'kWh/m²/dia de sol','NASA POWER'],[fmt(A.hsp*30*PR),'kWh/mês por kWp']]),
+  X.agora=row('agora','Por que agora',A.reaj!=null?`Conta de luz ${plusPct(A.reaj)} em 12 meses`:'Conta de luz subindo','',
+    big(plusPct(A.reaj),'reajuste da tarifa em 12 meses',true,TT('Reajuste da conta de luz','Quanto a tarifa residencial da distribuidora subiu no último ano (sem contar bandeiras).','tarifa atual ÷ tarifa de 12 meses atrás (média ponderada das distribuidoras da região)','ANEEL — Tarifas homologadas (B1 residencial)'))
+    +minis([['R$ '+(A.tar*TAX/1000).toFixed(2).replace('.',','),'por kWh com impostos',TT('Preço da energia','Quanto o cliente paga por kWh, com impostos estimados em ~30%.','TUSD + TE homologadas × 1,30','ANEEL')],
+      [pb.years?fmt1(pb.years)+' anos':'—',`payback · ${fmt1(pb.kwp)} kWp`,TT('Payback','Em quanto tempo a economia na conta paga o sistema. Estimativa simples, sem financiamento.',`preço do sistema (${money(pb.price)}) ÷ economia por ano (${money(pb.year)}); já desconta Fio B e taxa mínima`,'ANEEL + NASA')],
+      [fmt1(A.hsp),'kWh/m²/dia de sol',TT('Sol da região','Quanta energia do sol chega por m² por dia, em média no ano. Acima de 5 é excelente.','','NASA POWER')],
+      [fmt(A.hsp*30*PR),'kWh/mês por kWp',TT('Geração por kWp','Quanto cada 1 kWp instalado gera por mês na região.','sol × 30 dias × 78% de rendimento','NASA POWER')]]),
     `<div class="vsub"><span>Fio B · Lei 14.300 — % pago sobre a energia compensada</span></div>${fioB()}
-     <div class="tiles" style="margin-top:16px">${tile('Instalar em 2026','60%','do Fio B','hl')}${tile('Instalar em 2028','90%','do Fio B')}${tile('Cada ano de espera','+15 p.p.','de Fio B')}</div>`);
+     <div class="tiles" style="margin-top:16px">${tile('Instalar em 2026','60%','do Fio B','hl',TT('Quem instala hoje','Paga 60% do Fio B (taxa de uso da rede) sobre a energia que compensa.','','Lei 14.300/2022'))}${tile('Instalar em 2028','90%','do Fio B','',TT('Quem espera até 2028','Paga 90% do Fio B: economia menor.','','Lei 14.300/2022'))}${tile('Cada ano de espera','+15 p.p.','de Fio B','',TT('Custo de esperar','A cada ano, a parcela do Fio B sobe 15 pontos percentuais.','','Lei 14.300/2022'))}</div>`);
 
   const dayLoss=dayLossOf(A),dl=[...A.dist.entries()].sort((a,b)=>b[1]-a[1]).slice(0,3),dT=dl.reduce((s,d)=>s+d[1],0)||1;
-  X.energia=row('energia','Monitoramento',`${money(A.econ)} por mês de economia gerada`,'Geração = kWp × sol da cidade (NASA) × 30 dias × 78%. Economia = geração × tarifa com impostos.',
-    big(money(A.econ),`por mês · ${fmt(A.gen/1000)} MWh gerados`,true),
-    `<div class="tiles">${tile('Usina média parada',moneyFull(dayLoss),`por dia · ${fmt1(A.avgKw)} kWp`,'hl')}${tile('1 mês parada',moneyFull(dayLoss*30),'perdidos pelo cliente')}${tile('Se 5% da base parar',money(A.econ*0.05),`por mês · ${fmt(A.n*0.05)} usinas`,'dark')}</div>
+  X.energia=row('energia','Monitoramento',`${money(A.econ)} por mês de economia gerada`,'',
+    big(money(A.econ),`por mês · ${fmt(A.gen/1000)} MWh gerados`,true,TT('Economia gerada pelas usinas','Quanto todas as usinas da região economizam juntas na conta de luz por mês.',`${kwpF(A.kw)} × sol da cidade × 30 dias × 78% = ${fmt(A.gen/1000)} MWh × tarifa com impostos`,'ANEEL + NASA'))+
+    minis([[fmt1(A.avgKw)+' kWp','usina média',TT('Tamanho médio','Potência média das usinas da região.','potência total ÷ número de usinas',SRC_ANEEL)],[fmt(A.n*0.05),'usinas = 5% da base',TT('5% da base','Referência de quantas usinas podem estar paradas ou com defeito sem ninguém perceber.','','Estimativa')]]),
+    `<div class="tiles">${tile('Usina média parada',moneyFull(dayLoss),`por dia · ${fmt1(A.avgKw)} kWp`,'hl',TT('Custo de 1 dia parada','Quanto o cliente deixa de economizar por dia com a usina desligada.',`${fmt1(A.avgKw)} kWp × sol × 78% × tarifa`,'ANEEL + NASA'))}${tile('1 mês parada',moneyFull(dayLoss*30),'perdidos pelo cliente','',TT('Custo de 1 mês parada','Sem monitoramento, uma falha pode levar semanas para ser percebida.','custo diário × 30',''))}${tile('Se 5% da base parar',money(A.econ*0.05),`por mês · ${fmt(A.n*0.05)} usinas`,'dark',TT('Prejuízo da região','Se 5% das usinas da região estiverem paradas, é isso que os clientes perdem por mês.','economia mensal × 5%',''))}</div>
      <div class="vsub" style="margin-top:16px"><span>Distribuidoras · reajuste 12 meses</span></div>
-     <div class="hbars">${dl.map(([di,n])=>{ const d=D.dists[di],rj=d[2]&&d[4]?d[2]/d[4]-1:null; return `<div class="hrow" data-tip="${esc(d[1])}"><span class="hl">${esc(d[0])}</span><div class="htrack"><div class="hfill" style="width:${n/dT*100}%"></div></div><span class="hv">${plusPct(rj)}<small>${pct(n/dT,0)}</small></span></div>`; }).join('')}</div>`);
+     <div class="hbars">${dl.map(([di,n])=>{ const d=D.dists[di],rj=d[2]&&d[4]?d[2]/d[4]-1:null; return `<div class="hrow" data-tip="${esc(TT(d[1],`Atende ${pct(n/dT,0)} das usinas da região. Reajuste da tarifa em 12 meses: <b>${plusPct(rj)}</b>.`,'','ANEEL'))}"><span class="hl">${esc(d[0])}</span><div class="htrack"><div class="hfill" style="width:${n/dT*100}%"></div></div><span class="hv">${plusPct(rj)}<small>${pct(n/dT,0)}</small></span></div>`; }).join('')}</div>`);
 
-  X.receita=row('receita','Receita de pós-venda',`${money(co.mrr)} por mês com ${C.cap}% da base`,'Simulação: usinas da região × % que vira cliente de um plano mensal de acompanhamento, mais limpeza anual.',
+  X.receita=row('receita','Receita de pós-venda',`${money(co.mrr)} por mês com ${C.cap}% da base`,'',
     `<div id="calcOut"></div>`,
     `<div class="sliders">${slider('cap','% da base captada',1,30,1,C.cap)}${slider('ticket','Plano mensal',15,400,5,C.ticket)}${slider('clean','Limpeza (por visita)',0,1500,10,C.clean)}${slider('cleanPct','% que faz limpeza/ano',0,100,5,C.cleanPct)}${slider('price','Preço médio R$/kWp',1800,6000,100,C.price)}</div><div id="oppOut"></div>`);
 
   const modT=A.mod.reduce((a,b)=>a+b,0)||1;
-  X.perfil=row('perfil','Clientes',`${pct(A.all?A.c[0]/A.all:0,0)} residencial · ${fmt(A.pj)} empresas`,'Classe de consumo (sempre todas), faixa de potência (classes filtradas), titular e modalidade — ANEEL.',
-    big(fmt1(A.avgKw)+' kWp','tamanho médio da usina')+minis([[fmt(A.pj),'usinas de empresas'],[fmt(A.ga),'em média tensão','Grupo A'],[fmt(A.mini),'acima de 75 kW'],[fmt(A.remote),'remoto / compartilhada']]),
-    `<div class="split"><div><div class="vsub"><span>Por classe</span></div>${hbars(CLASSES.map((c,i)=>({label:CLS_ICON[i]+' '+c,v:A.c[i],dim:!S.cls.includes(i),tip:`<b>${c}</b>: ${fmt(A.c[i])} usinas · média ${fmt1(A.c[i]?A.ck[i]/A.c[i]:0)} kWp`})),i=>RAMP[i])}</div>
-      <div><div class="vsub"><span>Por potência</span></div>${hbars(TIERS.map((t,i)=>({label:t,v:A.t[i]})))}</div></div>
+  X.perfil=row('perfil','Clientes',`${pct(A.all?A.c[0]/A.all:0,0)} residencial · ${fmt(A.pj)} empresas`,'',
+    big(fmt1(A.avgKw)+' kWp','tamanho médio da usina',false,TT('Tamanho médio da usina','Potência média dos sistemas instalados. Residencial costuma ficar entre 4 e 10 kWp.','potência total ÷ número de usinas',SRC_ANEEL))
+    +minis([[fmt(A.pj),'usinas de empresas',TT('Usinas de empresas (CNPJ)','Usinas cujo titular é uma empresa. Contratos de manutenção B2B têm ticket maior.','',SRC_ANEEL)],[fmt(A.ga),'em média tensão',TT('Média tensão (Grupo A)','Clientes grandes, ligados em alta/média tensão: indústrias, supermercados, hospitais.','',SRC_ANEEL)],[fmt(A.mini),'acima de 75 kW',TT('Minigeração','Usinas acima de 75 kW. Exigem O&M profissional.','',SRC_ANEEL)],[fmt(A.remote),'remoto / compartilhada',TT('Autoconsumo remoto e compartilhada','Usinas que geram em um lugar e abatem a conta em outro (investidor, usina de aluguel, fazenda solar).','',SRC_ANEEL)]]),
+    `<div class="split"><div><div class="vsub"><span>Por classe</span></div>${hbars(CLASSES.map((c,i)=>({label:CLS_ICON[i]+' '+c,v:A.c[i],dim:!S.cls.includes(i),tip:TT(c,`${fmt(A.c[i])} usinas · ${kwF(A.ck[i])} · média ${fmt1(A.c[i]?A.ck[i]/A.c[i]:0)} kWp por usina.`,'',SRC_ANEEL)})),i=>RAMP[i])}</div>
+      <div><div class="vsub"><span>Por potência</span></div>${hbars(TIERS.map((t,i)=>({label:t,v:A.t[i],tip:TT(t,`${fmt(A.t[i])} usinas nessa faixa (${pct(A.n?A.t[i]/A.n:0,0)} do total).`,'',SRC_ANEEL)})))}</div></div>
      <div class="vsub" style="margin-top:16px"><span>Modalidade</span></div>
-     <div class="stack">${A.mod.map((v,i)=>v?`<i style="flex:${v};background:${RAMP[i]}" data-tip="<b>${MODS[i]}</b>: ${fmt(v)} (${pct(v/modT,0)})"></i>`:'').join('')}</div>
+     <div class="stack">${A.mod.map((v,i)=>v?`<i style="flex:${v};background:${RAMP[i]}" data-tip="${esc(TT(MODS[i],`${fmt(v)} usinas (${pct(v/modT,0)}).`,'',SRC_ANEEL))}"></i>`:'').join('')}</div>
      <div class="legend">${A.mod.map((v,i)=>v?`<span><i style="background:${RAMP[i]}"></i>${MODS[i]} ${pct(v/modT,0)}</span>`:'').join('')}</div>`);
 
   const rk=list.filter(o=>o.on).sort((a,b)=>b.score-a.score),best=rk.find(o=>!o.sede)||rk[0];
-  X.alvos=row('alvos','Onde atacar',best?`Maior oportunidade: ${esc(best.r[1])}`:'Cidades prioritárias','Score 0–100 relativo às cidades da análise.',
-    best?big(esc(best.r[1]).replace(/^/,''),`<b style="font-family:var(--sora);font-size:22px;color:var(--or-d)">${best.score}</b> de 100 pontos · ${best.sede?'sede':fmt(best.d)+' km'}`)
-      +`<div class="hbars" style="margin-top:16px">${CRIT.filter(([k])=>P().w[k]).map(([k,l,c])=>`<div class="hrow" style="grid-template-columns:110px 1fr 52px"><span class="hl">${l}</span><div class="htrack"><div class="hfill" style="width:${best.parts[k]/(P().w[k]*100)*100}%;background:${c}"></div></div><span class="hv">${best.parts[k]}<small>/${Math.round(P().w[k]*100)}</small></span></div>`).join('')}</div>`
+  X.alvos=row('alvos','Onde atacar',best?`Maior oportunidade: ${esc(best.r[1])}`:'Cidades prioritárias','',
+    best?big(esc(best.r[1]),`<b style="font-family:var(--sora);font-size:22px;color:var(--or-d)">${best.score}</b> de 100 pontos · ${best.sede?'sede':fmt(best.d)+' km'}`,false,TT('Cidade vizinha com mais oportunidade','A cidade (fora a sede) com maior soma de pontos nos critérios ao lado.','soma dos pontos de cada critério; cada um vai de 0 até o peso máximo',SRC_ANEEL+' · IBGE'))
+      +`<div class="hbars" style="margin-top:16px">${CRIT.filter(([k])=>P().w[k]).map(([k,l,c])=>`<div class="hrow" style="grid-template-columns:110px 1fr 52px" data-tip="${esc(TT(l,CRIT_TIP[k],`${best.parts[k]} de ${Math.round(P().w[k]*100)} pontos`,''))}"><span class="hl">${l}</span><div class="htrack"><div class="hfill" style="width:${best.parts[k]/(P().w[k]*100)*100}%;background:${c}"></div></div><span class="hv">${best.parts[k]}<small>/${Math.round(P().w[k]*100)}</small></span></div>`).join('')}</div>`
       :'<p class="empty">Sem cidades.</p>',
     scoreTable(list,10));
 
-  const sl=sellInfo(A),mxV=Math.max(1,...sl.seg.map(g=>g.val));
-  X.nova=row('nova','O que ainda dá pra vender',`${money(sl.tam)} em kits que ainda não foram vendidos`,'Clientes sem solar × kWp médio vendido nos últimos 12 meses em cada segmento × preço por kWp (ajustável na Receita).',
-    big(money(sl.tam),'mercado de venda nova ainda disponível',true)+minis([[fmt(sl.clients),'clientes que ainda não têm solar'],[fmt(sl.soldYear),'vendidos pelo mercado em 12 meses'],[sl.years?'~'+fmt(sl.years)+' anos':'—','de mercado no ritmo atual','Clientes sem solar ÷ vendas por ano'],[pct(sl.clients?sl.soldYear/sl.clients:0,1),'do potencial vendido por ano']]),
-    `<div class="vsub"><span>Quem ainda não tem solar</span><span style="text-transform:none;letter-spacing:0">■ já tem · ■ ainda não tem</span></div>
+  X.nova=row('nova','O que ainda dá pra vender',`${money(sl.tam)} em kits que ainda não foram vendidos`,'',
+    big(money(sl.tam),'mercado de venda nova ainda disponível',true,TT('Mercado de venda nova','Quanto ainda dá para vender em kits na região, considerando só quem ainda não tem solar.',`${fmt(sl.clients)} clientes sem solar × kit médio de cada segmento (kWp médio vendido em 12 meses × R$ ${fmt(C.price)}/kWp)`,'ANEEL × IBGE'))
+    +minis([[fmt(sl.clients),'clientes que ainda não têm solar',TT('Clientes potenciais','Casas próprias + empresas + propriedades rurais que ainda não têm solar.','total de cada público − quem já tem usina',SRC_IBGE+' · CEMPRE · Censo Agro')],
+      [fmt(sl.soldYear),'vendidos pelo mercado em 12 meses',TT('Vendas do mercado','Quantas usinas foram vendidas nos últimos 12 meses nesses 3 segmentos.','',SRC_ANEEL)],
+      [sl.years?'~'+fmt(sl.years)+' anos':'—','de mercado no ritmo atual',TT('Anos de mercado','Se o mercado continuar vendendo no ritmo atual, em quantos anos todos os clientes potenciais teriam solar.',`${fmt(sl.clients)} clientes ÷ ${fmt(sl.soldYear)} vendas por ano`,'')],
+      [pct(sl.clients?sl.soldYear/sl.clients:0,1),'do potencial vendido por ano',TT('Velocidade do mercado','Quanto do mercado disponível é vendido a cada ano.','vendas por ano ÷ clientes potenciais','')]]),
+    `<div class="vsub"><span>Quem ainda não tem solar</span><span style="text-transform:none;letter-spacing:0">■ preto = já tem · ■ colorido = ainda não tem</span></div>
      <div class="segs">${sl.seg.map((g,i)=>`<div class="seg"><div class="sl">${g.icon} ${g.label}<small>${fmt(g.tot)} no total</small></div>
-       <div class="segbar" data-tip="<b>${g.label}</b><br>${fmt(g.has)} já têm solar · ${fmt(g.sem)} ainda não"><i style="width:${g.tot?g.has/g.tot*100:0}%;background:#16130f;animation-delay:${i*80}ms"></i><i style="width:${g.tot?g.sem/g.tot*100:0}%;background:${g.color};opacity:.85;animation-delay:${i*80+120}ms"></i><span>${g.tot?pct(g.sem/g.tot,0):'—'} sem solar</span></div>
+       <div class="segbar" data-tip="${esc(TT(g.label,`${fmt(g.has)} já têm solar e <b>${fmt(g.sem)}</b> ainda não têm. Kit médio vendido: ${fmt1(g.kwp)} kWp ≈ ${money(g.ticket)}.`,`${fmt(g.sem)} × ${money(g.ticket)} = ${money(g.val)}`,g.k==='casa'?SRC_IBGE:g.k==='emp'?'IBGE CEMPRE':'IBGE Censo Agro'))}"><i style="width:${g.tot?g.has/g.tot*100:0}%;background:#16130f;animation-delay:${i*80}ms"></i><i style="width:${g.tot?g.sem/g.tot*100:0}%;background:${g.color};opacity:.85;animation-delay:${i*80+120}ms"></i><span>${g.tot?pct(g.sem/g.tot,0):'—'} sem solar</span></div>
        <div class="sv"><b>${money(g.val)}</b><small>${fmt(g.sem)} clientes · ${money(g.ticket)}/kit</small></div></div>`).join('')}</div>
      <div class="vsub" style="margin-top:20px"><span>O que o mercado está vendendo agora (últimos 12 meses)</span></div>
-     <div class="dem">${sl.seg.map(g=>`<div data-tip="Vendidos nos 12 meses até ${stLbl}; crescimento vs 12 meses anteriores"><div class="dl">${g.icon} ${g.label}</div><div class="dv">${fmt(g.sold)}</div><div class="ds">${pill(g.growth)} · ${fmt1(g.kwp)} kWp médio</div><div class="dbar"><i style="width:${sl.soldYear?g.sold/sl.soldYear*100:0}%;background:${g.color}"></i></div><div class="ds" style="margin-top:4px">${pct(sl.soldYear?g.sold/sl.soldYear:0,0)} das vendas</div></div>`).join('')}</div>`);
+     <div class="dem">${sl.seg.map(g=>`<div data-tip="${esc(TT(g.label+' — vendas recentes',`${fmt(g.sold)} usinas vendidas em 12 meses (${pct(sl.soldYear?g.sold/sl.soldYear:0,0)} de todas as vendas). Crescimento vs 12 meses anteriores: <b>${gtxt(g.growth)}</b>.`,`kit médio = ${fmt1(g.kwp)} kWp`,SRC_ANEEL))}"><div class="dl">${g.icon} ${g.label}</div><div class="dv">${fmt(g.sold)}</div><div class="ds">${pill(g.growth)} · ${fmt1(g.kwp)} kWp médio</div><div class="dbar"><i style="width:${sl.soldYear?g.sold/sl.soldYear*100:0}%;background:${g.color}"></i></div><div class="ds" style="margin-top:4px">${pct(sl.soldYear?g.sold/sl.soldYear:0,0)} das vendas</div></div>`).join('')}</div>`);
+
+  X.plano=row('plano','Plano de vendas · Funil Reverso',TI.useLead?`Para ${fmt1(TI.T)} vendas/mês: ${fmt(rfCalc(TI.T,TI.L).leads)} leads e ${rfCalc(TI.T,TI.L).sdr} SDR(s)`:`Para ter 10% do mercado: ${fmt(rfCalc(TI.T,TI.L).leads)} leads/mês`,'',
+    big(fmt1(TI.T),TI.useLead?'vendas/mês — meta da empresa':'vendas/mês — 10% das vendas da região',true,TT('Ponto de partida',TI.useLead?'A meta de vendas por mês informada pela empresa.':'Sem meta informada, usamos como exemplo conquistar 10% das vendas da região.',TI.useLead?'':`${fmt1(A.ritmo)} vendas/mês do mercado × 10%`,SRC_PB))
+    +minis([[pct(TI.L.rq,0),'lead → qualificado',TT('Taxa de qualificação','De cada 100 leads frios, quantos têm perfil de compra. Referência da Aceleração: 10%.','','Playbook Aceleração')],[pct(TI.L.rs,0),'qualificado → visita',TT('Comparecimento','De cada 100 leads qualificados, quantos realmente recebem o vendedor.','','Playbook Aceleração')],[pct(TI.L.rc,0),'visita → venda',TT('Fechamento','De cada 100 visitas, quantas viram venda.','','Playbook Aceleração')],[pct(TI.L.conv,1),'lead → venda (total)',TT('Conversão total','De cada 100 leads frios, quantos viram venda no final.',`${pct(TI.L.rq,0)} × ${pct(TI.L.rs,0)} × ${pct(TI.L.rc,0)}`,'')]]),
+    rfHtml(A,TI));
+  X.canais=row('canais','Como gerar os leads · Sopa de canais',`${fmt1(TI.T)} vendas/mês vindas de ${chPlan(A,TI.T,TI.L).length} canais`,'',
+    big(fmt(chPlan(A,TI.T,TI.L).reduce((s,c)=>s+(c.cont||0),0)),'contatos por mês (todos os canais)',true,TT('Contatos necessários','Quantas pessoas é preciso abordar por mês, somando todos os canais, para chegar nas vendas da meta.','soma dos contatos de cada canal (vendas do canal ÷ taxas do canal)',SRC_PB))
+    +minis([[fmt1(TI.T*0.22),'vendas/mês por indicação',TT('Indicação do pós-venda','Cerca de 22% das vendas podem vir de indicação de clientes atendidos no pós-venda — o canal de maior conversão e custo zero.','',SRC_PB)],[kShort(sl.clients),'clientes sem solar na região',TT('Público disponível','Total de clientes potenciais para todos os canais de venda de kit.','',SRC_IBGE)]]),
+    channelsHtml(A,TI));
 
   if(HAS_CNPJ){
     const ci=list.filter(o=>o.on&&met(o.r).integ).sort((a,b)=>met(b.r).integ-met(a.r).integ).slice(0,10);
-    X.conc=row('conc','Concorrência',`${fmt(A.integ)} empresas de energia solar na região`,'Receita Federal (CNPJ ativo, setembro/2026).',
-      big(fmt(A.integ),'empresas solares ativas')+minis([[A.integ?fmt(A.n/A.integ):'—','usinas por empresa','Usinas instaladas ÷ empresas'],[A.integ?fmt1(A.ritmo/A.integ):'—','vendas/mês por empresa','Vendas do mercado ÷ empresas'],[A.integ?fmt(sl.clients/A.integ):'—','clientes sem solar por empresa'],[fmt(A.integNew),'abertas nos últimos 12 meses']]),
+    X.conc=row('conc','Concorrência',`${fmt(A.integ)} empresas de energia solar na região`,'',
+      big(fmt(A.integ),'empresas solares ativas',false,TT('Empresas solares','Empresas com CNPJ ativo que têm “solar”, “fotovoltaica” ou “renovável” no nome e atividade de instalação elétrica, engenharia ou material elétrico.','contagem por município das cidades da análise','Receita Federal — CNPJ (ago–set/2026)'))
+      +minis([[A.integ?fmt(A.n/A.integ):'—','usinas por empresa',TT('Usinas por empresa','Quantas usinas existem na região para cada empresa solar.',`${fmt(A.n)} usinas ÷ ${fmt(A.integ)} empresas`,'ANEEL × Receita')],[A.integ?fmt1(A.ritmo/A.integ):'—','vendas/mês por empresa',TT('Vendas por empresa','Quantas usinas cada empresa vende por mês, em média. Referência Brasil: 3,4.',`${fmt1(A.ritmo)} vendas ÷ ${fmt(A.integ)} empresas`,'ANEEL × Receita')],[A.integ?fmt(sl.clients/A.integ):'—','clientes sem solar por empresa',TT('Mercado por empresa','Quantos clientes potenciais existem para cada empresa solar.','','IBGE × Receita')],[fmt(A.integNew),'abertas nos últimos 12 meses',TT('Novas empresas','Empresas solares abertas no último ano: mostra se a concorrência está aumentando.','','Receita Federal')]]),
       `<div class="vsub"><span>Empresas solares por cidade</span><span style="text-transform:none;letter-spacing:0">usinas por empresa</span></div>
-       ${ci.length?`<div class="hbars">${ci.map(o=>{ const z=met(o.r); return `<div class="hrow" style="grid-template-columns:150px 1fr 120px" data-tip="<b>${esc(o.r[1])}</b>: ${fmt(z.integ)} empresas · ${fmt(z.n)} usinas · ${fmt1(z.ritmo)} vendas/mês"><span class="hl">${esc(o.r[1])}</span><div class="htrack"><div class="hfill" style="width:${z.integ/met(ci[0].r).integ*100}%;background:#2a78d6"></div></div><span class="hv">${fmt(z.integ)}<small>${fmt(z.n/z.integ)} usinas/emp.</small></span></div>`; }).join('')}</div>`:'<p class="empty">Sem empresas identificadas.</p>'}
-       <div class="tiles" style="margin-top:14px">${tile('Instaladoras elétricas',fmt(A.elet),'CNPJ ativo com atividade de instalação elétrica','','Concorrência ampla: inclui eletricistas e instaladoras que também vendem solar')}${tile('Novas empresas solares',fmt(A.integNew),'abertas em 12 meses','hl')}</div>`);
+       ${ci.length?`<div class="hbars">${ci.map(o=>{ const z=met(o.r); return `<div class="hrow" style="grid-template-columns:150px 1fr 120px" data-tip="${esc(TT(o.r[1],`${fmt(z.integ)} empresas solares · ${fmt(z.n)} usinas · ${fmt1(z.ritmo)} vendas/mês.`,`${fmt(z.n/z.integ)} usinas e ${fmt1(z.ritmo/z.integ)} vendas/mês por empresa`,'Receita × ANEEL'))}"><span class="hl">${esc(o.r[1])}</span><div class="htrack"><div class="hfill" style="width:${z.integ/met(ci[0].r).integ*100}%;background:#2a78d6"></div></div><span class="hv">${fmt(z.integ)}<small>${fmt(z.n/z.integ)} usinas/emp.</small></span></div>`; }).join('')}</div>`:'<p class="empty">Sem empresas identificadas.</p>'}
+       <div class="tiles" style="margin-top:14px">${tile('Instaladoras elétricas',fmt(A.elet),'CNPJ ativo com atividade de instalação elétrica','',TT('Concorrência ampla','Todas as empresas de instalação elétrica: eletricistas e instaladoras que também podem vender solar.','','Receita Federal'))}${tile('Novas empresas solares',fmt(A.integNew),'abertas em 12 meses','hl',TT('Novas empresas solares','Abertas nos últimos 12 meses na região.','','Receita Federal'))}</div>`);
   }
 
   const DG=diagnose(A);
-  WHY.diag='Resumo honesto da região em cores: <b>verde</b> = favorável, <b>amarelo</b> = atenção, <b>vermelho</b> = desfavorável. Serve para saber se ainda tem mercado para vender kit ou se a estratégia precisa mudar.';
-  X.diag=row('diag','Termômetro do mercado',DG.V[1],'Demanda: vendas dos últimos 12 meses vs 12 anteriores. Espaço: % de quem já tem solar. Concorrência: vendas por mês ÷ empresas solares. Pós-venda: usinas antigas.',
-    `<div class="verdict v${DG.v}"><div class="vi">${DG.V[0]}</div><h3>${DG.V[1]}</h3><p>${DG.V[2]}</p></div>`,gaugesHtml(DG));
+  X.diag=row('diag','Termômetro do mercado',DG.V[1],'',
+    `<div class="verdict v${DG.v}" data-tip="${esc(TT('Como o veredito é calculado','Média dos medidores de venda (demanda, espaço livre e concorrência). Verde = 2 pontos, amarelo = 1, vermelho = 0.','média ≥ 1,4 = ainda tem mercado · 0,8–1,4 = disputado · < 0,8 = demanda limitada',''))}"><div class="vi">${DG.V[0]}</div><h3>${DG.V[1]}</h3><p>${DG.V[2]}</p></div>`,gaugesHtml(DG));
   const L=leadInfo(A);
-  if(L.show) X.lead=row('lead',L.name?`${esc(L.name)} no mercado`:'Sua empresa no mercado',`${pct(L.shareBase,1)} da base instalada e ${pct(L.shareSales,1)} das vendas da região`,'Números informados pela empresa × dados públicos da região.',
-    big(fmt(L.iu),'usinas instaladas por você')+minis([[fmt1(L.im),'vendas por mês hoje'],[L.avgM!=null?fmt1(L.avgM):'—','média por empresa/mês'],[fmt(Math.max(0,A.n-L.iu)),'usinas de outras empresas'],[fmt(L.leadsNow),'leads/mês que você atende']]),
+  if(L.show) X.lead=row('lead',L.name?`${esc(L.name)} no mercado`:'Sua empresa no mercado',`${pct(L.shareBase,1)} da base instalada e ${pct(L.shareSales,1)} das vendas da região`,'',
+    big(fmt(L.iu),'usinas instaladas por você',false,TT('Sua base instalada','Usinas instaladas pela empresa (informado na reunião).','','Informado pela empresa'))+minis([[fmt1(L.im),'vendas por mês hoje',TT('Vendas atuais','Quantas usinas a empresa vende por mês hoje.','','Informado pela empresa')],[L.avgM!=null?fmt1(L.avgM):'—','média por empresa/mês',TT('Média do mercado','Quanto uma empresa solar da região vende por mês, em média.','vendas do mercado ÷ empresas solares','ANEEL × Receita')],[fmt(Math.max(0,A.n-L.iu)),'usinas de outras empresas',TT('Base dos concorrentes','Usinas da região instaladas por outras empresas: potenciais clientes de pós-venda (inclusive órfãos).','total da região − sua base','ANEEL')],[fmt(L.leadsNow),'leads/mês que você atende',TT('Leads atuais estimados','Quantos leads frios por mês explicam suas vendas atuais, pelas taxas do funil.',`${fmt1(L.im)} vendas ÷ ${pct(L.conv,1)}`,'')]]),
     leadViz(A));
 
   const order=['diag'].concat(L.show?['lead']:[]).concat(p.order.filter(k=>X[k]));
-  $('snav').innerHTML=order.map(k=>`<button data-go="${k}">${NAV[k]}</button>`).join('');
+  $('snav').innerHTML=order.map(k=>`<button data-go="${k}">${NAV[k]}</button>`).join('')+'<span class="hint">🖱️ Passe o mouse em qualquer número para ver a explicação</span>';
   $('rows').innerHTML=order.map(k=>X[k]).join('');
   let n=0; $('rows').querySelectorAll('.rnum').forEach(e=>e.textContent=String(++n).padStart(2,'0'));
-  $('foot').innerHTML=`<b>Fontes:</b> ANEEL (Geração Distribuída e Tarifas Homologadas, conexões até ${mLabel(D.asOf)}; médias com meses consolidados até ${stLbl}) · IBGE (Censos 2022 e 2010, PIB dos Municípios, CEMPRE, Censo Agro, PAM) · NASA POWER${HAS_CNPJ?' · Receita Federal (CNPJ ativos, ago–set/2026; empresas solares = “solar” no nome + atividade elétrica, estimativa)':''} · IBGE malhas. Geração, economia e payback são estimativas.`;
+  $('foot').innerHTML=`<b>Fontes:</b> ANEEL (Geração Distribuída e Tarifas Homologadas, conexões até ${mLabel(D.asOf)}; médias com meses consolidados até ${stLbl}) · IBGE (Censos 2022 e 2010, PIB dos Municípios, CEMPRE, Censo Agro, PAM, malhas) · NASA POWER${HAS_CNPJ?' · Receita Federal (CNPJ ativos, ago–set/2026)':''} · Metodologia e taxas de referência: Aceleração Comercial SolarZ. Geração, economia, payback e canais são estimativas.`;
   updateCalc(); spyNav();
 }
 function updateCalc(){
-  const A=AG,C=S.calc,el=$('calcOut'); if(!el) return; const co=calcOut(A);
-  el.innerHTML=big(money(co.mrr),`por mês · ${fmt(co.cli)} clientes × ${moneyFull(C.ticket)}`,true)
-    +minis([[money(co.mrr*12+co.clean),'por ano com limpeza'],[money(A.n/100*C.ticket),'cada 1% da base / mês'],[money(co.oldMrr),'só usinas antigas / mês'],[`+${fmt1(A.ritmo*C.cap/100)}`,'clientes novos / mês']]);
+  const A=AG,C=S.calc,el=$('calcOut'); if(!el) return; const co=calcOut(A),marco=2000,nMarco=Math.ceil(marco/Math.max(1,C.ticket));
+  el.innerHTML=big(money(co.mrr),`por mês · ${fmt(co.cli)} clientes × ${moneyFull(C.ticket)}`,true,TT('Receita recorrente mensal','Receita que entra todo mês com clientes num plano de acompanhamento (monitoramento, relatórios, suporte).',`${fmt(A.n)} usinas × ${C.cap}% = ${fmt(co.cli)} clientes × ${moneyFull(C.ticket)}`,'Simulação'))
+    +minis([[money(co.mrr*12+co.clean),'por ano com limpeza',TT('Receita anual','Plano mensal × 12 + limpezas no ano.',`${money(co.mrr)} × 12 + ${fmt(co.cli*C.cleanPct/100)} limpezas × ${moneyFull(C.clean)}`,'')],
+      [money(A.n/100*C.ticket),'cada 1% da base / mês',TT('Valor de cada 1%','Quanto cada 1% das usinas da região vale por mês no plano.',`${fmt(A.n/100)} usinas × ${moneyFull(C.ticket)}`,'')],
+      [money(co.oldMrr),'só usinas antigas / mês',TT('Só com as antigas','Mesma conta aplicada só às usinas antigas (possíveis órfãs): o público mais fácil de conquistar.',`${fmt(A.old)} × ${C.cap}% × ${moneyFull(C.ticket)}`,'')],
+      [fmt(nMarco),'clientes p/ 1º marco (R$ 2 mil)',TT('Primeiro marco de receita recorrente','Referência da Aceleração: o primeiro marco de receita recorrente é R$ 2.000/mês.',`R$ 2.000 ÷ ${moneyFull(C.ticket)} = ${fmt(nMarco)} clientes (${pct(A.n?nMarco/A.n:0,1)} da base)`,SRC_PB_())]]);
   const h=document.querySelector('#sec-receita h2'); if(h) h.textContent=`${money(co.mrr)} por mês com ${C.cap}% da base`;
   const sl=sellInfo(A),oo=$('oppOut');
   if(oo) oo.innerHTML=`<div class="vsub" style="margin-top:14px"><span>Oportunidade total da região</span></div><div class="opp">
-    <div class="a" data-tip="Plano mensal × 12 + limpezas"><div class="ol">Pós-venda por ano</div><div class="ov">${money(co.mrr*12+co.clean)}</div><div class="os">recorrente · ${C.cap}% da base</div></div>
-    <div class="b" data-tip="Potência vendida em 12 meses × preço por kWp"><div class="ol">Venda nova por ano</div><div class="ov">${money(A.kw12*C.price)}</div><div class="os">o que o mercado já vende</div></div>
-    <div class="c" data-tip="Clientes sem solar × kit médio"><div class="ol">Ainda por vender</div><div class="ov">${money(sl.tam)}</div><div class="os">${fmt(sl.clients)} clientes sem solar</div></div></div>`;
+    <div class="a" data-tip="${esc(TT('Pós-venda por ano','Receita recorrente anual com o plano mensal + limpezas.','plano × 12 + limpezas',''))}"><div class="ol">Pós-venda por ano</div><div class="ov">${money(co.mrr*12+co.clean)}</div><div class="os">recorrente · ${C.cap}% da base</div></div>
+    <div class="b" data-tip="${esc(TT('Venda nova por ano','Quanto todo o mercado da região já fatura por ano vendendo kits.',`${kwpF(A.kw12)} × R$ ${fmt(C.price)}/kWp`,'ANEEL'))}"><div class="ol">Venda nova por ano</div><div class="ov">${money(A.kw12*C.price)}</div><div class="os">o que o mercado já vende</div></div>
+    <div class="c" data-tip="${esc(TT('Ainda por vender','Mercado total de kits que ainda não foi vendido.','clientes sem solar × kit médio','ANEEL × IBGE'))}"><div class="ol">Ainda por vender</div><div class="ov">${money(sl.tam)}</div><div class="os">${fmt(sl.clients)} clientes sem solar</div></div></div>`;
   renderKpis();
 }
+const SRC_PB_=()=>'Playbook Aceleração Comercial SolarZ v3.0';
+
 $('rows').addEventListener('input',e=>{
   const s=e.target.closest('input[type=range][data-k]');
   if(s){ const k=s.dataset.k; S.calc[k]=+s.value; $('sv_'+k).textContent=SL_FMT[k](+s.value); updateCalc(); saveCalc(); }
@@ -1346,12 +1483,17 @@ function renderCloser(){
      <div class="lf"><div class="full"><label class="flabel" for="cLeadName">Nome da empresa</label><input class="numin" id="cLeadName" placeholder="ex.: Solar Mossoró" value="${esc(C.leadName||'')}"></div>
       <div><label class="flabel" for="cIntU">Usinas instaladas (total)</label><input class="numin" id="cIntU" inputmode="numeric" placeholder="ex.: 500" value="${esc(C.intU)}"></div>
       <div><label class="flabel" for="cIntM">Vendas por mês hoje</label><input class="numin" id="cIntM" inputmode="numeric" placeholder="ex.: 10" value="${esc(C.intM)}"></div>
-      <div><label class="flabel" for="cConv">Conversão de leads (%)</label><input class="numin" id="cConv" inputmode="numeric" placeholder="10" value="${esc(C.conv)}"></div>
-      <div><label class="flabel" for="cMeta">Meta de vendas/mês</label><input class="numin" id="cMeta" inputmode="numeric" placeholder="ex.: 20" value="${esc(C.meta)}"></div></div>
+      <div class="full"><label class="flabel" for="cMeta">Meta de vendas/mês</label><input class="numin" id="cMeta" inputmode="numeric" placeholder="ex.: 20" value="${esc(C.meta)}"></div>
+      <div><label class="flabel" for="cQual">Lead → qualificado (%)</label><input class="numin" id="cQual" inputmode="numeric" value="${esc(C.qual)}"></div>
+      <div><label class="flabel" for="cShowr">Qualificado → visita (%)</label><input class="numin" id="cShowr" inputmode="numeric" value="${esc(C.showr)}"></div>
+      <div><label class="flabel" for="cClose">Visita → venda (%)</label><input class="numin" id="cClose" inputmode="numeric" value="${esc(C.close)}"></div>
+      <div><label class="flabel" for="cSdr">Reuniões por SDR/mês</label><input class="numin" id="cSdr" inputmode="numeric" value="${esc(C.sdrCap)}"></div></div>
      <label class="tgl"><input type="checkbox" id="cShow" ${C.showLead?'checked':''}> Mostrar “Sua empresa no mercado” na tela do cliente</label>
      <div class="lightcard" style="margin-top:12px">${leadViz(A)}</div>
      <ul class="qs" style="margin-top:12px"><li>Quantas usinas você já instalou? Quantas vende por mês?</li><li>De onde vêm seus leads hoje? Quantos chegam por mês?</li><li>Quanto das vendas vem de indicação?</li><li>Quem cuida das usinas depois da instalação?</li><li>Quantos clientes de outro integrador já te procuraram?</li></ul>
     </div>
+    <div class="cbox"><h3>Gargalo → solução SolarZ <small>o que oferecer</small></h3>${solutionsHtml(A)}</div>
+    <div class="cbox"><h3>Funil Reverso <small>${esc(targetInfo(A).label)}</small></h3><div class="lightcard">${rfHtml(A,targetInfo(A))}</div></div>
     <div class="cbox"><h3>Termômetro <small>veredito da região</small></h3><div class="lightcard"><div class="verdict v${diagnose(A).v}" style="margin-bottom:12px"><div class="vi">${diagnose(A).V[0]}</div><h3>${diagnose(A).V[1]}</h3><p>${diagnose(A).V[2]}</p></div>${gaugesHtml(diagnose(A))}</div></div>
     <div class="cbox"><h3>Cola de números</h3><div class="cheat">${cheat.map(([v,l])=>`<div><b>${v}</b><span>${l}</span></div>`).join('')}</div></div>
     <div class="cbox"><h3>Copiar para depois</h3><div class="cbtns">
@@ -1376,7 +1518,7 @@ function pitchLines(){
   L.push(`${C.cap}% da base × ${moneyFull(C.ticket)}/mês = *${money(co.mrr)}/mês* recorrentes`);
   return L;
 }
-const LEADF={cLeadName:'leadName',cIntU:'intU',cIntM:'intM',cConv:'conv',cMeta:'meta'};
+const LEADF={cLeadName:'leadName',cIntU:'intU',cIntM:'intM',cMeta:'meta',cQual:'qual',cShowr:'showr',cClose:'close',cSdr:'sdrCap'};
 $('closer').addEventListener('change',e=>{ if(e.target.id==='cShow'){ S.calc.showLead=e.target.checked; saveCalc(); toast(e.target.checked?'Aparecendo na tela do cliente':'Oculto da tela do cliente'); } });
 $('closer').addEventListener('input',e=>{
   const key=LEADF[e.target.id];
@@ -1404,6 +1546,9 @@ function buildSlides(){
   out.push({kick:'Termômetro do mercado',title:DG.V[1],big:DG.V[0],bigl:DG.V[2],chart:gaugesHtml(DG),say:'Verde = favorável · amarelo = atenção · vermelho = desfavorável'});
   out.push({kick:'O que ainda dá pra vender',title:`${fmt(sl.clients)} clientes ainda sem solar`,big:money(sl.tam),bigl:'em kits ainda por vender',sup:[[fmt(sl.soldYear),'vendidos em 12 meses'],[sl.years?'~'+fmt(sl.years)+' anos':'—','de mercado']],
     chart:`<div class="segs">${sl.seg.map(g=>`<div class="seg" style="grid-template-columns:150px 1fr 120px"><div class="sl">${g.icon} ${g.label}</div><div class="segbar"><i style="width:${g.tot?g.has/g.tot*100:0}%;background:#16130f"></i><i style="width:${g.tot?g.sem/g.tot*100:0}%;background:${g.color}"></i><span>${g.tot?pct(g.sem/g.tot,0):'—'} sem solar</span></div><div class="sv"><b>${money(g.val)}</b></div></div>`).join('')}</div>`,say:'Preto = já tem solar · colorido = ainda não tem.'});
+  { const TI=targetInfo(A),rf=rfCalc(TI.T,TI.L);
+    out.push({kick:'Plano de vendas · Funil Reverso',title:`${fmt(rf.leads)} leads/mês para ${fmt1(TI.T)} vendas`,big:rf.sdr+' SDR'+(rf.sdr>1?'s':''),bigl:'pré-vendedores necessários',chart:rfHtml(A,TI),say:'Começa pela meta e sobe até os leads.'});
+    out.push({kick:'Como gerar os leads',title:'Sopa de canais',big:fmt(chPlan(A,TI.T,TI.L).reduce((s,c)=>s+(c.cont||0),0)),bigl:'contatos por mês em todos os canais',chart:channelsHtml(A,TI),say:'Nenhum canal sozinho sustenta a meta.'}); }
   if(HAS_CNPJ&&A.integ) out.push({one:true,kick:'Concorrência',title:`${fmt(A.integ)} empresas de energia solar na região`,big:fmt1(A.ritmo/A.integ),bigl:'vendas por mês, em média, por empresa',sup:[[fmt(A.n/A.integ),'usinas por empresa'],[fmt(A.integNew),'empresas abertas em 12 meses']],say:'Quem gera demanda própria vende acima da média.'});
   if(LI.show) out.push({kick:(LI.name||'Sua empresa')+' no mercado',title:`${pct(LI.shareSales,1)} das vendas da região`,big:pct(LI.shareBase,1),bigl:'da base instalada é sua',chart:leadViz(A),say:`O mercado atende ~<b>${fmt(LI.mktLeads)} leads/mês</b>.`});
   out.push({kick:'Base instalada',title:`${pct(A.n?A.old/A.n:0,0)} das usinas têm ${2026-S.oldY}+ anos`,big:fmt(A.old),bigl:`usinas conectadas até ${S.oldY}`,sup:[[fmt(A.n),'usinas na região']],
