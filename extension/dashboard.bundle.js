@@ -25,9 +25,38 @@ COMO RESPONDER (o closer tem TDAH e l\xEA de relance, no meio da fala):
 - "falta_cobrir": at\xE9 4 itens obrigat\xF3rios do m\xE9todo/checklist que ainda N\xC3O apareceram e s\xE3o necess\xE1rios antes de avan\xE7ar (ex.: "Causa-raiz validada pelo cliente", "Decisor ausente mapeado", "Capacidade de execu\xE7\xE3o", "Microdecis\xE3o + respons\xE1vel + data").
 - "frases_importantes": frases LITERAIS NOVAS do integrador que valem ouro (dor, desejo, n\xFAmero, crit\xE9rio, sinal de compra), entre aspas, curtas. S\xF3 as novas desde a \xFAltima an\xE1lise.
 - "objecoes": as obje\xE7\xF5es do integrador que est\xE3o ABERTAS agora (ainda n\xE3o contornadas). Para cada uma: "objecao" (curta, nas palavras dele) e "contorno" (frase pronta para falar j\xE1, seguindo o tratamento de obje\xE7\xF5es do playbook \u2014 voltar \xE0 causa-raiz/impacto, nunca desconto para compensar diagn\xF3stico fraco). Lista vazia se n\xE3o h\xE1 obje\xE7\xE3o aberta.
+- "sintese": a f\xF3rmula de diagn\xF3stico do m\xE9todo preenchida com o que j\xE1 se sabe: "O cliente quer [resultado], mas hoje est\xE1 em [situa\xE7\xE3o]. Ele percebe [dor], por\xE9m a causa priorit\xE1ria \xE9 [causa-raiz]. Isso provoca [impacto]. Portanto, a solu\xE7\xE3o \xE9 [solu\xE7\xE3o], desde que [pr\xE9-requisitos]." Onde ainda n\xE3o h\xE1 informa\xE7\xE3o, mantenha o marcador entre colchetes, ex.: "[causa-raiz?]". Curta.
 - "temperatura": 0 a 100 \u2014 qu\xE3o perto o integrador est\xE1 de comprar AGORA (dor validada, impacto, decisor, interesse, obje\xE7\xF5es). "temperatura_motivo": o porqu\xEA em at\xE9 8 palavras.
 - "destaque": a descoberta mais importante desta an\xE1lise em at\xE9 12 palavras (vai para a linha do tempo). Vazio se nada relevante.
+- "conducao": nota 0\u201310 de como o closer est\xE1 conduzindo AT\xC9 AGORA segundo o m\xE9todo e os gaps acima (escuta, perguntas, cliente concluindo, rota \xFAnica, fechamento com data). "conducao_dica": a corre\xE7\xE3o mais importante em at\xE9 10 palavras.
 - "urgencia": "alta" se o closer precisa responder/agir AGORA (pergunta direta, obje\xE7\xE3o, pedido de pre\xE7o, decis\xE3o em jogo); "media" se h\xE1 oportunidade clara; "baixa" se \xE9 s\xF3 ouvir.
+
+ROTEAMENTO (siga o playbook; confirme limites e valores SEMPRE na pol\xEDtica de pre\xE7os):
+- Eleja UMA alavanca principal (volume, qualifica\xE7\xE3o, convers\xE3o, ticket, margem, capacidade, base instalada). O porte define capacidade; a causa-raiz define a camada de solu\xE7\xE3o. Ferramenta organiza; servi\xE7o acompanha mudan\xE7a e execu\xE7\xE3o.
+- Causa em processo, gest\xE3o, previsibilidade ou execu\xE7\xE3o COMERCIAL \u2192 Growth (ou Acelera\xE7\xE3o acoplada a Start/Connect/Core).
+- Base instalada \xE9 a maior alavanca E o comercial est\xE1 saud\xE1vel \u2192 Business (ou Gest\xE3o de P\xF3s-venda acoplada).
+- Comercial e base precisam de interven\xE7\xE3o ao mesmo tempo \u2192 Scale (ou composi\xE7\xE3o com os dois servi\xE7os).
+- S\xF3 organiza\xE7\xE3o de tecnologia/atendimento \u2192 Lite/Start; ferramenta em crescimento com padroniza\xE7\xE3o \u2192 Connect/Core.
+- N\xE3o force p\xF3s-venda como solu\xE7\xE3o principal quando a venda nova est\xE1 abaixo da meta; n\xE3o force comercial quando o gargalo \xE9 entrega.
+- Ao apresentar investimento: rota recomendada, investimento vigente, o que est\xE1 inclu\xEDdo, condi\xE7\xE3o relevante (anual parcelado/\xE0 vista, implementa\xE7\xE3o isenta em combos e anuais) e pr\xF3ximo passo. Uma rota com for\xE7a \u2014 nunca dois caminhos com o mesmo peso; a alternativa s\xF3 entra se uma restri\xE7\xE3o mudar.
+- Restri\xE7\xE3o de dinheiro: descubra se o bloqueio \xE9 caixa, prioridade ou d\xFAvida de retorno. Se for real, ajuste a rota explicando o que deixa de ser resolvido ("vender o mesmo plano de forma diferente"); downsell n\xE3o \xE9 derrota.
+
+OBJE\xC7\xD5ES (contorno = seguir o playbook):
+- "Est\xE1 caro / sem budget": valide sem concordar, descubra se \xE9 caixa, prioridade ou retorno, retome causa e impacto, condi\xE7\xF5es oficiais, ajuste a rota se a restri\xE7\xE3o for real.
+- "J\xE1 tenho sistema": investigue uso, integra\xE7\xE3o, ado\xE7\xE3o, visibilidade e o problema n\xE3o resolvido; n\xE3o ataque o concorrente.
+- "Sem tempo para implantar": trate capacidade de execu\xE7\xE3o (quem assume, o que priorizar).
+- "Preciso pensar / falar com s\xF3cio": o que exatamente precisa ser pensado, qual crit\xE9rio falta; inclua o decisor e marque a conversa de decis\xE3o ANTES de encerrar.
+- "Quero testar": o que o teste precisa provar \u2014 hip\xF3tese, prazo, respons\xE1vel, crit\xE9rio.
+- "S\xF3 queria a ferramenta": n\xE3o recuse a porta; entenda o problema por tr\xE1s; se ferramenta resolve, recomende ferramenta.
+
+GAPS DESTE CLOSER (apontados pela gestora \u2014 vigie e corrija AO VIVO, via "alertas" e "diga"):
+1. Conforto no p\xF3s-venda e pr\xE9-julgamento de bolso: ele tende a ir para p\xF3s-venda e a supor que o cliente n\xE3o pode pagar Growth. Voc\xEA n\xE3o sabe o que vai vender at\xE9 fazer o diagn\xF3stico. Sempre investigue a via comercial (pergunta-m\xE3e: "Voc\xEA est\xE1 chegando aonde quer chegar? Quer vender mais ou est\xE1 satisfeito com o tamanho atual?"). Quem decide se consegue investir \xE9 o cliente.
+2. Dor x desejo: dor COMERCIAL = perde dinheiro todo dia (urg\xEAncia). P\xF3s-venda = deixa de ganhar (adi\xE1vel). Monitoramento/relat\xF3rio pedidos pelo cliente costumam ser DESEJO \u2014 desejo pode esperar. Reposicione para o que gera receita.
+3. Concluir pelo cliente: ele costuma afirmar a conclus\xE3o ("no fim voc\xEA quer dinheiro, n\xE9?"). A conclus\xE3o tem que vir do cliente. Em "diga", prefira PERGUNTAS que levem o cliente a concluir, com exemplos de op\xE7\xF5es ("\xE9 para gerar proposta mais r\xE1pido, organizar o processo para achar gargalos, ter dados para decidir?"). Se ele concluir pelo cliente, alerte.
+4. N\xE3o antecipar obje\xE7\xE3o que o cliente n\xE3o levantou.
+5. Fechamento fraco e follow-up: nunca deixe a reuni\xE3o acabar sem microdecis\xE3o com respons\xE1vel e DATA/HORA concreta, considerando a agenda que o cliente mencionar. "Manda a proposta" sem checkpoint \xE9 continua\xE7\xE3o.
+6. Ao vender Acelera\xE7\xE3o/Growth, deixe claro que exige comprometimento do cliente (reuni\xF5es, planejamento, cobrar o time).
+7. Condu\xE7\xE3o: conduza com perguntas e escuta; se ele estiver falando demais, monologando ou apresentando antes da dor validada, alerte.
 
 FOCO COMERCIAL: o closer quer vender os COMBOS com servi\xE7o (Business, Growth, Scale) e as composi\xE7\xF5es com Gest\xE3o de P\xF3s-venda e/ou Acelera\xE7\xE3o Comercial. Quando a causa-raiz, o perfil e a capacidade de execu\xE7\xE3o sustentarem, conduza para o combo/composi\xE7\xE3o coerente: ligue o servi\xE7o do combo \xE0 causa-raiz que o cliente validou, mostre o impacto de n\xE3o resolver e pe\xE7a microdecis\xE3o. Se n\xE3o houver ader\xEAncia, n\xE3o force \u2014 recomende a rota correta e avise o closer. Nunca use desconto para compensar diagn\xF3stico fraco.
 
@@ -61,9 +90,12 @@ var COACH_SCHEMA = obj({
   etapa: str,
   portao: { type: "string", enum: [...PORTOES, "Indefinido"] },
   urgencia: { type: "string", enum: ["baixa", "media", "alta"] },
+  sintese: str,
   frases_importantes: list,
   objecoes: { type: "array", items: obj({ objecao: str, contorno: str }) },
   temperatura: { type: "integer", minimum: 0, maximum: 100 },
+  conducao: { type: "integer", minimum: 0, maximum: 10 },
+  conducao_dica: str,
   temperatura_motivo: str,
   destaque: str,
   proximo_passo: str,
@@ -90,9 +122,14 @@ ${d.content}
 </documento>`)
   ].join("\n\n");
 }
-function contextoInicial(setup) {
+var ORIGENS = {
+  prevenda: 'Lead NOVO, reuni\xE3o marcada pela pr\xE9-venda. Primeiro contato do closer: revalide interesse (port\xE3o "Por que ouvir") e conduza o diagn\xF3stico desde o in\xEDcio.',
+  avanco: "Reuni\xE3o de AVAN\xC7O marcada pelo pr\xF3prio closer para continuar uma negocia\xE7\xE3o. Retome de onde parou (contexto + causa-raiz + impacto), n\xE3o refa\xE7a o diagn\xF3stico do zero, trate o bloqueio atual e busque microdecis\xE3o com respons\xE1vel e data."
+};
+function contextoInicial(setup, leadDocs2 = []) {
   const linhas = [
     "CONTEXTO DA REUNI\xC3O",
+    `Origem: ${ORIGENS[setup.origem] || ORIGENS.prevenda}`,
     `Objetivo do closer: ${setup.objetivo || "(n\xE3o informado \u2014 conduza para uma decis\xE3o ou microdecis\xE3o com respons\xE1vel e data)"}`
   ];
   if (MODOS[setup.modo]) linhas.push(`Tipo de reuni\xE3o: ${MODOS[setup.modo]}`);
@@ -100,8 +137,17 @@ function contextoInicial(setup) {
   if (setup.foco) linhas.push(`Foco comercial desta reuni\xE3o: ${setup.foco}`);
   if (setup.notas) linhas.push(`Informa\xE7\xF5es da pr\xE9-venda / hip\xF3teses:
 ${setup.notas}`);
+  if (leadDocs2.length) {
+    linhas.push(
+      "DOSSI\xCA DO LEAD (conversas, registros e hist\xF3rico \u2014 use para entender perfil, contexto, o que j\xE1 foi dito, obje\xE7\xF5es anteriores e compromissos; preencha o mapa e a ficha com o que j\xE1 se sabe, marcando que veio do hist\xF3rico):",
+      ...leadDocs2.map((d) => `<arquivo nome="${d.name}">
+${d.content}
+</arquivo>`)
+    );
+  }
   return linhas.join("\n");
 }
+var PEDIDO_BRIEFING = 'BRIEFING INICIAL (a reuni\xE3o est\xE1 come\xE7ando, ainda sem fala relevante): com base no contexto e no dossi\xEA, preencha a ficha CRM e o mapa com o que J\xC1 se sabe do lead, monte a linha do racioc\xEDnio com as lacunas, diga em "proximo_passo" como abrir a reuni\xE3o e em "diga" a frase de abertura personalizada; em "perguntas" as 3 primeiras perguntas para fechar as lacunas; em "alertas" riscos vindos do hist\xF3rico (obje\xE7\xF5es anteriores, decisor oculto, promessas feitas). Em "destaque" resuma o perfil do lead em 12 palavras.';
 var PEDIDO_ATA = `A reuni\xE3o acabou. Escreva em Markdown, portugu\xEAs, curto e escane\xE1vel:
 
 ## Resultado da reuni\xE3o
@@ -117,7 +163,7 @@ Use a f\xF3rmula de diagn\xF3stico do m\xE9todo.
 F\xF3rmula: contexto + causa-raiz + impacto + microdecis\xE3o + data. Tom de WhatsApp, pronta para copiar. Indique canal e prazo do pr\xF3ximo toque conforme a cad\xEAncia.
 
 ## Auditoria do closer
-Checklist do m\xE9todo (Analisar / Conectar / Reativar): o que foi feito, o que faltou. Gaps de risco com evid\xEAncia, impacto e corre\xE7\xE3o. 2 acertos e 2 ajustes para a pr\xF3xima.
+Checklist do m\xE9todo (Analisar / Conectar / Reativar): o que foi feito, o que faltou. Avalie tamb\xE9m os gaps conhecidos deste closer (conforto no p\xF3s-venda, concluir pelo cliente, antecipar obje\xE7\xE3o, dois caminhos, fechamento e follow-up) com evid\xEAncia da transcri\xE7\xE3o. Nota de condu\xE7\xE3o 0\u201310. Gaps de risco com evid\xEAncia, impacto e corre\xE7\xE3o. 2 acertos e 2 ajustes para a pr\xF3xima.
 
 Use s\xF3 o que aparece na transcri\xE7\xE3o, no contexto e na base. N\xE3o use JSON aqui.`;
 
@@ -134,7 +180,8 @@ function limparSchema(s) {
 }
 var SCHEMA = limparSchema(COACH_SCHEMA);
 var Coach = class {
-  constructor(settings, setup, docs) {
+  constructor(settings, setup, docs, leadDocs2 = []) {
+    this.leadDocs = leadDocs2;
     this.settings = settings;
     this.setup = setup;
     this.system = [SYSTEM_PROMPT, baseDeConhecimento(docs)].filter(Boolean).join("\n\n");
@@ -210,7 +257,7 @@ ${JSON.stringify(SCHEMA)}`;
   // newLines: [{speaker, text}] desde a última análise. pedido: pergunta livre do closer.
   async analyze(newLines, pedido, notas = []) {
     const partes = [];
-    if (!this.contents.length) partes.push(contextoInicial(this.setup));
+    if (!this.contents.length) partes.push(contextoInicial(this.setup, this.leadDocs));
     partes.push(
       newLines.length ? `TRANSCRI\xC7\xC3O NOVA (desde a \xFAltima an\xE1lise):
 ${newLines.map((l) => `${l.speaker}: ${l.text}`).join("\n")}` : "TRANSCRI\xC7\xC3O NOVA: (nada novo)"
@@ -228,7 +275,7 @@ ${newLines.map((l) => `${l.speaker}: ${l.text}`).join("\n")}` : "TRANSCRI\xC7\xC
   }
   async ata(restante) {
     const partes = [];
-    if (!this.contents.length) partes.push(contextoInicial(this.setup));
+    if (!this.contents.length) partes.push(contextoInicial(this.setup, this.leadDocs));
     if (restante.length) {
       partes.push(`TRANSCRI\xC7\xC3O FINAL:
 ${restante.map((l) => `${l.speaker}: ${l.text}`).join("\n")}`);
@@ -255,23 +302,25 @@ var DEFAULTS = {
   dgLanguage: "pt-BR"
 };
 var FOCO_PADRAO = "Combos com servi\xE7o (Business, Growth, Scale) ou composi\xE7\xF5es com P\xF3s-venda / Acelera\xE7\xE3o, se a causa-raiz justificar";
+var MODO_NOME = { diagnostico: "Diagn\xF3stico Comercial", ecossistema: "Reuni\xE3o do Ecossistema", followup: "Follow-up", livre: "Livre" };
 var N_CRM = Object.keys(CRM_CAMPOS).length;
-var BRANCHES = [
-  { k: "resultado", t: "\u{1F3AF} Resultado desejado", c: "#4f46e5" },
-  { k: "operacao", t: "\u{1F3ED} Opera\xE7\xE3o hoje", c: "#0891b2" },
-  { k: "dor", t: "\u{1F4A2} Dor \u2014 palavras do cliente", c: "#dc2626" },
-  { k: "causa", t: "\u{1F50D} Sintoma \u2192 causa-raiz", c: "#9333ea" },
-  { k: "impacto", t: "\u{1F4C9} Impacto", c: "#ea580c" },
-  { k: "decisores", t: "\u{1F465} Decisores & execu\xE7\xE3o", c: "#0d9488" },
-  { k: "objecoes", t: "\u{1F6E1} Obje\xE7\xF5es \u2192 contorno", c: "#d97706" },
-  { k: "rota", t: "\u{1F9E9} Rota / combo", c: "#16a34a" },
-  { k: "proximos", t: "\u2705 Pr\xF3ximos passos", c: "#2563eb" }
-];
-var state = {
+var NEW_MS = 12e3;
+var BRANCHES = {
+  resultado: { t: "\u{1F3AF} Resultado desejado", side: "right" },
+  operacao: { t: "\u{1F3ED} Opera\xE7\xE3o hoje", side: "right" },
+  dor: { t: "\u{1F4A2} Dor (palavras dele)", side: "right" },
+  causa: { t: "\u{1F50D} Causa-raiz", side: "right" },
+  impacto: { t: "\u{1F4C9} Impacto", side: "right" },
+  decisores: { t: "\u{1F465} Decisores & execu\xE7\xE3o", side: "left" },
+  objecoes: { t: "\u{1F6E1} Obje\xE7\xF5es \u2192 contorno", side: "left" },
+  rota: { t: "\u{1F9E9} Rota / combo", side: "left" },
+  proximos: { t: "\u2705 Pr\xF3ximos passos", side: "left" }
+};
+var MAX_LEAVES = 4;
+var freshState = () => ({
   running: false,
   coach: null,
   source: "meet",
-  meetTabId: Number(new URLSearchParams(location.search).get("tab")) || null,
   lines: [],
   sentUpTo: 0,
   interim: {},
@@ -281,7 +330,6 @@ var state = {
   sinceAnalysis: 0,
   intervalSec: 25,
   lastAt: 0,
-  tokens: { prompt: 0, cached: 0, out: 0 },
   crm: {},
   crmLocked: /* @__PURE__ */ new Set(),
   covered: /* @__PURE__ */ new Set(),
@@ -290,11 +338,24 @@ var state = {
   pinned: /* @__PURE__ */ new Set(),
   map: {},
   collapsed: /* @__PURE__ */ new Set(),
+  expanded: /* @__PURE__ */ new Set(),
   openObj: [],
-  talk: { me: 0, them: 0 },
-  qCount: 0,
+  objTotal: 0,
+  talk: {},
+  qTimes: [],
   talkWarned: false,
-  timeline: []
+  temp: null,
+  cond: null,
+  drawn: /* @__PURE__ */ new Set(),
+  view: { x: 0, y: 0, s: 1 },
+  userView: false
+});
+var state = { ...freshState(), meetTabId: Number(new URLSearchParams(location.search).get("tab")) || null };
+var el = (tag, cls, text) => {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
 };
 function toast(msg) {
   const t = $("toast");
@@ -303,70 +364,171 @@ function toast(msg) {
   clearTimeout(toast.h);
   toast.h = setTimeout(() => {
     t.hidden = true;
-  }, 1600);
+  }, 1700);
 }
 function copy(text, msg = "Copiado \u2714") {
   navigator.clipboard.writeText(text).then(() => toast(msg));
 }
 function setStatus(text, level = "") {
-  const el2 = $("status");
-  el2.hidden = !text;
-  el2.textContent = text || "";
-  el2.className = `status ${level}`;
+  const s = $("status");
+  s.hidden = !text;
+  s.textContent = text || "";
+  s.className = `status ${level}`;
 }
 var fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 var elapsedSec = () => state.startedAt ? Math.floor((Date.now() - state.startedAt) / 1e3) : 0;
-var el = (tag, cls, text) => {
-  const e = document.createElement(tag);
-  if (cls) e.className = cls;
-  if (text != null) e.textContent = text;
-  return e;
-};
+function bump(id) {
+  const k = $(id).closest(".kpi");
+  k.classList.remove("bump");
+  void k.offsetWidth;
+  k.classList.add("bump");
+}
+function setText(id, v) {
+  if ($(id).textContent !== String(v)) {
+    $(id).textContent = v;
+    return true;
+  }
+  return false;
+}
 MOVIMENTOS.forEach((t) => $("movimentos").append(el("li", "", t)));
 PORTOES.forEach((t) => $("portoes").append(el("li", "", t)));
-document.querySelectorAll(".tabs").forEach((bar) => {
-  bar.addEventListener("click", (e) => {
-    const btn = e.target.closest(".tab");
-    if (!btn) return;
-    bar.querySelectorAll(".tab").forEach((b) => {
-      b.classList.toggle("active", b === btn);
-      $(b.dataset.tab).hidden = b !== btn;
-    });
-    if (btn.dataset.tab === "tTimeline") $("tlCount").hidden = true;
+document.querySelectorAll(".tabs").forEach((bar) => bar.addEventListener("click", (e) => {
+  const btn = e.target.closest(".tab");
+  if (!btn) return;
+  bar.querySelectorAll(".tab").forEach((b) => {
+    b.classList.toggle("active", b === btn);
+    $(b.dataset.tab).hidden = b !== btn;
   });
-});
-chrome.storage.local.get(["setup", "docs"]).then(({ setup, docs }) => {
+  $("mapCtl").style.visibility = btn.dataset.tab === "tMapa" ? "visible" : "hidden";
+  if (btn.dataset.tab === "tTimeline") {
+    $("tlCount").hidden = true;
+    $("tlCount").textContent = "";
+  }
+  if (btn.dataset.tab === "tMapa") requestAnimationFrame(() => {
+    fitIfAuto();
+    drawLinks();
+  });
+}));
+var leadDocs = [];
+chrome.storage.local.get(["setup", "docs", "leadDocs"]).then(({ setup, docs, leadDocs: ld }) => {
   if (setup) SETUP_FIELDS.forEach((f) => {
     if (setup[f] != null) $(f).value = setup[f];
   });
+  if (setup?.origem) document.querySelector(`input[name="origem"][value="${setup.origem}"]`).checked = true;
+  leadDocs = ld || [];
+  renderLeadFiles();
   if (!$("foco").value) $("foco").value = FOCO_PADRAO;
-  showKb(docs);
-});
-chrome.storage.onChanged.addListener((ch) => {
-  if (ch.docs) showKb(ch.docs.newValue);
-});
-function showKb(docs) {
   $("kbInfo").textContent = docs?.length ? `\u{1F4DA} ${docs.length} arquivo(s) na base` : "\u26A0 Suba seus .md em \u2699";
+  showContext();
+});
+SETUP_FIELDS.forEach((f) => $(f).addEventListener("input", showContext));
+function renderLeadFiles() {
+  const ul = $("leadList");
+  ul.innerHTML = "";
+  leadDocs.forEach((d, i) => {
+    const li = el("li");
+    li.append(el("span", "", "\u{1F4C4}"), el("span", "fn", d.name), el("span", "muted", `${Math.max(1, Math.round(d.content.length / 1e3))}k`));
+    const x = el("span", "x", "\u2715");
+    x.title = "remover";
+    x.onclick = () => {
+      leadDocs.splice(i, 1);
+      saveLead();
+    };
+    li.append(x);
+    ul.append(li);
+  });
+  $("clearLead").hidden = !leadDocs.length;
 }
+function saveLead() {
+  chrome.storage.local.set({ leadDocs });
+  renderLeadFiles();
+}
+async function addLeadFiles(files) {
+  for (const f of files) {
+    if (f.size > 2e6) {
+      toast(`${f.name} \xE9 grande demais (m\xE1x. 2 MB)`);
+      continue;
+    }
+    const content = await f.text();
+    const i = leadDocs.findIndex((d) => d.name === f.name);
+    if (i >= 0) leadDocs[i] = { name: f.name, content };
+    else leadDocs.push({ name: f.name, content });
+  }
+  saveLead();
+  toast(`\u{1F4C2} Dossi\xEA: ${leadDocs.length} arquivo(s)`);
+}
+$("pickFiles").onclick = (e) => {
+  e.preventDefault();
+  $("leadFiles").click();
+};
+$("leadFiles").onchange = (e) => {
+  addLeadFiles([...e.target.files]);
+  e.target.value = "";
+};
+$("clearLead").onclick = () => {
+  leadDocs = [];
+  saveLead();
+};
+var dz = $("dropZone");
+dz.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  dz.classList.add("over");
+});
+dz.addEventListener("dragleave", () => dz.classList.remove("over"));
+dz.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dz.classList.remove("over");
+  addLeadFiles([...e.dataTransfer.files]);
+});
 function readSetup() {
   const s = Object.fromEntries(SETUP_FIELDS.map((f) => [f, $(f).value.trim()]));
+  s.origem = document.querySelector('input[name="origem"]:checked').value;
   chrome.storage.local.set({ setup: s });
   return s;
+}
+function clienteNome() {
+  return ($("comQuem").value.split(/\s[—–-]\s|,/)[0] || "").trim();
+}
+function showContext() {
+  $("ctxObjetivo").textContent = $("objetivo").value.trim() || "\u2014";
+  $("ctxFoco").textContent = $("foco").value.trim() || "\u2014";
+  $("ctxObjetivo").title = $("objetivo").value;
+  $("ctxFoco").title = $("foco").value;
+  $("clienteTop").textContent = $("comQuem").value.trim() || "Nova reuni\xE3o";
+  $("modoTop").textContent = MODO_NOME[$("modo").value] || "";
+  $("mapCliente").textContent = clienteNome() || "Integrador";
 }
 $("btnSetup").onclick = () => {
   $("setupBox").hidden = !$("setupBox").hidden;
 };
-function renderCrm() {
+$("btnCollapse").onclick = () => {
+  document.body.classList.add("right-collapsed");
+  $("btnExpand").hidden = false;
+  requestAnimationFrame(() => {
+    fitIfAuto();
+    drawLinks();
+  });
+};
+$("btnExpand").onclick = () => {
+  document.body.classList.toggle("right-collapsed", false);
+  document.body.classList.toggle("show-right");
+  $("btnExpand").hidden = !matchMedia("(max-width: 1250px)").matches;
+  requestAnimationFrame(() => {
+    fitIfAuto();
+    drawLinks();
+  });
+};
+function renderCrm(novos = []) {
   const dl = $("crm");
   dl.innerHTML = "";
   for (const [k, rotulo] of Object.entries(CRM_CAMPOS)) {
-    const dt = el("dt", state.crm[k] ? "filled" : "", rotulo);
     const dd = el("dd", "", state.crm[k] || "\u2014");
     dd.id = `crm_${k}`;
     dd.contentEditable = "plaintext-only";
     dd.spellcheck = false;
     dd.classList.toggle("empty", !state.crm[k]);
     dd.classList.toggle("locked", state.crmLocked.has(k));
+    if (novos.includes(k)) dd.classList.add("flash");
     dd.addEventListener("focus", () => {
       if (!state.crm[k]) dd.textContent = "";
     });
@@ -382,62 +544,188 @@ function renderCrm() {
         state.crm[k] = v;
         state.crmLocked.add(k);
         state.pendingNotes.push(`CLOSER CORRIGIU A FICHA: ${rotulo} = ${v}`);
-        toast("Ficha corrigida \u2014 o Mentor vai considerar");
+        toast("Ficha corrigida \u2014 o Mentor vai respeitar");
       }
       renderCrm();
       updateKpis();
-      renderMap();
     });
-    dl.append(dt, dd);
+    dl.append(el("dt", state.crm[k] ? "filled" : "", rotulo), dd);
   }
 }
 function addLeaf(k, text, sub = "") {
   text = (text || "").trim();
-  if (!text) return false;
+  if (!text) return;
   const list2 = state.map[k] ||= [];
   const found = list2.find((l) => l.text.toLowerCase() === text.toLowerCase());
   if (found) {
     if (sub && sub !== found.sub) {
       found.sub = sub;
       found.at = Date.now();
-      return true;
     }
-    return false;
+    return;
   }
   list2.push({ text, sub, at: Date.now(), done: false });
-  return true;
 }
 function renderMap() {
-  const box = $("mapBranches");
-  box.innerHTML = "";
   const now = Date.now();
-  for (const b of BRANCHES) {
-    const leaves = state.map[b.k] || [];
-    const hot = leaves.some((l) => now - l.at < 1e4);
-    const br = el("div", `branch${leaves.length ? "" : " empty"}${state.collapsed.has(b.k) ? " collapsed" : ""}${hot ? " hot" : ""}`);
-    br.style.setProperty("--c", b.c);
-    const h = el("div", "branch-h", b.t);
-    h.append(el("span", "cnt", leaves.length ? String(leaves.length) : "\u2014"));
-    h.onclick = () => {
-      state.collapsed.has(b.k) ? state.collapsed.delete(b.k) : state.collapsed.add(b.k);
+  $("mapLeft").innerHTML = "";
+  $("mapRight").innerHTML = "";
+  for (const [k, b] of Object.entries(BRANCHES)) {
+    const leaves = [...state.map[k] || []].reverse();
+    const hot = leaves.some((l) => now - l.at < NEW_MS);
+    const br = el("div", `branch${leaves.length ? "" : " empty"}${state.collapsed.has(k) ? " collapsed" : ""}${hot ? " hot" : ""}`);
+    br.dataset.k = k;
+    br.style.setProperty("--c", `var(--b-${k})`);
+    const node = el("div", "branch-node", b.t);
+    node.append(el("span", "cnt", String(leaves.length)));
+    node.title = "Clique para recolher/abrir";
+    node.onclick = () => {
+      state.collapsed.has(k) ? state.collapsed.delete(k) : state.collapsed.add(k);
       renderMap();
     };
     const ul = el("ul", "leaves");
-    [...leaves].reverse().forEach((l) => {
-      const li = el("li", `leaf${b.k === "dor" ? " quote" : ""}${l.done ? " done" : ""}`, l.text);
+    const limit = state.expanded.has(k) ? leaves.length : MAX_LEAVES;
+    leaves.slice(0, limit).forEach((l, i) => {
+      const li = el("li", `leaf${k === "dor" ? " quote" : ""}${l.done ? " done" : ""}${now - l.at < NEW_MS ? " isnew" : ""}`, l.text);
+      li.dataset.key = `${k}:${l.text}`;
       if (l.sub) li.append(el("span", "sub", l.sub));
-      if (now - l.at < 1e4) {
-        li.classList.add("flash");
-        li.append(el("span", "new", "NOVO"));
-      }
-      li.title = l.sub ? "Clique para copiar o contorno" : "Clique para copiar";
+      li.title = `${l.text}${l.sub ? `
+\u21B3 ${l.sub}` : ""}
+
+clique = copiar \xB7 duplo clique = aprofundar`;
       li.onclick = () => copy(l.sub || l.text);
+      li.ondblclick = () => maybeAnalyze(true, `Aprofunde este ponto do mapa e me diga como usar agora: "${l.text}"`);
       ul.append(li);
     });
-    br.append(h, ul);
-    box.append(br);
+    if (leaves.length > MAX_LEAVES) {
+      const more = el("li", "more", state.expanded.has(k) ? "mostrar menos" : `+${leaves.length - MAX_LEAVES} itens`);
+      more.onclick = () => {
+        state.expanded.has(k) ? state.expanded.delete(k) : state.expanded.add(k);
+        renderMap();
+      };
+      ul.append(more);
+    }
+    br.append(node, ul);
+    $(b.side === "left" ? "mapLeft" : "mapRight").append(br);
   }
+  requestAnimationFrame(() => {
+    fitIfAuto();
+    drawLinks();
+  });
 }
+function drawLinks() {
+  const stage = $("mapStage");
+  const svg = $("mapSvg");
+  if (!stage.offsetWidth) return;
+  const sr = stage.getBoundingClientRect();
+  const s = state.view.s;
+  const box = (e) => {
+    const r = e.getBoundingClientRect();
+    return { l: (r.left - sr.left) / s, r: (r.right - sr.left) / s, t: (r.top - sr.top) / s, b: (r.bottom - sr.top) / s };
+  };
+  const curve = (x1, y1, x2, y2) => {
+    const dx = (x2 - x1) * 0.5;
+    return `M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}`;
+  };
+  svg.setAttribute("width", stage.offsetWidth);
+  svg.setAttribute("height", stage.offsetHeight);
+  svg.innerHTML = "";
+  const root = box($("mapRoot"));
+  const ry = (root.t + root.b) / 2;
+  const add = (d, color, cls, key) => {
+    const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    p.setAttribute("d", d);
+    p.setAttribute("stroke", color);
+    p.setAttribute("class", `${cls}${state.drawn.has(key) ? "" : " draw"}`);
+    state.drawn.add(key);
+    svg.append(p);
+  };
+  document.querySelectorAll(".branch").forEach((br) => {
+    const k = br.dataset.k;
+    const left = BRANCHES[k].side === "left";
+    const color = getComputedStyle(br).getPropertyValue("--c").trim() || "#888";
+    const nb = box(br.querySelector(".branch-node"));
+    const ny = (nb.t + nb.b) / 2;
+    add(left ? curve(root.l, ry, nb.r, ny) : curve(root.r, ry, nb.l, ny), color, "branchline", `b:${k}`);
+    if (br.classList.contains("collapsed")) return;
+    br.querySelectorAll(".leaf").forEach((lf) => {
+      const lb = box(lf);
+      const ly = (lb.t + lb.b) / 2;
+      add(left ? curve(nb.l, ny, lb.r, ly) : curve(nb.r, ny, lb.l, ly), color, "leafline", `l:${lf.dataset.key}`);
+    });
+  });
+}
+function applyView() {
+  const v = state.view;
+  $("mapStage").style.transform = `translate(${v.x}px, ${v.y}px) scale(${v.s})`;
+}
+function fit() {
+  const vp2 = $("mapViewport");
+  const st = $("mapStage");
+  if (!vp2.clientWidth || !st.offsetWidth) return;
+  const s = Math.min(vp2.clientWidth / st.offsetWidth, vp2.clientHeight / st.offsetHeight, 1.15);
+  state.view = { s, x: (vp2.clientWidth - st.offsetWidth * s) / 2, y: Math.max(0, (vp2.clientHeight - st.offsetHeight * s) / 2) };
+  applyView();
+}
+function fitIfAuto() {
+  if (!state.userView) fit();
+}
+function zoomAt(f, cx, cy) {
+  const v = state.view;
+  const s = Math.max(0.3, Math.min(2.5, v.s * f));
+  v.x = cx - (cx - v.x) * s / v.s;
+  v.y = cy - (cy - v.y) * s / v.s;
+  v.s = s;
+  state.userView = true;
+  applyView();
+}
+var vp = $("mapViewport");
+vp.addEventListener("wheel", (e) => {
+  e.preventDefault();
+  const r = vp.getBoundingClientRect();
+  zoomAt(e.deltaY < 0 ? 1.1 : 1 / 1.1, e.clientX - r.left, e.clientY - r.top);
+}, { passive: false });
+vp.addEventListener("pointerdown", (e) => {
+  if (e.target.closest(".leaf, .branch-node, .more")) return;
+  const start = { x: e.clientX, y: e.clientY, vx: state.view.x, vy: state.view.y };
+  vp.classList.add("dragging");
+  vp.setPointerCapture(e.pointerId);
+  const move = (ev) => {
+    state.view.x = start.vx + ev.clientX - start.x;
+    state.view.y = start.vy + ev.clientY - start.y;
+    state.userView = true;
+    applyView();
+  };
+  const up = () => {
+    vp.classList.remove("dragging");
+    vp.removeEventListener("pointermove", move);
+    vp.removeEventListener("pointerup", up);
+  };
+  vp.addEventListener("pointermove", move);
+  vp.addEventListener("pointerup", up);
+});
+$("zoomIn").onclick = () => zoomAt(1.2, vp.clientWidth / 2, vp.clientHeight / 2);
+$("zoomOut").onclick = () => zoomAt(1 / 1.2, vp.clientWidth / 2, vp.clientHeight / 2);
+$("zoomFit").onclick = () => {
+  state.userView = false;
+  fit();
+};
+$("mapFull").onclick = toggleMapFull;
+function toggleMapFull() {
+  document.body.classList.toggle("map-full");
+  $("mapFull").textContent = document.body.classList.contains("map-full") ? "\u2921" : "\u2922";
+  requestAnimationFrame(() => {
+    state.userView = false;
+    fit();
+    drawLinks();
+  });
+}
+var ro = new ResizeObserver(() => {
+  fitIfAuto();
+  drawLinks();
+});
+ro.observe(vp);
+ro.observe($("mapStage"));
 function updateMapFrom(d) {
   const c = d.crm || {};
   addLeaf("resultado", c.resultado_desejado);
@@ -457,37 +745,65 @@ function updateMapFrom(d) {
   });
   if (d.rota?.solucao) addLeaf("rota", d.rota.solucao, d.rota.investimento ? `\u{1F4B0} ${d.rota.investimento}` : "");
   addLeaf("proximos", c.proxima_acao);
-  const cliente = ($("comQuem").value.split(/[—-]/)[0] || "").trim();
-  $("mapCliente").textContent = cliente || "Integrador";
   renderMap();
 }
 function updateKpis() {
   const n = Object.values(state.crm).filter(Boolean).length;
-  $("diagVal").textContent = `${n}/${N_CRM}`;
+  if (setText("diagVal", `${n}/${N_CRM}`) && n) bump("diagVal");
   $("diagFill").style.width = `${n / N_CRM * 100}%`;
   $("crmBadge").textContent = `${n}/${N_CRM}`;
-  const total = state.talk.me + state.talk.them;
-  const me = total ? Math.round(state.talk.me / total * 100) : 0;
-  $("talkMe").style.width = `${me}%`;
-  $("talkThem").style.width = `${total ? 100 - me : 0}%`;
-  $("talkTxt").textContent = total ? `Voc\xEA ${me}% \xB7 Cliente ${100 - me}%` : "Voc\xEA \u2014 \xB7 Cliente \u2014";
-  const falandoDemais = total > 150 && me > 55;
-  $("talkTxt").closest(".kpi").classList.toggle("alert", falandoDemais);
-  if (falandoDemais && !state.talkWarned) {
+  const faltam = Object.entries(CRM_CAMPOS).filter(([k]) => !state.crm[k]).map(([, v]) => v.split(" ")[0]);
+  $("diagFalta").textContent = faltam.length ? `falta: ${faltam.slice(0, 3).join(", ")}${faltam.length > 3 ? "\u2026" : ""}` : "completo \u2714";
+  const me = state.talk["Voc\xEA"] || 0;
+  const total = Object.values(state.talk).reduce((a, b) => a + b, 0);
+  const pct = total ? Math.round(me / total * 100) : 0;
+  $("talkMe").style.width = `${pct}%`;
+  $("talkThem").style.width = `${total ? 100 - pct : 0}%`;
+  $("talkTxt").textContent = total ? `Voc\xEA ${pct}% \xB7 Cliente ${100 - pct}%` : "Voc\xEA \u2014 \xB7 Cliente \u2014";
+  const demais = total > 150 && pct > 55;
+  $("talkTxt").closest(".kpi").classList.toggle("alert", demais);
+  if (demais && !state.talkWarned) {
     state.talkWarned = true;
-    toast("Voc\xEA est\xE1 falando mais que o cliente \u2014 pergunte e escute");
+    toast("\u{1F399} Voc\xEA est\xE1 falando mais que o cliente \u2014 pergunte e escute");
   }
-  if (!falandoDemais && me < 45) state.talkWarned = false;
-  $("qVal").textContent = state.qCount;
+  if (pct < 45) state.talkWarned = false;
+  if (setText("qVal", state.qTimes.length) && state.qTimes.length) bump("qVal");
+  const spark = $("qSpark");
+  spark.innerHTML = "";
+  const nowS = elapsedSec();
+  const buckets = Array(10).fill(0);
+  state.qTimes.forEach((t) => {
+    const i = 9 - Math.floor((nowS - t) / 60);
+    if (i >= 0 && i < 10) buckets[i]++;
+  });
+  const mx = Math.max(1, ...buckets);
+  buckets.forEach((b) => {
+    const i = el("i");
+    i.style.height = `${b / mx * 100}%`;
+    spark.append(i);
+  });
+  if (setText("objVal", state.openObj.length) && state.openObj.length) bump("objVal");
+  $("objSub").textContent = `abertas \xB7 ${state.objTotal} no total`;
+  $("objVal").closest(".kpi").classList.toggle("alert", state.openObj.length > 0);
+  const sp = $("speakers");
+  sp.innerHTML = "";
+  Object.entries(state.talk).sort((a, b) => b[1] - a[1]).forEach(([name, w]) => {
+    const c = el("span", "spk", name);
+    c.append(el("i", "", `${total ? Math.round(w / total * 100) : 0}%`));
+    sp.append(c);
+  });
 }
 setInterval(() => {
   if (state.lastAt) {
     const s = Math.floor((Date.now() - state.lastAt) / 1e3);
-    $("lastVal").textContent = s < 60 ? `${s}s` : `${Math.floor(s / 60)}min`;
-    $("coachAge").textContent = `atualizado h\xE1 ${s < 60 ? `${s}s` : `${Math.floor(s / 60)}min`}`;
+    const txt = s < 60 ? `${s}s` : `${Math.floor(s / 60)}min`;
+    $("coachAge").textContent = `atualizado h\xE1 ${txt} \xB7`;
   }
-  if (state.running) $("nextInfo").textContent = `pr\xF3xima em ~${Math.max(0, state.intervalSec - state.sinceAnalysis)}s`;
-  if (Object.values(state.map).some((l) => l.some((x) => Date.now() - x.at < 11e3 && Date.now() - x.at > 9500))) renderMap();
+  if (state.running) $("nextInfo").textContent = state.coach?.busy ? "analisando\u2026" : `pr\xF3xima em ~${Math.max(0, state.intervalSec - state.sinceAnalysis)}s`;
+  if (Object.values(state.map).some((ls) => ls.some((l) => {
+    const a = Date.now() - l.at;
+    return a >= NEW_MS && a < NEW_MS + 1e3;
+  }))) renderMap();
 }, 1e3);
 async function findMeetTab() {
   if (state.meetTabId) {
@@ -532,30 +848,14 @@ $("btnStart").onclick = async () => {
     return;
   }
   $("btnStart").disabled = false;
-  Object.assign(state, {
+  const meetTabId = state.meetTabId;
+  Object.assign(state, freshState(), {
+    meetTabId,
     running: true,
     source: settings.source,
-    coach: new Coach(settings, setup, stored.docs || []),
-    lines: [],
-    sentUpTo: 0,
-    interim: {},
+    coach: new Coach(settings, setup, stored.docs || [], leadDocs),
     startedAt: Date.now(),
-    sinceAnalysis: 0,
-    intervalSec: settings.intervalSec,
-    lastAt: 0,
-    tokens: { prompt: 0, cached: 0, out: 0 },
-    crm: {},
-    crmLocked: /* @__PURE__ */ new Set(),
-    covered: /* @__PURE__ */ new Set(),
-    pendingNotes: [],
-    memoria: [],
-    pinned: /* @__PURE__ */ new Set(),
-    map: {},
-    openObj: [],
-    talk: { me: 0, them: 0 },
-    qCount: 0,
-    talkWarned: false,
-    timeline: []
+    intervalSec: settings.intervalSec
   });
   $("transcript").innerHTML = "";
   $("timeline").innerHTML = "";
@@ -563,14 +863,18 @@ $("btnStart").onclick = async () => {
   renderMem();
   renderMap();
   updateKpis();
-  $("clienteTop").textContent = setup.comQuem || "";
-  $("mapCliente").textContent = (setup.comQuem.split(/[—-]/)[0] || "").trim() || "Integrador";
+  showContext();
   $("setupBox").hidden = true;
   $("proximo").textContent = "Ouvindo\u2026 abra com contexto, confirme tempo e participantes e combine o objetivo.";
   $("btnStart").hidden = true;
   $("btnStop").hidden = false;
   $("dot").classList.add("on");
-  addTimeline("Reuni\xE3o iniciada", "Abertura", "baixa");
+  $("liveTag").hidden = false;
+  addTimeline(setup.origem === "avanco" ? "Reuni\xE3o de avan\xE7o iniciada" : "Reuni\xE3o iniciada (lead novo)", "Abertura", "baixa");
+  if (leadDocs.length || setup.notas) {
+    $("proximo").textContent = "Lendo o dossi\xEA do lead e montando o briefing\u2026";
+    maybeAnalyze(true, PEDIDO_BRIEFING);
+  }
   state.tick = setInterval(() => {
     $("timer").textContent = fmt(elapsedSec());
     if (++state.sinceAnalysis >= state.intervalSec) {
@@ -584,15 +888,13 @@ $("btnStop").onclick = async () => {
   state.running = false;
   clearInterval(state.tick);
   clearTimeout(state.questionTimer);
-  if (state.source === "meet") {
-    await chrome.tabs.sendMessage(state.meetTabId, { target: "meet", type: "stop" }).catch(() => {
-    });
-  } else {
-    await chrome.runtime.sendMessage({ target: "background", type: "stop-capture" });
-  }
+  if (state.source === "meet") await chrome.tabs.sendMessage(state.meetTabId, { target: "meet", type: "stop" }).catch(() => {
+  });
+  else await chrome.runtime.sendMessage({ target: "background", type: "stop-capture" });
   $("btnStop").hidden = true;
   $("btnStart").hidden = false;
   $("dot").classList.remove("on");
+  $("liveTag").hidden = true;
   setStatus("Gerando a ata final\u2026");
   try {
     $("ata").textContent = await state.coach.ata(takeNewLines());
@@ -617,20 +919,19 @@ function onTranscript({ speaker, text, isFinal }) {
   state.interim[speaker] = "";
   $("interim").textContent = Object.values(state.interim).filter(Boolean).join("  \xB7  ");
   const isMe = speaker === "Voc\xEA";
-  const words = text.split(/\s+/).filter(Boolean).length;
-  state.talk[isMe ? "me" : "them"] += words;
+  state.talk[speaker] = (state.talk[speaker] || 0) + text.split(/\s+/).filter(Boolean).length;
   const perguntas = (text.match(/\?/g) || []).length;
-  if (isMe) state.qCount += perguntas;
+  if (isMe) for (let i = 0; i < perguntas; i++) state.qTimes.push(elapsedSec());
   const last = state.lines[state.lines.length - 1];
   if (last && last.speaker === speaker && state.lines.length > state.sentUpTo) {
     last.text += ` ${text}`;
     last.el.lastChild.textContent = ` ${last.text}`;
-    if (perguntas) last.el.classList.add("q");
+    if (perguntas && !isMe) last.el.classList.add("q");
   } else {
     const p = el("p", `${isMe ? "me" : "them"}${perguntas && !isMe ? " q" : ""}`);
     p.append(el("b", "", `${speaker}:`), document.createTextNode(` ${text}`));
-    p.title = "Clique: o Mentor analisa este trecho";
     const line = { speaker, text, el: p };
+    p.title = "Clique: o Mentor analisa este trecho";
     p.onclick = () => maybeAnalyze(true, `Analise esta fala e me diga como usar agora: "${line.speaker}: ${line.text}"`);
     $("transcript").append(p);
     state.lines.push(line);
@@ -668,7 +969,6 @@ async function maybeAnalyze(force = false, pedido = "") {
     const res = await state.coach.analyze(novas, pedido, notas);
     if (res) {
       render(res.data, pedido);
-      trackUsage(res.usage);
       state.lastAt = Date.now();
     }
   } catch (e) {
@@ -712,21 +1012,36 @@ function addTimeline(text, mov, urg) {
   const li = el("li", urg);
   li.append(el("span", "t", fmt(elapsedSec())), el("span", "m", mov || ""), el("div", "d", text));
   $("timeline").prepend(li);
-  const tab = document.querySelector('[data-tab="tTimeline"]');
-  if (!tab.classList.contains("active")) {
+  if (!document.querySelector('[data-tab="tTimeline"]').classList.contains("active")) {
     const b = $("tlCount");
     b.hidden = false;
     b.textContent = String((Number(b.textContent) || 0) + 1);
   }
+}
+function renderSintese(txt) {
+  if (!txt) return;
+  const p = $("sintese");
+  p.innerHTML = "";
+  txt.split(/(\[[^\]]*\])/).forEach((part) => p.append(/^\[.*\]$/.test(part) ? el("mark", "", part.slice(1, -1)) : document.createTextNode(part)));
+  const box = $("threadBox");
+  box.classList.remove("flash");
+  void box.offsetWidth;
+  box.classList.add("flash");
+}
+function animate(id) {
+  const e = $(id);
+  e.classList.remove("enter");
+  void e.offsetWidth;
+  e.classList.add("enter");
 }
 function render(d, pedido) {
   setStatus("");
   $("coach").closest(".col").scrollTo({ top: 0, behavior: "smooth" });
   const urg = d.urgencia || "baixa";
   $("coach").className = `card hero urg-${urg}`;
-  $("urgTag").textContent = urg === "alta" ? "AGIR AGORA" : urg === "media" ? "OPORTUNIDADE" : "AGORA";
-  $("proximo").textContent = d.proximo_passo || "Continue ouvindo.";
-  $("diga").textContent = d.diga || "";
+  $("urgTag").textContent = urg === "alta" ? "\u{1F534} AGIR AGORA" : urg === "media" ? "\u{1F7E0} OPORTUNIDADE" : "\u{1F7E2} AGORA";
+  if (setText("proximo", d.proximo_passo || "Continue ouvindo.")) animate("proximo");
+  if (setText("diga", d.diga || "")) animate("digaBox");
   $("digaBox").hidden = !d.diga;
   const obj2 = d.objecoes || [];
   $("objBox").hidden = !obj2.length;
@@ -737,32 +1052,51 @@ function render(d, pedido) {
     a.onclick = () => copy(o.contorno, "Contorno copiado \u2714");
     item.append(el("div", "obj-q", `\u201C${o.objecao}\u201D`), a);
     $("objList").append(item);
-  });
-  obj2.forEach((o) => {
-    if (!state.openObj.includes(o.objecao)) addTimeline(`Obje\xE7\xE3o: \u201C${o.objecao}\u201D`, "Obje\xE7\xE3o", "alta");
+    if (!state.openObj.includes(o.objecao)) {
+      state.objTotal++;
+      addTimeline(`Obje\xE7\xE3o: \u201C${o.objecao}\u201D`, "Obje\xE7\xE3o", "alta");
+    }
   });
   state.openObj = obj2.map((o) => o.objecao);
+  fillList("alertas", d.alertas);
   fillList("perguntas", d.perguntas, (li, t) => {
     li.classList.add("used");
     copy(t, "Pergunta copiada \u2714");
   });
-  fillList("alertas", d.alertas);
-  const falta = (d.falta_cobrir || []).filter((t) => !state.covered.has(t.toLowerCase()));
-  fillList("falta_cobrir", falta, (li, t) => {
+  fillList("falta_cobrir", (d.falta_cobrir || []).filter((t) => !state.covered.has(t.toLowerCase())), (li, t) => {
     li.classList.add("done");
     state.covered.add(t.toLowerCase());
     state.pendingNotes.push(`CLOSER MARCOU COMO COBERTO: ${t}`);
-    toast("Marcado como coberto");
+    toast("\u2714 Marcado como coberto");
   });
   markSteps("movimentos", MOVIMENTOS, d.movimento, false);
   markSteps("portoes", PORTOES, d.portao, true);
-  $("etapa").textContent = d.etapa ? `\xB7 ${d.etapa}` : "";
+  $("etapa").textContent = d.etapa || "";
+  renderSintese(d.sintese);
   if (Number.isFinite(d.temperatura)) {
-    const t = Math.max(0, Math.min(100, d.temperatura));
+    const t = Math.max(0, Math.min(100, Math.round(d.temperatura)));
+    const prev = state.temp;
     $("tempFill").style.width = `${100 - t}%`;
-    $("tempVal").textContent = `${t}\xB0`;
+    $("tempMark").style.left = `calc(${t}% - 2px)`;
+    $("tempMark").style.opacity = 1;
+    if (setText("tempVal", `${t}\xB0`)) bump("tempVal");
     $("tempMotivo").textContent = d.temperatura_motivo || "";
-    $("mapTemp").textContent = `${t}\xB0`;
+    $("tempMotivo").title = d.temperatura_motivo || "";
+    $("tempTrend").textContent = prev == null || prev === t ? "" : t > prev ? `\u25B2 +${t - prev}` : `\u25BC ${t - prev}`;
+    $("tempTrend").className = `trend ${prev != null && t > prev ? "up" : "down"}`;
+    $("mapTemp").textContent = `\u{1F321} ${t}\xB0`;
+    state.temp = t;
+  }
+  if (Number.isFinite(d.conducao)) {
+    const c = Math.max(0, Math.min(10, Math.round(d.conducao)));
+    const prev = state.cond;
+    if (setText("condVal", `${c}/10`)) bump("condVal");
+    $("condTrend").textContent = prev == null || prev === c ? "" : c > prev ? `\u25B2 +${c - prev}` : `\u25BC ${c - prev}`;
+    $("condTrend").className = `trend ${prev != null && c > prev ? "up" : "down"}`;
+    $("condDica").textContent = d.conducao_dica || "";
+    $("condDica").title = d.conducao_dica || "";
+    $("condVal").closest(".kpi").classList.toggle("alert", c < 6);
+    state.cond = c;
   }
   const novos = [];
   for (const [k, v] of Object.entries(d.crm || {})) {
@@ -770,28 +1104,25 @@ function render(d, pedido) {
     state.crm[k] = v;
     novos.push(k);
   }
-  renderCrm();
-  novos.forEach((k) => $(`crm_${k}`).classList.add("flash"));
+  renderCrm(novos);
   if (d.rota?.solucao) {
     const mudou = $("rotaSolucao").textContent !== d.rota.solucao;
-    $("rotaBox").classList.remove("empty");
+    $("rotaMini").classList.remove("empty");
     $("rotaSolucao").textContent = d.rota.solucao;
-    $("rotaMotivo").textContent = d.rota.motivo || "";
+    $("rotaSolucao").title = d.rota.motivo || "";
     $("rotaInvest").hidden = !d.rota.investimento;
     $("rotaInvest").textContent = d.rota.investimento ? `\u{1F4B0} ${d.rota.investimento}` : "";
+    $("mapRota").textContent = `\u{1F9E9} ${d.rota.solucao}`;
     if (mudou) {
       $("rotaNew").hidden = false;
       setTimeout(() => {
         $("rotaNew").hidden = true;
-      }, 1e4);
-      $("rotaBox").classList.add("flash");
-      setTimeout(() => $("rotaBox").classList.remove("flash"), 3e3);
+      }, NEW_MS);
       addTimeline(`Rota: ${d.rota.solucao}`, "Rota", "media");
     }
-  }
+  } else if (!$("rotaMini").classList.contains("filled")) $("rotaMini").classList.add("empty");
   for (const info of [...d.info_chave || [], ...d.frases_importantes || []]) {
-    if (state.memoria.some((m) => m.text.toLowerCase() === info.toLowerCase())) continue;
-    state.memoria.push({ text: info, at: Date.now() });
+    if (!state.memoria.some((m) => m.text.toLowerCase() === info.toLowerCase())) state.memoria.push({ text: info, at: Date.now() });
   }
   renderMem();
   updateMapFrom(d);
@@ -802,53 +1133,48 @@ function render(d, pedido) {
 function renderMem() {
   const ul = $("memoria");
   ul.innerHTML = "";
-  const items = [...state.memoria].reverse().sort((a, b) => state.pinned.has(b.text) - state.pinned.has(a.text));
-  items.forEach((m) => {
+  [...state.memoria].reverse().sort((a, b) => state.pinned.has(b.text) - state.pinned.has(a.text)).forEach((m) => {
     const li = el("li", state.pinned.has(m.text) ? "pinned" : "");
     if (Date.now() - m.at < 8e3) li.classList.add("flash");
     const pin = el("span", "pin", state.pinned.has(m.text) ? "\u2605" : "\u2606");
-    pin.onclick = () => {
+    pin.onclick = (e) => {
+      e.stopPropagation();
       state.pinned.has(m.text) ? state.pinned.delete(m.text) : state.pinned.add(m.text);
       renderMem();
     };
-    const txt = el("span", "", m.text);
-    txt.onclick = () => copy(m.text);
-    li.append(pin, txt);
+    li.onclick = () => copy(m.text);
+    li.append(pin, el("span", "", m.text));
     ul.append(li);
   });
   $("memCount").hidden = !state.memoria.length;
   $("memCount").textContent = String(state.memoria.length);
 }
-function trackUsage(u) {
-  if (!u) return;
-  state.tokens.prompt += u.promptTokenCount || 0;
-  state.tokens.cached += u.cachedContentTokenCount || 0;
-  state.tokens.out += (u.candidatesTokenCount || 0) + (u.thoughtsTokenCount || 0);
-}
 $("digaBox").onclick = () => copy($("diga").textContent, "Frase copiada \u2714");
 document.addEventListener("keydown", (e) => {
   if (e.target.closest('input, textarea, select, [contenteditable="plaintext-only"]')) return;
+  const k = e.key.toLowerCase();
   if (e.key === "/") {
     e.preventDefault();
     $("pedido").focus();
-  } else if (e.key.toLowerCase() === "a") $("btnAjuda").click();
-  else if (e.key.toLowerCase() === "c" && $("diga").textContent) copy($("diga").textContent, "Frase copiada \u2714");
+  } else if (k === "a") $("btnAjuda").click();
+  else if (k === "c" && $("diga").textContent) copy($("diga").textContent, "Frase copiada \u2714");
+  else if (k === "m") toggleMapFull();
+  else if (e.key === "Escape" && document.body.classList.contains("map-full")) toggleMapFull();
 });
 $("btnCopyAta").onclick = () => copy(buildMarkdown(), "Ata copiada \u2714");
 $("btnFecharAta").onclick = () => {
   $("ataOverlay").hidden = true;
 };
 $("btnBaixar").onclick = () => {
-  const blob = new Blob([buildMarkdown()], { type: "text/markdown" });
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
+  a.href = URL.createObjectURL(new Blob([buildMarkdown()], { type: "text/markdown" }));
   a.download = `ata-${(/* @__PURE__ */ new Date()).toISOString().slice(0, 16).replace(/[:T]/g, "-")}.md`;
   a.click();
   URL.revokeObjectURL(a.href);
 };
 function buildMarkdown() {
-  const mapa = BRANCHES.map((b) => {
-    const ls = state.map[b.k] || [];
+  const mapa = Object.entries(BRANCHES).map(([k, b]) => {
+    const ls = state.map[k] || [];
     return ls.length ? `### ${b.t}
 ${ls.map((l) => `- ${l.text}${l.sub ? ` \u2192 ${l.sub}` : ""}`).join("\n")}` : "";
   }).filter(Boolean).join("\n\n");
@@ -856,6 +1182,10 @@ ${ls.map((l) => `- ${l.text}${l.sub ? ` \u2192 ${l.sub}` : ""}`).join("\n")}` : 
   return `${$("ata").textContent}
 
 ---
+
+## Linha do racioc\xEDnio
+
+${$("sintese").textContent}
 
 ## Mapa da reuni\xE3o
 

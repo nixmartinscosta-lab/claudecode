@@ -20,7 +20,8 @@ function limparSchema(s) {
 const SCHEMA = limparSchema(COACH_SCHEMA);
 
 export class Coach {
-  constructor(settings, setup, docs) {
+  constructor(settings, setup, docs, leadDocs = []) {
+    this.leadDocs = leadDocs;
     this.settings = settings;
     this.setup = setup;
     this.system = [SYSTEM_PROMPT, baseDeConhecimento(docs)].filter(Boolean).join('\n\n');
@@ -90,7 +91,7 @@ export class Coach {
   // newLines: [{speaker, text}] desde a última análise. pedido: pergunta livre do closer.
   async analyze(newLines, pedido, notas = []) {
     const partes = [];
-    if (!this.contents.length) partes.push(contextoInicial(this.setup));
+    if (!this.contents.length) partes.push(contextoInicial(this.setup, this.leadDocs));
     partes.push(
       newLines.length
         ? `TRANSCRIÇÃO NOVA (desde a última análise):\n${newLines.map((l) => `${l.speaker}: ${l.text}`).join('\n')}`
@@ -111,7 +112,7 @@ export class Coach {
 
   async ata(restante) {
     const partes = [];
-    if (!this.contents.length) partes.push(contextoInicial(this.setup));
+    if (!this.contents.length) partes.push(contextoInicial(this.setup, this.leadDocs));
     if (restante.length) {
       partes.push(`TRANSCRIÇÃO FINAL:\n${restante.map((l) => `${l.speaker}: ${l.text}`).join('\n')}`);
     }

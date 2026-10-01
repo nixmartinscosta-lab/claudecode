@@ -20,6 +20,14 @@ No painel você vê, atualizando sozinho:
 
 O foco padrão é **vender combos com serviço (Business, Growth, Scale) e composições**, mas só quando a causa-raiz justifica. O Mentor não força plano sem aderência e não inventa preço nem case.
 
+## Novidades do painel
+
+- **🧠 Mapa mental ao vivo** (centro): integrador no meio; à direita o diagnóstico (resultado → operação → dor → causa-raiz → impacto), à esquerda a decisão (decisores → objeções com contorno → rota/combo → próximos passos). Zoom, arrastar, tela cheia (`M`).
+- **🧵 Linha do raciocínio**: a fórmula de diagnóstico do ACR se preenchendo, com as lacunas destacadas.
+- **Indicadores**: temperatura do negócio, diagnóstico x/10, tempo de fala, suas perguntas, objeções abertas e **nota de condução** (com a correção mais importante).
+- **Preparação**: origem (🆕 lead novo da pré-venda / 🔁 avanço que você marcou) + **dossiê do lead** (arraste `.txt`/`.md`/`.csv` com conversas e registros). Ao começar, o Mentor faz um **briefing** e já monta o mapa com o histórico.
+- O Mentor conhece seus gaps (conforto no pós-venda, concluir pelo cliente, antecipar objeção, dois caminhos, fechamento/follow-up) e te corrige ao vivo.
+
 ## Instalar (5 min, uma vez)
 
 1. Baixe esta pasta (Code → Download ZIP) e descompacte.
