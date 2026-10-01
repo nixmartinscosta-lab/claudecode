@@ -1,6 +1,6 @@
 const DEFAULTS = {
-  anthropicKey: '', deepgramKey: '', source: 'meet', model: 'claude-opus-5-5', effort: 'low',
-  intervalSec: 30, useMic: true, dgModel: 'nova-2', dgLanguage: 'pt-BR',
+  geminiKey: '', deepgramKey: '', source: 'meet', model: 'gemini-3.5-flash', thinking: 'low',
+  intervalSec: 25, useMic: true, dgModel: 'nova-2', dgLanguage: 'pt-BR',
 };
 const $ = (id) => document.getElementById(id);
 let docs = [];
@@ -43,7 +43,7 @@ function renderDocs() {
   });
   const chars = docs.reduce((n, d) => n + d.content.length, 0);
   $('kbSize').textContent = docs.length
-    ? `≈ ${Math.round(chars / 3.5 / 1000)}k tokens. Vai em cache: só a 1ª análise de cada reunião paga a base inteira.`
+    ? `≈ ${Math.round(chars / 3.5 / 1000)}k tokens. O Gemini reaproveita em cache durante a reunião.`
     : '';
 }
 

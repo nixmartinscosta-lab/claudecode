@@ -18,8 +18,11 @@ COMO RESPONDER (o closer tem TDAH e lê de relance, no meio da fala):
 - "diga": frase pronta, natural, em português falado, para ler em voz alta agora. Vazia se o melhor é ficar calado e ouvir.
 - "perguntas": até 3 perguntas que avançam o diagnóstico/decisão e ainda não foram respondidas (use as perguntas do método quando couber).
 - "alertas": até 3 — gaps de risco, objeção não tratada, decisor oculto, solução antes da dor, continuação disfarçada de avanço, preço dito errado, promessa arriscada, closer falando demais. Vazio se nada importante.
-- "info_chave": SÓ fatos NOVOS desde a última análise que entram no CRM (resultado desejado, frase literal da dor, números da operação, base instalada, vendas/mês, time, ferramentas atuais, decisores, prazos, objeções, compromissos). Formato "Rótulo: valor". Não repita o que já registrou.
-- "etapa": onde a reunião está no método (ex.: "Abertura", "A — aprofundando causa", "C — quantificando impacto", "Apresentação: slide rota recomendada", "Investimento", "R — microdecisão").
+- "info_chave": SÓ fatos NOVOS desde a última análise que valem anotar e não cabem na ficha CRM (números da operação, base instalada, vendas/mês, time, ferramentas atuais, prazos). Formato "Rótulo: valor". Não repita.
+- "crm": ficha do CRM sendo preenchida ao vivo. Preencha SOMENTE os campos que ganharam informação nova ou melhor nesta análise; os demais, string vazia (o painel guarda o que já foi preenchido). "dor_literal" é a frase do cliente entre aspas. "proxima_acao" inclui responsável e data quando houver.
+- "rota": a solução que você recomenda NESTE momento (combo, composição ou plano), o motivo ligado à causa-raiz e o investimento oficial da política de preços para a condição mais provável. Deixe tudo vazio enquanto a dor/causa-raiz não estiver validada — não antecipe solução.
+- "movimento": fase atual da reunião.
+- "etapa": detalhe da fase em poucas palavras (ex.: "aprofundando causa", "quantificando impacto", "slide rota recomendada", "pedindo microdecisão").
 - "portao": o portão da decisão que está travando agora.
 - "falta_cobrir": até 4 itens obrigatórios do método/checklist que ainda NÃO apareceram e são necessários antes de avançar (ex.: "Causa-raiz validada pelo cliente", "Decisor ausente mapeado", "Capacidade de execução", "Microdecisão + responsável + data").
 - "urgencia": "alta" se o closer precisa responder/agir AGORA (pergunta direta, objeção, pedido de preço, decisão em jogo); "media" se há oportunidade clara; "baixa" se é só ouvir.
@@ -28,25 +31,42 @@ FOCO COMERCIAL: o closer quer vender os COMBOS com serviço (Business, Growth, S
 
 Se vier "PEDIDO DO CLOSER", responda a ele com prioridade nos mesmos campos (resposta principal em "diga" e/ou "proximo_passo").`;
 
-export const COACH_SCHEMA = {
-  type: 'object',
-  additionalProperties: false,
-  required: ['etapa', 'portao', 'urgencia', 'proximo_passo', 'diga', 'perguntas', 'alertas', 'falta_cobrir', 'info_chave'],
-  properties: {
-    etapa: { type: 'string' },
-    portao: {
-      type: 'string',
-      enum: ['Por que ouvir', 'Por que se importar', 'Por que mudar', 'Por que SolarZ', 'Por que agora', 'Indefinido'],
-    },
-    urgencia: { type: 'string', enum: ['baixa', 'media', 'alta'] },
-    proximo_passo: { type: 'string' },
-    diga: { type: 'string' },
-    perguntas: { type: 'array', items: { type: 'string' } },
-    alertas: { type: 'array', items: { type: 'string' } },
-    falta_cobrir: { type: 'array', items: { type: 'string' } },
-    info_chave: { type: 'array', items: { type: 'string' } },
-  },
+export const CRM_CAMPOS = {
+  resultado_desejado: 'Resultado desejado',
+  situacao_atual: 'Situação atual / gap',
+  dor_literal: 'Dor (frase literal)',
+  causa_raiz: 'Sintoma → causa-raiz',
+  impacto: 'Impacto e prioridade',
+  alavanca: 'Alavanca principal',
+  decisores: 'Decisores (presentes / ausentes)',
+  capacidade_execucao: 'Capacidade de execução',
+  objecao: 'Objeção',
+  proxima_acao: 'Próxima ação (responsável + data)',
 };
+
+export const MOVIMENTOS = ['Abertura', 'Analisar', 'Conectar', 'Apresentação', 'Investimento', 'Reativar'];
+export const PORTOES = ['Por que ouvir', 'Por que se importar', 'Por que mudar', 'Por que SolarZ', 'Por que agora'];
+
+const str = { type: 'string' };
+const list = { type: 'array', items: str };
+const obj = (props) => ({
+  type: 'object', additionalProperties: false, required: Object.keys(props), properties: props,
+});
+
+export const COACH_SCHEMA = obj({
+  movimento: { type: 'string', enum: MOVIMENTOS },
+  etapa: str,
+  portao: { type: 'string', enum: [...PORTOES, 'Indefinido'] },
+  urgencia: { type: 'string', enum: ['baixa', 'media', 'alta'] },
+  proximo_passo: str,
+  diga: str,
+  perguntas: list,
+  alertas: list,
+  falta_cobrir: list,
+  info_chave: list,
+  crm: obj(Object.fromEntries(Object.keys(CRM_CAMPOS).map((k) => [k, str]))),
+  rota: obj({ solucao: str, motivo: str, investimento: str }),
+});
 
 export const MODOS = {
   diagnostico: 'Diagnóstico Comercial (até 90 min): diagnóstico ACR completo, recomendação de solução e próximo passo.',

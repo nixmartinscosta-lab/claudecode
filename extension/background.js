@@ -1,14 +1,23 @@
-// Service worker: abre o painel lateral e controla a captura de áudio via documento offscreen.
+// Service worker: abre o painel ao vivo e controla a captura de áudio via documento offscreen.
 
 let meetingTabId = null;
 
 // Clique no ícone = abre o painel E concede activeTab na aba da reunião (necessário pro tabCapture).
-// sidePanel.open PRECISA ser a primeira chamada (sem await antes), senão o Chrome
-// perde o "gesto do usuário" e o painel não abre.
-chrome.action.onClicked.addListener((tab) => {
-  chrome.sidePanel.open({ tabId: tab.id }).catch((e) => console.error('sidePanel.open', e));
+// Clique no ícone: abre (ou traz pra frente) a janela do painel ao vivo,
+// ligada à aba atual. O clique também concede activeTab (usado no modo áudio).
+chrome.action.onClicked.addListener(async (tab) => {
   meetingTabId = tab.id;
-  chrome.storage.session.set({ meetingTabId, meetingTabTitle: tab.title || '' });
+  chrome.storage.session.set({ meetingTabId });
+  const url = chrome.runtime.getURL(`dashboard.html?tab=${tab.id}`);
+  const { dashboardWindowId } = await chrome.storage.session.get('dashboardWindowId');
+  if (dashboardWindowId != null) {
+    try {
+      await chrome.windows.update(dashboardWindowId, { focused: true });
+      return;
+    } catch { /* janela foi fechada */ }
+  }
+  const win = await chrome.windows.create({ url, type: 'popup', width: 1280, height: 860, focused: true });
+  chrome.storage.session.set({ dashboardWindowId: win.id });
 });
 
 // Selo "ON" no ícone quando a extensão está ativa numa aba do Meet.
@@ -40,9 +49,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   (async () => {
     try {
       if (msg.type === 'start-capture') {
-        if (meetingTabId == null) {
-          ({ meetingTabId } = await chrome.storage.session.get('meetingTabId'));
-        }
+        ({ meetingTabId } = await chrome.storage.session.get('meetingTabId'));
         if (meetingTabId == null) {
           throw new Error('Clique no ícone da extensão estando na aba da reunião.');
         }

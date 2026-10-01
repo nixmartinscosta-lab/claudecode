@@ -1,27 +1,46 @@
 import { Coach } from './coach.js';
+import { CRM_CAMPOS, MOVIMENTOS, PORTOES } from './prompts.js';
 
 const $ = (id) => document.getElementById(id);
 const SETUP_FIELDS = ['modo', 'comQuem', 'objetivo', 'foco', 'notas'];
-const DEFAULTS = {
-  anthropicKey: '', deepgramKey: '', source: 'meet', model: 'claude-opus-5-5', effort: 'low',
-  intervalSec: 30, useMic: true, dgModel: 'nova-2', dgLanguage: 'pt-BR',
+export const DEFAULTS = {
+  geminiKey: '', deepgramKey: '', source: 'meet', model: 'gemini-3.5-flash', thinking: 'low',
+  intervalSec: 25, useMic: true, dgModel: 'nova-2', dgLanguage: 'pt-BR',
 };
 const FOCO_PADRAO = 'Combos com serviço (Business, Growth, Scale) ou composições com Pós-venda / Aceleração, se a causa-raiz justificar';
+const params = new URLSearchParams(location.search);
 
 const state = {
-  running: false,
-  coach: null,
-  lines: [],        // falas finais [{speaker, text, source}]
-  sentUpTo: 0,      // índice da próxima fala ainda não analisada
-  interim: {},      // texto parcial por fonte
-  memoria: [],
-  startedAt: 0,
-  tick: null,
-  questionTimer: null,
-  inputTokens: 0, cachedTokens: 0, outputTokens: 0,
+  running: false, coach: null, source: 'meet', meetTabId: Number(params.get('tab')) || null,
+  lines: [], sentUpTo: 0, interim: {}, memoria: [], crm: {},
+  startedAt: 0, tick: null, questionTimer: null, tokens: { prompt: 0, cached: 0, out: 0 },
 };
 
-// ---------- setup persistido ----------
+// ---------- montagem inicial ----------
+function steps(id, items) {
+  const ol = $(id);
+  items.forEach((t) => { const li = document.createElement('li'); li.textContent = t; ol.append(li); });
+}
+steps('movimentos', MOVIMENTOS);
+steps('portoes', PORTOES);
+
+function renderCrm() {
+  const dl = $('crm');
+  dl.innerHTML = '';
+  for (const [k, rotulo] of Object.entries(CRM_CAMPOS)) {
+    const dt = document.createElement('dt');
+    dt.textContent = rotulo;
+    const dd = document.createElement('dd');
+    dd.id = `crm_${k}`;
+    dd.textContent = state.crm[k] || '—';
+    dd.className = state.crm[k] ? '' : 'empty';
+    dl.append(dt, dd);
+  }
+  const n = Object.values(state.crm).filter(Boolean).length;
+  $('crmCount').textContent = `${n}/${Object.keys(CRM_CAMPOS).length}`;
+}
+renderCrm();
+
 chrome.storage.local.get(['setup', 'docs']).then(({ setup, docs }) => {
   if (setup) SETUP_FIELDS.forEach((f) => { if (setup[f] != null) $(f).value = setup[f]; });
   if (!$('foco').value) $('foco').value = FOCO_PADRAO;
@@ -30,20 +49,15 @@ chrome.storage.local.get(['setup', 'docs']).then(({ setup, docs }) => {
 chrome.storage.onChanged.addListener((ch) => { if (ch.docs) showKb(ch.docs.newValue); });
 function showKb(docs) {
   $('kbInfo').textContent = docs?.length
-    ? `📚 Base carregada: ${docs.length} arquivo(s) — ${docs.map((d) => d.name.replace(/\.md$/, '')).join(', ')}`
-    : '⚠ Nenhuma base carregada. Suba seus .md (playbook, preços, ACR…) em ⚙ Configurações.';
-}
-
-// Aba da reunião: a ativa desta janela (o painel fica preso a ela).
-async function meetingTab() {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  return tab;
+    ? `📚 Base: ${docs.map((d) => d.name.replace(/\.md$/, '')).join(' · ')}`
+    : '⚠ Nenhuma base carregada. Suba seus .md em ⚙ Configurações.';
 }
 function readSetup() {
   const s = Object.fromEntries(SETUP_FIELDS.map((f) => [f, $(f).value.trim()]));
   chrome.storage.local.set({ setup: s });
   return s;
 }
+$('btnSetup').onclick = () => { $('setupBox').hidden = !$('setupBox').hidden; };
 
 function setStatus(text, level = '') {
   const el = $('status');
@@ -52,12 +66,21 @@ function setStatus(text, level = '') {
   el.className = `status ${level}`;
 }
 
+// Acha a aba do Meet: a que abriu o painel, ou a primeira aba do Meet aberta.
+async function findMeetTab() {
+  if (state.meetTabId) {
+    try { return await chrome.tabs.get(state.meetTabId); } catch {}
+  }
+  const tabs = await chrome.tabs.query({ url: 'https://meet.google.com/*' });
+  return tabs.find((t) => /meet\.google\.com\/[a-z]{3}-/.test(t.url)) || tabs[0];
+}
+
 // ---------- iniciar / parar ----------
 $('btnStart').onclick = async () => {
   const stored = await chrome.storage.local.get([...Object.keys(DEFAULTS), 'docs']);
   const settings = { ...DEFAULTS, ...stored };
-  if (!settings.anthropicKey || (settings.source === 'audio' && !settings.deepgramKey)) {
-    setStatus('Falta configurar a chave da API. Abrindo configurações…', 'warn');
+  if (!settings.geminiKey || (settings.source === 'audio' && !settings.deepgramKey)) {
+    setStatus('Falta a chave do Gemini. Abrindo Configurações…', 'warn');
     chrome.runtime.openOptionsPage();
     return;
   }
@@ -65,16 +88,17 @@ $('btnStart').onclick = async () => {
   $('btnStart').disabled = true;
   try {
     if (settings.source === 'meet') {
-      const tab = await meetingTab();
-      setStatus('Conectando às legendas do Meet…');
+      const tab = await findMeetTab();
+      if (!tab) throw new Error('Não achei nenhuma aba do Google Meet aberta. Entre na sala e tente de novo.');
+      state.meetTabId = tab.id;
       try {
-        if (!tab) throw new Error();
         await chrome.tabs.sendMessage(tab.id, { target: 'meet', type: 'start' });
       } catch {
-        throw new Error('Não consegui falar com o Google Meet. Deixe a aba do Meet ativa e recarregue ela (F5) uma vez depois de instalar a extensão.');
+        // Aba aberta antes de instalar/atualizar a extensão: injeta o leitor agora.
+        await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['meet.js'] });
+        await chrome.tabs.sendMessage(tab.id, { target: 'meet', type: 'start' });
       }
-      state.meetTabId = tab.id;
-      setStatus('Lendo as legendas do Meet. Se não aparecer nada, aperte "c" no Meet.', 'ok');
+      setStatus('Lendo as legendas do Meet. Se nada aparecer, aperte "c" no Meet (legendas em Português).', 'ok');
     } else {
       setStatus('Conectando ao áudio da reunião…');
       const res = await chrome.runtime.sendMessage({ target: 'background', type: 'start-capture', settings });
@@ -86,15 +110,17 @@ $('btnStart').onclick = async () => {
     return;
   }
   $('btnStart').disabled = false;
-  state.source = settings.source;
 
   Object.assign(state, {
-    running: true, coach: new Coach(settings, setup, stored.docs || []), lines: [], sentUpTo: 0, interim: {},
-    memoria: [], startedAt: Date.now(), inputTokens: 0, cachedTokens: 0, outputTokens: 0,
+    running: true, source: settings.source, coach: new Coach(settings, setup, stored.docs || []),
+    lines: [], sentUpTo: 0, interim: {}, memoria: [], crm: {}, startedAt: Date.now(),
+    tokens: { prompt: 0, cached: 0, out: 0 },
   });
   $('transcript').innerHTML = ''; $('memoria').innerHTML = ''; $('memCount').textContent = '';
-  $('ataBox').hidden = true; $('coach').hidden = true;
-  $('setupBox').open = false;
+  renderCrm();
+  $('clienteTop').textContent = setup.comQuem ? `· ${setup.comQuem}` : '';
+  $('setupBox').hidden = true;
+  $('proximo').textContent = 'Ouvindo… abra com contexto e combine o objetivo da reunião.';
   $('btnStart').hidden = true; $('btnStop').hidden = false; $('dot').classList.add('on');
 
   let elapsed = 0;
@@ -117,33 +143,31 @@ $('btnStop').onclick = async () => {
   $('btnStop').hidden = true; $('btnStart').hidden = false; $('dot').classList.remove('on');
   setStatus('Gerando a ata final…');
   try {
-    const ata = await state.coach.ata(takeNewLines());
-    $('ata').textContent = ata;
-    $('ataBox').hidden = false;
-    $('ataBox').scrollIntoView({ behavior: 'smooth' });
+    $('ata').textContent = await state.coach.ata(takeNewLines());
+    $('ataOverlay').hidden = false;
     setStatus('');
   } catch (e) {
     setStatus(`Erro ao gerar ata: ${e.message}`, 'error');
   }
 };
 
-// ---------- transcrição chegando do offscreen ----------
-chrome.runtime.onMessage.addListener((msg) => {
+// ---------- transcrição chegando ----------
+chrome.runtime.onMessage.addListener((msg, sender) => {
   if (msg.target !== 'sidepanel') return;
+  if (sender.tab && state.meetTabId && sender.tab.id !== state.meetTabId) return; // outra aba do Meet
   if (msg.type === 'status') setStatus(msg.text, msg.level);
   if (msg.type === 'transcript' && state.running) onTranscript(msg);
 });
 
 function onTranscript({ source, speaker, text, isFinal }) {
   if (!isFinal) {
-    state.interim[source] = `${speaker}: ${text}`;
-    $('interim').textContent = Object.values(state.interim).join('  ·  ');
+    state.interim[speaker] = `${speaker}: ${text}`;
+    $('interim').textContent = Object.values(state.interim).filter(Boolean).join('  ·  ');
     return;
   }
-  state.interim[source] = '';
+  state.interim[speaker] = '';
   $('interim').textContent = Object.values(state.interim).filter(Boolean).join('  ·  ');
 
-  // Junta falas seguidas do mesmo locutor.
   const last = state.lines[state.lines.length - 1];
   if (last && last.speaker === speaker && state.lines.length > state.sentUpTo) {
     last.text += ` ${text}`;
@@ -157,13 +181,12 @@ function onTranscript({ source, speaker, text, isFinal }) {
     $('transcript').append(p);
     state.lines.push({ speaker, text, source, el: p });
   }
-  const box = $('transcript');
-  box.scrollTop = box.scrollHeight;
+  $('transcript').scrollTop = $('transcript').scrollHeight;
 
-  // Fizeram uma pergunta? Orienta logo, sem esperar o intervalo.
+  // O integrador fez uma pergunta? Orienta já, sem esperar o intervalo.
   if (speaker !== 'Você' && /\?\s*$/.test(text)) {
     clearTimeout(state.questionTimer);
-    state.questionTimer = setTimeout(() => maybeAnalyze(true), 1500);
+    state.questionTimer = setTimeout(() => maybeAnalyze(true), 1200);
   }
 }
 
@@ -172,82 +195,108 @@ function takeNewLines() {
   state.sentUpTo = state.lines.length;
   return novas;
 }
-
-function newWordCount() {
-  return state.lines.slice(state.sentUpTo).reduce((n, l) => n + l.text.split(/\s+/).length, 0);
-}
+const newWordCount = () => state.lines.slice(state.sentUpTo).reduce((n, l) => n + l.text.split(/\s+/).length, 0);
 
 // ---------- análise ----------
 async function maybeAnalyze(force = false, pedido = '') {
   if (!state.coach || state.coach.busy) return;
-  if (!force && !pedido && newWordCount() < 15) return; // nada relevante novo: não gasta token
+  if (!force && !pedido && newWordCount() < 12) return; // nada novo relevante: não gasta
   const from = state.sentUpTo;
   const novas = takeNewLines();
   $('btnAjuda').disabled = true;
+  $('coach').classList.add('thinking');
   try {
     const res = await state.coach.analyze(novas, pedido);
-    if (res) { renderCoach(res.data); trackUsage(res.usage); }
+    if (res) { render(res.data); trackUsage(res.usage); }
   } catch (e) {
-    state.sentUpTo = from; // devolve as falas pra próxima tentativa
+    state.sentUpTo = Math.min(from, state.sentUpTo); // devolve as falas pra próxima tentativa
     setStatus(`IA: ${e.message}`, 'error');
   } finally {
     $('btnAjuda').disabled = false;
+    $('coach').classList.remove('thinking');
   }
 }
 
 $('btnAjuda').onclick = () => {
+  if (!state.coach) { setStatus('Clique em “▶ Começar” primeiro.', 'warn'); return; }
   const pedido = $('pedido').value.trim();
-  if (!state.coach) {
-    setStatus('Clique em “Começar” primeiro.', 'warn');
-    return;
-  }
   $('pedido').value = '';
   maybeAnalyze(true, pedido);
 };
 $('pedido').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('btnAjuda').click(); });
 
+// ---------- render ----------
 function fillList(id, items) {
   const ul = $(id);
   ul.innerHTML = '';
-  items.forEach((t) => { const li = document.createElement('li'); li.textContent = t; ul.append(li); });
-  $(`${id}Box`).hidden = !items.length;
+  (items || []).forEach((t) => { const li = document.createElement('li'); li.textContent = t; ul.append(li); });
+  $(`${id}Box`).hidden = !items?.length;
 }
 
-function renderCoach(d) {
-  $('coach').hidden = false;
-  $('coach').className = `card urg-${d.urgencia || 'baixa'}`;
-  $('momento').textContent = d.etapa || '';
-  $('portao').textContent = d.portao && d.portao !== 'Indefinido' ? `Portão travado: ${d.portao}` : '';
+function markSteps(id, items, current, stuck) {
+  const idx = items.indexOf(current);
+  [...$(id).children].forEach((li, i) => {
+    li.className = i === idx ? (stuck ? 'stuck' : 'cur') : i < idx ? 'done' : '';
+  });
+}
+
+function render(d) {
+  if (state.running || d) setStatus('');
+  $('coach').className = `card now urg-${d.urgencia || 'baixa'}`;
   $('proximo').textContent = d.proximo_passo || 'Continue ouvindo.';
   $('diga').textContent = d.diga || '';
   $('digaBox').hidden = !d.diga;
-  fillList('perguntas', d.perguntas || []);
-  fillList('alertas', d.alertas || []);
-  fillList('falta_cobrir', d.falta_cobrir || []);
+  fillList('perguntas', d.perguntas);
+  fillList('alertas', d.alertas);
+  fillList('falta_cobrir', d.falta_cobrir);
+  markSteps('movimentos', MOVIMENTOS, d.movimento, false);
+  markSteps('portoes', PORTOES, d.portao, true);
+  $('etapa').textContent = d.etapa || '';
+
+  // Ficha CRM: só sobrescreve campos que vieram preenchidos.
+  for (const [k, v] of Object.entries(d.crm || {})) {
+    if (!v || !(k in CRM_CAMPOS) || v === state.crm[k]) continue;
+    state.crm[k] = v;
+    const dd = $(`crm_${k}`);
+    dd.textContent = v;
+    dd.className = '';
+    void dd.offsetWidth; // reinicia a animação
+    dd.className = 'flash';
+  }
+  $('crmCount').textContent = `${Object.values(state.crm).filter(Boolean).length}/${Object.keys(CRM_CAMPOS).length}`;
+
+  if (d.rota?.solucao) {
+    $('rotaSolucao').textContent = d.rota.solucao;
+    $('rotaSolucao').classList.remove('muted');
+    $('rotaMotivo').textContent = d.rota.motivo || '';
+    $('rotaInvest').textContent = d.rota.investimento ? `💰 ${d.rota.investimento}` : '';
+  }
 
   for (const info of d.info_chave || []) {
     if (state.memoria.some((m) => m.toLowerCase() === info.toLowerCase())) continue;
     state.memoria.push(info);
     const li = document.createElement('li');
     li.textContent = info;
+    li.className = 'flash';
     $('memoria').prepend(li);
   }
   $('memCount').textContent = state.memoria.length ? `(${state.memoria.length})` : '';
-  if (d.urgencia === 'alta') setStatus('');
 }
 
 function trackUsage(u) {
   if (!u) return;
-  state.inputTokens += (u.input_tokens || 0) + (u.cache_creation_input_tokens || 0);
-  state.cachedTokens += u.cache_read_input_tokens || 0;
-  state.outputTokens += u.output_tokens || 0;
+  state.tokens.prompt += u.promptTokenCount || 0;
+  state.tokens.cached += u.cachedContentTokenCount || 0;
+  state.tokens.out += (u.candidatesTokenCount || 0) + (u.thoughtsTokenCount || 0);
   const k = (n) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : n);
-  $('custo').textContent = `tokens: ${k(state.inputTokens)} in · ${k(state.cachedTokens)} cache · ${k(state.outputTokens)} out`;
+  const t = state.tokens;
+  $('custo').textContent = `tokens ${k(t.prompt)} in (${k(t.cached)} cache) · ${k(t.out)} out`;
 }
 
 // ---------- copiar / baixar ----------
 $('btnCopy').onclick = () => navigator.clipboard.writeText($('diga').textContent);
 $('btnCopyAta').onclick = () => navigator.clipboard.writeText(buildMarkdown());
+$('btnFecharAta').onclick = () => { $('ataOverlay').hidden = true; };
 $('btnBaixar').onclick = () => {
   const blob = new Blob([buildMarkdown()], { type: 'text/markdown' });
   const a = document.createElement('a');

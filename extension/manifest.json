@@ -1,27 +1,25 @@
 {
   "manifest_version": 3,
-  "name": "Mentor de Reunião (Claude)",
+  "name": "Mentor de Reunião",
   "version": "1.0.0",
-  "description": "Lê a reunião do Google Meet em tempo real e te guia como closer: próximo passo, o que falar, preço oficial e o que falta cobrir.",
+  "description": "Captura as legendas do Google Meet em tempo real e abre um painel ao vivo que guia o closer (Gemini).",
   "permissions": [
-    "sidePanel",
     "tabCapture",
     "offscreen",
     "storage",
     "activeTab",
+    "scripting",
     "unlimitedStorage"
   ],
   "host_permissions": [
-    "https://api.anthropic.com/*"
+    "https://meet.google.com/*",
+    "https://generativelanguage.googleapis.com/*"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Abrir Mentor de Reunião"
-  },
-  "side_panel": {
-    "default_path": "sidepanel.html"
+    "default_title": "Abrir painel do Mentor"
   },
   "options_page": "options.html",
   "commands": {
@@ -32,7 +30,7 @@
     }
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; connect-src https://api.anthropic.com wss://api.deepgram.com"
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src https://generativelanguage.googleapis.com wss://api.deepgram.com"
   },
   "content_scripts": [
     {

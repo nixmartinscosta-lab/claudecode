@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mentor ao Vivo</title>
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+<header class="top">
+  <span id="dot" class="dot"></span>
+  <strong class="brand">Mentor</strong>
+  <span id="timer" class="mono muted">00:00</span>
+  <span id="clienteTop" class="muted"></span>
+  <span class="spacer"></span>
+  <span id="custo" class="muted small mono"></span>
+  <button id="btnSetup" class="ghost" title="Preparação">✎ Preparação</button>
+  <a href="options.html" target="_blank" class="ghost btnlink" title="Configurações">⚙</a>
+  <button id="btnStart" class="primary">▶ Começar</button>
+  <button id="btnStop" class="danger" hidden>■ Encerrar + Ata</button>
+</header>
+<div id="status" class="status" hidden></div>
+
+<nav class="steppers">
+  <div><span class="steplabel">Movimento</span><ol id="movimentos" class="steps"></ol><span id="etapa" class="muted small"></span></div>
+  <div><span class="steplabel">Portões</span><ol id="portoes" class="steps"></ol></div>
+</nav>
+
+<main class="grid">
+  <!-- COLUNA 1: o que fazer agora -->
+  <section class="col">
+    <div id="setupBox" class="card">
+      <h2>Preparação (30 s)</h2>
+      <div id="kbInfo" class="muted small"></div>
+      <div class="two">
+        <label>Tipo de reunião
+          <select id="modo">
+            <option value="diagnostico">Diagnóstico Comercial (até 90 min)</option>
+            <option value="ecossistema">Reunião do Ecossistema (até 60 min)</option>
+            <option value="followup">Follow-up / reativação</option>
+            <option value="livre">Livre</option>
+          </select>
+        </label>
+        <label>Integrador / participantes
+          <input id="comQuem" placeholder="Solar Sul — João (sócio), Ana (comercial)">
+        </label>
+      </div>
+      <label>Objetivo desta reunião <input id="objetivo" placeholder="Validar causa-raiz e sair com microdecisão + data"></label>
+      <label>Foco comercial <input id="foco"></label>
+      <label>O que a pré-venda levantou / hipóteses
+        <textarea id="notas" rows="4" placeholder="Porte, base instalada, vendas/mês, time, ferramentas, dor registrada…"></textarea>
+      </label>
+    </div>
+
+    <div id="coach" class="card now urg-baixa">
+      <div class="label">AGORA</div>
+      <div id="proximo" class="big">Clique em <b>▶ Começar</b> com as legendas do Meet ligadas.</div>
+      <div id="digaBox" hidden>
+        <div class="label">DIGA <button id="btnCopy" class="mini">copiar</button></div>
+        <div id="diga" class="say"></div>
+      </div>
+    </div>
+    <div class="two">
+      <div id="perguntasBox" class="card" hidden><div class="label">PERGUNTE</div><ul id="perguntas"></ul></div>
+      <div id="alertasBox" class="card warnbox" hidden><div class="label warn">⚠ ATENÇÃO</div><ul id="alertas"></ul></div>
+    </div>
+    <div id="falta_cobrirBox" class="card" hidden><div class="label">☐ FALTA COBRIR</div><ul id="falta_cobrir" class="checks"></ul></div>
+    <div class="ask">
+      <input id="pedido" placeholder="Pergunte rápido: “quanto fica o Growth anual à vista?”  (Enter)">
+      <button id="btnAjuda" class="primary">Me ajuda AGORA</button>
+    </div>
+  </section>
+
+  <!-- COLUNA 2: dados do closer -->
+  <section class="col">
+    <div id="rotaBox" class="card rota">
+      <div class="label">ROTA RECOMENDADA</div>
+      <div id="rotaSolucao" class="big muted">Aguardando dor e causa-raiz validadas…</div>
+      <div id="rotaMotivo" class="small"></div>
+      <div id="rotaInvest" class="invest"></div>
+    </div>
+    <div class="card">
+      <div class="row"><div class="label">FICHA CRM</div><span class="spacer"></span><span id="crmCount" class="muted small"></span></div>
+      <dl id="crm" class="crm"></dl>
+    </div>
+    <div class="card">
+      <div class="label">🧠 MEMÓRIA <span id="memCount" class="muted"></span></div>
+      <ul id="memoria" class="mem"></ul>
+    </div>
+  </section>
+
+  <!-- COLUNA 3: transcrição -->
+  <section class="col">
+    <div class="card transcard">
+      <div class="label">TRANSCRIÇÃO AO VIVO</div>
+      <div id="transcript" class="transcript"></div>
+      <div id="interim" class="interim"></div>
+    </div>
+  </section>
+</main>
+
+<div id="ataOverlay" class="overlay" hidden>
+  <div class="card ata">
+    <div class="row"><h2>Ata final</h2><span class="spacer"></span>
+      <button id="btnCopyAta" class="mini">copiar</button>
+      <button id="btnBaixar" class="mini">baixar .md</button>
+      <button id="btnFecharAta" class="mini">fechar</button>
+    </div>
+    <pre id="ata"></pre>
+  </div>
+</div>
+<script type="module" src="dashboard.bundle.js"></script>
+</body>
+</html>
