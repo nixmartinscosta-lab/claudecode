@@ -32,7 +32,7 @@ export class Coach {
   }
 
   body(userText, json) {
-    const generationConfig = { maxOutputTokens: 8192 };
+    const generationConfig = { maxOutputTokens: 16384 };
     if (json) {
       generationConfig.responseMimeType = 'application/json';
       if (!this.semSchema) generationConfig.responseJsonSchema = SCHEMA;
@@ -52,11 +52,18 @@ export class Coach {
   async call(userText, json) {
     const model = this.settings.model || 'gemini-3.5-flash';
     for (let tentativa = 0; tentativa < 3; tentativa++) {
-      const res = await fetch(`${API}/${encodeURIComponent(model)}:generateContent`, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json', 'x-goog-api-key': this.settings.geminiKey },
-        body: JSON.stringify(this.body(userText, json)),
-      });
+      let res;
+      try {
+        res = await fetch(`${API}/${encodeURIComponent(model)}:generateContent`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', 'x-goog-api-key': this.settings.geminiKey },
+          body: JSON.stringify(this.body(userText, json)),
+        });
+      } catch {
+        // Internet oscilou: espera e tenta de novo.
+        await new Promise((r) => setTimeout(r, 1500));
+        continue;
+      }
       const data = await res.json().catch(() => ({}));
       if (res.ok) return data;
       const msg = data.error?.message || `HTTP ${res.status}`;
@@ -102,7 +109,9 @@ export class Coach {
 
     const res = await this.send(partes.join('\n\n'), true);
     if (!res) return null;
-    const jsonText = res.text.replace(/^```(?:json)?\s*|\s*```$/g, '');
+    // Tolera cercas ``` e texto em volta do JSON.
+    const t = res.text;
+    const jsonText = t.slice(t.indexOf('{'), t.lastIndexOf('}') + 1);
     try {
       return { data: JSON.parse(jsonText), usage: res.usage };
     } catch {
@@ -117,8 +126,11 @@ export class Coach {
       partes.push(`TRANSCRIÇÃO FINAL:\n${restante.map((l) => `${l.speaker}: ${l.text}`).join('\n')}`);
     }
     partes.push(PEDIDO_ATA);
-    while (this.busy) await new Promise((r) => setTimeout(r, 300));
-    const res = await this.send(partes.join('\n\n'), false);
-    return res?.text || '';
+    let res = null;
+    while (!res) {
+      while (this.busy) await new Promise((r) => setTimeout(r, 300));
+      res = await this.send(partes.join('\n\n'), false); // null = outra chamada pegou a vez
+    }
+    return res.text;
   }
 }

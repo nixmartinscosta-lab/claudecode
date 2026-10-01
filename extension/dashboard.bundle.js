@@ -191,7 +191,7 @@ var Coach = class {
     this.semSchema = false;
   }
   body(userText, json) {
-    const generationConfig = { maxOutputTokens: 8192 };
+    const generationConfig = { maxOutputTokens: 16384 };
     if (json) {
       generationConfig.responseMimeType = "application/json";
       if (!this.semSchema) generationConfig.responseJsonSchema = SCHEMA;
@@ -213,11 +213,17 @@ ${JSON.stringify(SCHEMA)}`;
   async call(userText, json) {
     const model = this.settings.model || "gemini-3.5-flash";
     for (let tentativa = 0; tentativa < 3; tentativa++) {
-      const res = await fetch(`${API}/${encodeURIComponent(model)}:generateContent`, {
-        method: "POST",
-        headers: { "content-type": "application/json", "x-goog-api-key": this.settings.geminiKey },
-        body: JSON.stringify(this.body(userText, json))
-      });
+      let res;
+      try {
+        res = await fetch(`${API}/${encodeURIComponent(model)}:generateContent`, {
+          method: "POST",
+          headers: { "content-type": "application/json", "x-goog-api-key": this.settings.geminiKey },
+          body: JSON.stringify(this.body(userText, json))
+        });
+      } catch {
+        await new Promise((r) => setTimeout(r, 1500));
+        continue;
+      }
       const data = await res.json().catch(() => ({}));
       if (res.ok) return data;
       const msg = data.error?.message || `HTTP ${res.status}`;
@@ -266,7 +272,8 @@ ${newLines.map((l) => `${l.speaker}: ${l.text}`).join("\n")}` : "TRANSCRI\xC7\xC
     if (pedido) partes.push(`PEDIDO DO CLOSER: ${pedido}`);
     const res = await this.send(partes.join("\n\n"), true);
     if (!res) return null;
-    const jsonText = res.text.replace(/^```(?:json)?\s*|\s*```$/g, "");
+    const t = res.text;
+    const jsonText = t.slice(t.indexOf("{"), t.lastIndexOf("}") + 1);
     try {
       return { data: JSON.parse(jsonText), usage: res.usage };
     } catch {
@@ -281,9 +288,12 @@ ${newLines.map((l) => `${l.speaker}: ${l.text}`).join("\n")}` : "TRANSCRI\xC7\xC
 ${restante.map((l) => `${l.speaker}: ${l.text}`).join("\n")}`);
     }
     partes.push(PEDIDO_ATA);
-    while (this.busy) await new Promise((r) => setTimeout(r, 300));
-    const res = await this.send(partes.join("\n\n"), false);
-    return res?.text || "";
+    let res = null;
+    while (!res) {
+      while (this.busy) await new Promise((r) => setTimeout(r, 300));
+      res = await this.send(partes.join("\n\n"), false);
+    }
+    return res.text;
   }
 };
 
@@ -444,6 +454,7 @@ function saveLead() {
   renderLeadFiles();
 }
 async function addLeadFiles(files) {
+  if (!leadDocs.length) chrome.storage.local.set({ leadOwner: $("comQuem").value.trim() });
   for (const f of files) {
     if (f.size > 2e6) {
       toast(`${f.name} \xE9 grande demais (m\xE1x. 2 MB)`);
@@ -468,6 +479,7 @@ $("leadFiles").onchange = (e) => {
 $("clearLead").onclick = () => {
   leadDocs = [];
   saveLead();
+  chrome.storage.local.remove("leadOwner");
 };
 var dz = $("dropZone");
 dz.addEventListener("dragover", (e) => {
@@ -805,10 +817,12 @@ setInterval(() => {
     return a >= NEW_MS && a < NEW_MS + 1e3;
   }))) renderMap();
 }, 1e3);
+var isMeet = (t) => /^https:\/\/meet\.google\.com\//.test(t?.url || t?.pendingUrl || "");
 async function findMeetTab() {
   if (state.meetTabId) {
     try {
-      return await chrome.tabs.get(state.meetTabId);
+      const t = await chrome.tabs.get(state.meetTabId);
+      if (isMeet(t)) return t;
     } catch {
     }
   }
@@ -824,6 +838,15 @@ $("btnStart").onclick = async () => {
     return;
   }
   const setup = readSetup();
+  const { leadOwner } = await chrome.storage.local.get("leadOwner");
+  if (leadDocs.length && leadOwner && setup.comQuem && leadOwner !== setup.comQuem && !confirm(`O dossi\xEA carregado foi adicionado para \u201C${leadOwner}\u201D.
+Usar esses arquivos com \u201C${setup.comQuem}\u201D?
+
+OK = usar \xB7 Cancelar = come\xE7ar sem dossi\xEA`)) {
+    leadDocs = [];
+    saveLead();
+    chrome.storage.local.remove("leadOwner");
+  }
   $("btnStart").disabled = true;
   try {
     if (settings.source === "meet") {
@@ -859,6 +882,28 @@ $("btnStart").onclick = async () => {
   });
   $("transcript").innerHTML = "";
   $("timeline").innerHTML = "";
+  $("rotaMini").classList.add("empty");
+  $("rotaSolucao").textContent = "aguardando dor validada";
+  $("rotaInvest").hidden = true;
+  $("mapRota").textContent = "";
+  $("mapTemp").textContent = "";
+  $("objBox").hidden = true;
+  $("alertasBox").hidden = true;
+  $("perguntasBox").hidden = true;
+  $("falta_cobrirBox").hidden = true;
+  $("digaBox").hidden = true;
+  ["tempVal", "condVal"].forEach((id) => {
+    $(id).textContent = "\u2014";
+  });
+  ["tempMotivo", "condDica", "tempTrend", "condTrend", "etapa"].forEach((id) => {
+    $(id).textContent = "";
+  });
+  $("tempFill").style.width = "100%";
+  $("tempMark").style.opacity = 0;
+  [...$("movimentos").children, ...$("portoes").children].forEach((li) => {
+    li.className = "";
+  });
+  $("sintese").textContent = "Aguardando a conversa\u2026";
   renderCrm();
   renderMem();
   renderMap();
@@ -885,12 +930,15 @@ $("btnStart").onclick = async () => {
 };
 $("btnStop").onclick = async () => {
   if (!state.running) return;
-  state.running = false;
   clearInterval(state.tick);
   clearTimeout(state.questionTimer);
+  $("btnStop").disabled = true;
   if (state.source === "meet") await chrome.tabs.sendMessage(state.meetTabId, { target: "meet", type: "stop" }).catch(() => {
   });
   else await chrome.runtime.sendMessage({ target: "background", type: "stop-capture" });
+  await new Promise((r) => setTimeout(r, 600));
+  state.running = false;
+  $("btnStop").disabled = false;
   $("btnStop").hidden = true;
   $("btnStart").hidden = false;
   $("dot").classList.remove("on");
@@ -899,7 +947,7 @@ $("btnStop").onclick = async () => {
   try {
     $("ata").textContent = await state.coach.ata(takeNewLines());
     $("ataOverlay").hidden = false;
-    setStatus("");
+    setStatus(leadDocs.length ? "\u{1F4C2} O dossi\xEA deste lead continua carregado \u2014 em Prepara\xE7\xE3o, \u201Climpar dossi\xEA\u201D antes do pr\xF3ximo lead." : "", "warn");
   } catch (e) {
     setStatus(`Erro ao gerar ata: ${e.message}`, "error");
   }
@@ -907,6 +955,10 @@ $("btnStop").onclick = async () => {
 chrome.runtime.onMessage.addListener((msg, sender) => {
   if (msg.target !== "sidepanel") return;
   if (sender.tab && state.meetTabId && sender.tab.id !== state.meetTabId) return;
+  if (msg.type === "set-meet-tab" && !state.running && msg.tabId) {
+    state.meetTabId = msg.tabId;
+    return;
+  }
   if (msg.type === "status") setStatus(msg.text, msg.level);
   if (msg.type === "transcript" && state.running) onTranscript(msg);
 });
@@ -1120,7 +1172,7 @@ function render(d, pedido) {
       }, NEW_MS);
       addTimeline(`Rota: ${d.rota.solucao}`, "Rota", "media");
     }
-  } else if (!$("rotaMini").classList.contains("filled")) $("rotaMini").classList.add("empty");
+  }
   for (const info of [...d.info_chave || [], ...d.frases_importantes || []]) {
     if (!state.memoria.some((m) => m.text.toLowerCase() === info.toLowerCase())) state.memoria.push({ text: info, at: Date.now() });
   }
@@ -1152,6 +1204,7 @@ function renderMem() {
 $("digaBox").onclick = () => copy($("diga").textContent, "Frase copiada \u2714");
 document.addEventListener("keydown", (e) => {
   if (e.target.closest('input, textarea, select, [contenteditable="plaintext-only"]')) return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
   const k = e.key.toLowerCase();
   if (e.key === "/") {
     e.preventDefault();

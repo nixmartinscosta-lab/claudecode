@@ -82,6 +82,7 @@ function renderLeadFiles() {
 }
 function saveLead() { chrome.storage.local.set({ leadDocs }); renderLeadFiles(); }
 async function addLeadFiles(files) {
+  if (!leadDocs.length) chrome.storage.local.set({ leadOwner: $('comQuem').value.trim() });
   for (const f of files) {
     if (f.size > 2_000_000) { toast(`${f.name} é grande demais (máx. 2 MB)`); continue; }
     const content = await f.text();
@@ -92,7 +93,7 @@ async function addLeadFiles(files) {
 }
 $('pickFiles').onclick = (e) => { e.preventDefault(); $('leadFiles').click(); };
 $('leadFiles').onchange = (e) => { addLeadFiles([...e.target.files]); e.target.value = ''; };
-$('clearLead').onclick = () => { leadDocs = []; saveLead(); };
+$('clearLead').onclick = () => { leadDocs = []; saveLead(); chrome.storage.local.remove('leadOwner'); };
 const dz = $('dropZone');
 dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.classList.add('over'); });
 dz.addEventListener('dragleave', () => dz.classList.remove('over'));
@@ -327,8 +328,11 @@ setInterval(() => {
 }, 1000);
 
 // ================= iniciar / parar =================
+const isMeet = (t) => /^https:\/\/meet\.google\.com\//.test(t?.url || t?.pendingUrl || '');
 async function findMeetTab() {
-  if (state.meetTabId) { try { return await chrome.tabs.get(state.meetTabId); } catch {} }
+  if (state.meetTabId) {
+    try { const t = await chrome.tabs.get(state.meetTabId); if (isMeet(t)) return t; } catch {}
+  }
   const tabs = await chrome.tabs.query({ url: 'https://meet.google.com/*' });
   return tabs.find((t) => /meet\.google\.com\/[a-z]{3}-/.test(t.url)) || tabs[0];
 }
@@ -342,6 +346,12 @@ $('btnStart').onclick = async () => {
     return;
   }
   const setup = readSetup();
+  // Dossiê carregado para outro lead? Evita misturar contexto de clientes.
+  const { leadOwner } = await chrome.storage.local.get('leadOwner');
+  if (leadDocs.length && leadOwner && setup.comQuem && leadOwner !== setup.comQuem
+      && !confirm(`O dossiê carregado foi adicionado para “${leadOwner}”.\nUsar esses arquivos com “${setup.comQuem}”?\n\nOK = usar · Cancelar = começar sem dossiê`)) {
+    leadDocs = []; saveLead(); chrome.storage.local.remove('leadOwner');
+  }
   $('btnStart').disabled = true;
   try {
     if (settings.source === 'meet') {
@@ -373,6 +383,15 @@ $('btnStart').onclick = async () => {
     startedAt: Date.now(), intervalSec: settings.intervalSec,
   });
   $('transcript').innerHTML = ''; $('timeline').innerHTML = '';
+  // limpa o que sobrou da reunião anterior
+  $('rotaMini').classList.add('empty'); $('rotaSolucao').textContent = 'aguardando dor validada'; $('rotaInvest').hidden = true;
+  $('mapRota').textContent = ''; $('mapTemp').textContent = ''; $('objBox').hidden = true; $('alertasBox').hidden = true;
+  $('perguntasBox').hidden = true; $('falta_cobrirBox').hidden = true; $('digaBox').hidden = true;
+  ['tempVal', 'condVal'].forEach((id) => { $(id).textContent = '—'; });
+  ['tempMotivo', 'condDica', 'tempTrend', 'condTrend', 'etapa'].forEach((id) => { $(id).textContent = ''; });
+  $('tempFill').style.width = '100%'; $('tempMark').style.opacity = 0;
+  [...$('movimentos').children, ...$('portoes').children].forEach((li) => { li.className = ''; });
+  $('sintese').textContent = 'Aguardando a conversa…';
   renderCrm(); renderMem(); renderMap(); updateKpis(); showContext();
   $('setupBox').hidden = true;
   $('proximo').textContent = 'Ouvindo… abra com contexto, confirme tempo e participantes e combine o objetivo.';
@@ -392,16 +411,19 @@ $('btnStart').onclick = async () => {
 
 $('btnStop').onclick = async () => {
   if (!state.running) return;
-  state.running = false;
   clearInterval(state.tick); clearTimeout(state.questionTimer);
+  $('btnStop').disabled = true;
   if (state.source === 'meet') await chrome.tabs.sendMessage(state.meetTabId, { target: 'meet', type: 'stop' }).catch(() => {});
   else await chrome.runtime.sendMessage({ target: 'background', type: 'stop-capture' });
+  await new Promise((r) => setTimeout(r, 600)); // recebe as últimas falas antes de fechar
+  state.running = false;
+  $('btnStop').disabled = false;
   $('btnStop').hidden = true; $('btnStart').hidden = false; $('dot').classList.remove('on'); $('liveTag').hidden = true;
   setStatus('Gerando a ata final…');
   try {
     $('ata').textContent = await state.coach.ata(takeNewLines());
     $('ataOverlay').hidden = false;
-    setStatus('');
+    setStatus(leadDocs.length ? '📂 O dossiê deste lead continua carregado — em Preparação, “limpar dossiê” antes do próximo lead.' : '', 'warn');
   } catch (e) { setStatus(`Erro ao gerar ata: ${e.message}`, 'error'); }
 };
 
@@ -409,6 +431,7 @@ $('btnStop').onclick = async () => {
 chrome.runtime.onMessage.addListener((msg, sender) => {
   if (msg.target !== 'sidepanel') return;
   if (sender.tab && state.meetTabId && sender.tab.id !== state.meetTabId) return;
+  if (msg.type === 'set-meet-tab' && !state.running && msg.tabId) { state.meetTabId = msg.tabId; return; }
   if (msg.type === 'status') setStatus(msg.text, msg.level);
   if (msg.type === 'transcript' && state.running) onTranscript(msg);
 });
@@ -581,7 +604,7 @@ function render(d, pedido) {
       $('rotaNew').hidden = false; setTimeout(() => { $('rotaNew').hidden = true; }, NEW_MS);
       addTimeline(`Rota: ${d.rota.solucao}`, 'Rota', 'media');
     }
-  } else if (!$('rotaMini').classList.contains('filled')) $('rotaMini').classList.add('empty');
+  }
 
   for (const info of [...(d.info_chave || []), ...(d.frases_importantes || [])]) {
     if (!state.memoria.some((m) => m.text.toLowerCase() === info.toLowerCase())) state.memoria.push({ text: info, at: Date.now() });
@@ -610,6 +633,7 @@ function renderMem() {
 $('digaBox').onclick = () => copy($('diga').textContent, 'Frase copiada ✔');
 document.addEventListener('keydown', (e) => {
   if (e.target.closest('input, textarea, select, [contenteditable="plaintext-only"]')) return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return; // não atrapalha Ctrl+C, Ctrl+A etc.
   const k = e.key.toLowerCase();
   if (e.key === '/') { e.preventDefault(); $('pedido').focus(); }
   else if (k === 'a') $('btnAjuda').click();

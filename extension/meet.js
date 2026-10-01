@@ -33,9 +33,12 @@
 
   function tryEnableCaptions() {
     if (findRegion()) return true;
-    const btn = [...document.querySelectorAll('button[aria-label]')].find((b) =>
-      /(ativar legendas|turn on captions|legendas|captions)/i.test(b.getAttribute('aria-label')) &&
-      b.getAttribute('aria-pressed') !== 'true');
+    // Só o botão de LIGAR legendas (nunca "desativar" ou "configurações de legendas").
+    const btn = [...document.querySelectorAll('button[aria-label]')].find((b) => {
+      const l = b.getAttribute('aria-label');
+      return /(ativar legendas|turn on captions|activar subtítulos)/i.test(l) && !/(desativar|turn off|desactivar|configura|settings)/i.test(l)
+        && b.getAttribute('aria-pressed') !== 'true';
+    });
     if (btn) { btn.click(); return true; }
     return false;
   }
@@ -71,8 +74,26 @@
   function commit(el, info, isFinal) {
     const novo = info.text.slice(info.committed).trim();
     if (!novo) return;
-    if (isFinal) info.committed = info.text.length;
+    if (isFinal) {
+      info.committed = info.text.length;
+      info.lastInterim = '';
+    } else {
+      if (novo === info.lastInterim) return; // nada mudou: não reenvia
+      info.lastInterim = novo;
+    }
     send({ type: 'transcript', speaker: info.speaker, text: novo, isFinal });
+  }
+
+  // O Meet corta o começo da legenda em falas longas. Acha onde o trecho já
+  // enviado termina no texto novo, para não reenviar (duplicar) o que já foi.
+  function realign(oldText, committed, text) {
+    const sent = oldText.slice(0, committed);
+    if (text.startsWith(sent)) return committed;
+    for (let n = Math.min(60, sent.length); n >= 12; n -= 4) {
+      const i = text.lastIndexOf(sent.slice(-n));
+      if (i >= 0) return i + n;
+    }
+    return 0;
   }
 
   function scan() {
@@ -88,8 +109,7 @@
           info = { speaker: normalizeSpeaker(r.speaker), text, committed: 0, changedAt: now };
           blocks.set(el, info);
         } else if (info.text !== text) {
-          // O Meet às vezes reescreve o começo da frase; se encolheu, recomeça o ponteiro.
-          if (!text.startsWith(info.text.slice(0, info.committed))) info.committed = 0;
+          info.committed = realign(info.text, info.committed, text);
           info.text = text;
           info.changedAt = now;
         }
@@ -119,6 +139,7 @@
       }, 4000);
       sendResponse({ ok: true, captions: ok });
     } else if (msg.type === 'stop') {
+      scan(); // última leitura: pega o que apareceu desde a última passada
       running = false;
       clearInterval(poll);
       for (const [el, info] of blocks) commit(el, info, true);

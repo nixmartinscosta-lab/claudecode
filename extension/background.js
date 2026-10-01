@@ -2,17 +2,23 @@
 
 let meetingTabId = null;
 
-// Clique no ícone = abre o painel E concede activeTab na aba da reunião (necessário pro tabCapture).
 // Clique no ícone: abre (ou traz pra frente) a janela do painel ao vivo,
 // ligada à aba atual. O clique também concede activeTab (usado no modo áudio).
 chrome.action.onClicked.addListener(async (tab) => {
-  meetingTabId = tab.id;
-  chrome.storage.session.set({ meetingTabId });
-  const url = chrome.runtime.getURL(`dashboard.html?tab=${tab.id}`);
-  const { dashboardWindowId } = await chrome.storage.session.get('dashboardWindowId');
+  const saved = await chrome.storage.session.get(['dashboardWindowId', 'meetingTabId']);
+  const { dashboardWindowId } = saved;
+  // Clique feito na própria janela do painel não muda a aba da reunião.
+  if (tab.windowId !== dashboardWindowId) {
+    meetingTabId = tab.id;
+    chrome.storage.session.set({ meetingTabId });
+  } else {
+    meetingTabId = saved.meetingTabId ?? null;
+  }
+  const url = chrome.runtime.getURL(`dashboard.html?tab=${meetingTabId ?? tab.id}`);
   if (dashboardWindowId != null) {
     try {
       await chrome.windows.update(dashboardWindowId, { focused: true });
+      chrome.runtime.sendMessage({ target: 'sidepanel', type: 'set-meet-tab', tabId: meetingTabId }).catch(() => {});
       return;
     } catch { /* janela foi fechada */ }
   }
