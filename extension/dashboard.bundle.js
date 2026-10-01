@@ -297,6 +297,198 @@ ${restante.map((l) => `${l.speaker}: ${l.text}`).join("\n")}`);
   }
 };
 
+// src/demo.js
+var DEMO_SETUP = {
+  modo: "diagnostico",
+  origem: "prevenda",
+  comQuem: "Solar Exemplo (demonstra\xE7\xE3o) \u2014 Marcos (s\xF3cio)",
+  objetivo: "Validar causa-raiz e sair com microdecis\xE3o + data",
+  foco: "Combos com servi\xE7o, se a causa-raiz justificar",
+  notas: "Exemplo fict\xEDcio para demonstra\xE7\xE3o."
+};
+var DEMO_SCRIPT = [
+  [2, "Voc\xEA", "Marcos, obrigado pelo tempo. A ideia hoje \xE9 entender onde voc\xEAs querem chegar e o que est\xE1 segurando isso. Pode ser?"],
+  [7, "Marcos", "Pode sim. Na verdade eu vim ver o monitoramento, quero mandar relat\xF3rio pros clientes."],
+  [12, "Voc\xEA", "Entendi. E hoje voc\xEAs est\xE3o chegando aonde querem chegar em vendas?"],
+  [17, "Marcos", "N\xE3o. A gente fecha uns 6 projetos por m\xEAs e a meta era 12. Lead at\xE9 chega, mas a proposta demora tr\xEAs dias pra sair."],
+  [24, "Voc\xEA", "E quando a proposta demora, o que acontece com o cliente?"],
+  [29, "Marcos", "Ele fecha com quem respondeu primeiro. M\xEAs passado perdi uns quatro assim, cada um de uns 25 mil."],
+  [36, "Marcos", "E n\xE3o tem ningu\xE9m cobrando os vendedores, cada um faz do seu jeito no WhatsApp."],
+  [43, "Voc\xEA", "Ent\xE3o o relat\xF3rio resolveria isso ou o ponto \xE9 o processo comercial?"],
+  [48, "Marcos", "Pensando bem, o problema \xE9 o comercial. Mas quanto custa isso? N\xE3o sei se cabe agora, t\xE1 caro tudo."],
+  [56, "Marcos", "E eu preciso ver com o meu s\xF3cio, o Paulo, ele que cuida do financeiro."],
+  [63, "Voc\xEA", "Faz sentido. Quinta \xE0s 15h d\xE1 pra gente conversar com o Paulo junto?"],
+  [68, "Marcos", "Quinta \xE0s 15h d\xE1. Pode marcar."]
+];
+var base = {
+  perguntas: [],
+  alertas: [],
+  falta_cobrir: [],
+  info_chave: [],
+  frases_importantes: [],
+  objecoes: [],
+  crm: {},
+  rota: { solucao: "", motivo: "", investimento: "" }
+};
+var crm = (o) => ({
+  resultado_desejado: "",
+  situacao_atual: "",
+  dor_literal: "",
+  causa_raiz: "",
+  impacto: "",
+  alavanca: "",
+  decisores: "",
+  capacidade_execucao: "",
+  objecao: "",
+  proxima_acao: "",
+  ...o
+});
+var DEMO_ANALISES = [
+  {
+    ...base,
+    movimento: "Abertura",
+    etapa: "revalidando interesse",
+    portao: "Por que ouvir",
+    urgencia: "media",
+    proximo_passo: "Acolha o pedido de monitoramento e investigue o resultado que ele quer.",
+    diga: "Marcos, relat\xF3rio pro cliente ajuda em qu\xEA no seu resultado: vender mais, reter, ganhar indica\xE7\xE3o?",
+    perguntas: ["Voc\xEA est\xE1 chegando aonde quer chegar em vendas?", "O que te fez buscar isso agora?"],
+    alertas: ["Pedido de ferramenta n\xE3o \xE9 diagn\xF3stico: monitoramento costuma ser desejo, n\xE3o dor."],
+    falta_cobrir: ["Resultado desejado", "Situa\xE7\xE3o atual e gap", "Decisor"],
+    sintese: "O cliente quer [resultado?], mas hoje est\xE1 em [situa\xE7\xE3o?]. Ele percebe [dor?], por\xE9m a causa priorit\xE1ria \xE9 [causa-raiz?].",
+    temperatura: 25,
+    temperatura_motivo: "curiosidade, dor ainda n\xE3o apareceu",
+    conducao: 7,
+    conducao_dica: "Boa abertura; agora investigue o resultado",
+    destaque: "Chegou pedindo monitoramento (desejo, n\xE3o dor)",
+    crm: crm({ situacao_atual: "Busca monitoramento e relat\xF3rio para clientes" })
+  },
+  {
+    ...base,
+    movimento: "Analisar",
+    etapa: "aprofundando causa",
+    portao: "Por que se importar",
+    urgencia: "alta",
+    proximo_passo: "Aprofunde a demora da proposta: \xE9 a causa que mais derruba a meta.",
+    diga: "E quando a proposta demora tr\xEAs dias, o que acontece com esse cliente?",
+    perguntas: ["Quantos leads viram proposta por m\xEAs?", "Quem monta a proposta hoje?"],
+    alertas: ["N\xE3o volte para monitoramento: a dor comercial apareceu."],
+    falta_cobrir: ["Impacto em R$", "Causa-raiz validada pelo cliente", "Decisor"],
+    info_chave: ["Vendas: 6 projetos/m\xEAs", "Meta: 12 projetos/m\xEAs", "Proposta leva 3 dias"],
+    frases_importantes: ['"a proposta demora tr\xEAs dias pra sair"'],
+    sintese: "O cliente quer 12 projetos/m\xEAs, mas hoje est\xE1 em 6. Ele percebe demora na proposta, por\xE9m a causa priorit\xE1ria \xE9 [causa-raiz?]. Isso provoca [impacto?].",
+    temperatura: 45,
+    temperatura_motivo: "dor comercial apareceu",
+    conducao: 8,
+    conducao_dica: "\xD3timo: pergunta-m\xE3e trouxe a dor comercial",
+    destaque: "Dor comercial: fecha 6 de uma meta de 12",
+    crm: crm({ resultado_desejado: "Sair de 6 para 12 projetos/m\xEAs", situacao_atual: "6 projetos/m\xEAs; proposta leva 3 dias", dor_literal: '"a proposta demora tr\xEAs dias pra sair"', alavanca: "Convers\xE3o" })
+  },
+  {
+    ...base,
+    movimento: "Conectar",
+    etapa: "validando a s\xEDntese",
+    portao: "Por que mudar",
+    urgencia: "alta",
+    proximo_passo: "Devolva a s\xEDntese e deixe ele concluir que o problema \xE9 o processo comercial.",
+    diga: "Deixa eu ver se entendi: voc\xEAs querem 12 por m\xEAs, est\xE3o em 6, e cada proposta lenta vira venda do concorrente. O que voc\xEA acha que est\xE1 por tr\xE1s disso?",
+    perguntas: ["Quem cobra os vendedores hoje?", "Quanto isso custou no \xFAltimo trimestre?"],
+    alertas: ["Deixe o cliente concluir; n\xE3o afirme por ele."],
+    falta_cobrir: ["Decisor financeiro", "Capacidade de execu\xE7\xE3o"],
+    info_chave: ["Perdeu ~4 vendas no m\xEAs passado", "Ticket m\xE9dio: ~R$ 25 mil"],
+    frases_importantes: ['"perdi uns quatro assim, cada um de uns 25 mil"', '"cada um faz do seu jeito no WhatsApp"'],
+    sintese: "O cliente quer 12 projetos/m\xEAs, mas hoje est\xE1 em 6. Ele percebe demora na proposta, por\xE9m a causa priorit\xE1ria \xE9 a falta de processo e gest\xE3o comercial. Isso provoca perda de ~R$ 100 mil/m\xEAs em vendas. Portanto, a solu\xE7\xE3o \xE9 [solu\xE7\xE3o?], desde que [pr\xE9-requisitos?].",
+    temperatura: 62,
+    temperatura_motivo: "impacto quantificado pelo pr\xF3prio cliente",
+    conducao: 8,
+    conducao_dica: "Impacto veio da boca dele",
+    destaque: "Impacto: ~4 vendas perdidas/m\xEAs (~R$ 100 mil)",
+    crm: crm({ causa_raiz: "Sem processo nem gest\xE3o comercial (WhatsApp individual, ningu\xE9m cobra)", impacto: "~4 vendas/m\xEAs perdidas, ~R$ 100 mil" })
+  },
+  {
+    ...base,
+    movimento: "Investimento",
+    etapa: "tratando obje\xE7\xE3o de pre\xE7o",
+    portao: "Por que agora",
+    urgencia: "alta",
+    proximo_passo: "Descubra se o bloqueio \xE9 caixa, prioridade ou retorno; traga o s\xF3cio para a decis\xE3o.",
+    diga: "Marcos, antes do valor: o que pesa mais pra voc\xEA, o caixa deste m\xEAs ou a d\xFAvida se vai retornar?",
+    perguntas: ["O Paulo consegue entrar numa conversa esta semana?"],
+    alertas: ["N\xE3o ofere\xE7a desconto para compensar.", "Decisor oculto: Paulo (financeiro)."],
+    falta_cobrir: ["Microdecis\xE3o + respons\xE1vel + data"],
+    objecoes: [
+      { objecao: "T\xE1 caro, n\xE3o sei se cabe agora", contorno: "Entendo. Voc\xEA perdeu uns R$ 100 mil m\xEAs passado com proposta lenta. O que pesa mais: o caixa deste m\xEAs ou a d\xFAvida se vai retornar?" },
+      { objecao: "Preciso ver com meu s\xF3cio", contorno: "Faz todo sentido. O que o Paulo vai querer ver para decidir? Vamos marcar com ele junto ainda esta semana?" }
+    ],
+    sintese: "O cliente quer 12 projetos/m\xEAs, mas hoje est\xE1 em 6. Ele percebe demora na proposta, por\xE9m a causa priorit\xE1ria \xE9 a falta de processo e gest\xE3o comercial. Isso provoca perda de ~R$ 100 mil/m\xEAs. Portanto, a solu\xE7\xE3o \xE9 o Growth, desde que [o Paulo valide e o Marcos assuma as reuni\xF5es].",
+    temperatura: 66,
+    temperatura_motivo: "obje\xE7\xE3o de pre\xE7o e decisor ausente",
+    conducao: 7,
+    conducao_dica: "Traga o Paulo antes de falar de desconto",
+    destaque: "Obje\xE7\xF5es: pre\xE7o e s\xF3cio financeiro",
+    rota: { solucao: "Growth (Acelera\xE7\xE3o Comercial inclusa)", motivo: "Causa em processo e gest\xE3o comercial", investimento: "Anual parcelado R$ 5.599,20/m\xEAs (pol\xEDtica)" },
+    crm: crm({ decisores: "Marcos (s\xF3cio) presente; Paulo (financeiro) ausente", objecao: "Pre\xE7o / precisa do s\xF3cio" })
+  },
+  {
+    ...base,
+    movimento: "Reativar",
+    etapa: "microdecis\xE3o fechada",
+    portao: "Por que agora",
+    urgencia: "baixa",
+    proximo_passo: "Confirme por escrito: quinta 15h com Marcos e Paulo, pauta e o que o Paulo precisa ver.",
+    diga: "Combinado, quinta \xE0s 15h com voc\xEA e o Paulo. Vou levar o c\xE1lculo das vendas perdidas para ele ver.",
+    perguntas: [],
+    alertas: [],
+    falta_cobrir: ["Capacidade de execu\xE7\xE3o (quem assume as reuni\xF5es)"],
+    sintese: "O cliente quer 12 projetos/m\xEAs, mas hoje est\xE1 em 6. Ele percebe demora na proposta, por\xE9m a causa priorit\xE1ria \xE9 a falta de processo e gest\xE3o comercial. Isso provoca perda de ~R$ 100 mil/m\xEAs. Portanto, a solu\xE7\xE3o \xE9 o Growth, desde que o Paulo valide e o Marcos assuma as reuni\xF5es.",
+    temperatura: 74,
+    temperatura_motivo: "microdecis\xE3o com data e decisor",
+    conducao: 9,
+    conducao_dica: "Fechou com data, hora e decisor",
+    destaque: "Avan\xE7o: quinta 15h com Marcos e Paulo",
+    rota: { solucao: "Growth (Acelera\xE7\xE3o Comercial inclusa)", motivo: "Causa em processo e gest\xE3o comercial", investimento: "Anual parcelado R$ 5.599,20/m\xEAs (pol\xEDtica)" },
+    crm: crm({ proxima_acao: "Reuni\xE3o de decis\xE3o quinta 15h \u2014 Marcos + Paulo (respons\xE1vel: closer)" })
+  }
+];
+var DEMO_ATA = `## Resultado da reuni\xE3o
+**Avan\xE7o** \u2014 reuni\xE3o de decis\xE3o marcada para quinta \xE0s 15h com Marcos e Paulo.
+
+## Registro para o CRM
+- **Resultado desejado:** sair de 6 para 12 projetos/m\xEAs
+- **Frase literal da dor:** "a proposta demora tr\xEAs dias pra sair"
+- **Causa-raiz:** sem processo nem gest\xE3o comercial
+- **Impacto:** ~4 vendas/m\xEAs perdidas (~R$ 100 mil)
+- **Solu\xE7\xE3o recomendada:** Growth (Acelera\xE7\xE3o Comercial inclusa)
+- **Decisores:** Marcos presente; Paulo (financeiro) ausente
+- **Pr\xF3xima a\xE7\xE3o:** quinta 15h, Marcos + Paulo
+
+## Mensagem de follow-up pronta
+Marcos, obrigado pela conversa! Ficou claro que a meta de 12 projetos/m\xEAs est\xE1 travando na velocidade da proposta e na falta de processo comercial (foram ~4 vendas perdidas no m\xEAs passado). Confirmado quinta \xE0s 15h com voc\xEA e o Paulo: levo o c\xE1lculo do impacto e o plano do Growth para voc\xEAs decidirem. At\xE9 l\xE1!
+
+## Auditoria do closer
+- **Acertos:** usou a pergunta-m\xE3e e chegou na dor comercial; deixou o cliente quantificar o impacto.
+- **Ajustes:** antecipe o decisor financeiro logo na abertura; confirme a capacidade de execu\xE7\xE3o.
+- **Nota de condu\xE7\xE3o:** 8/10`;
+var DemoCoach = class {
+  constructor() {
+    this.busy = false;
+    this.i = 0;
+  }
+  async analyze() {
+    if (this.busy) return null;
+    this.busy = true;
+    await new Promise((r) => setTimeout(r, 900));
+    this.busy = false;
+    const data = DEMO_ANALISES[Math.min(this.i, DEMO_ANALISES.length - 1)];
+    this.i++;
+    return { data };
+  }
+  async ata() {
+    await new Promise((r) => setTimeout(r, 600));
+    return DEMO_ATA;
+  }
+};
+
 // src/dashboard.js
 var $ = (id) => document.getElementById(id);
 var SETUP_FIELDS = ["modo", "comQuem", "objetivo", "foco", "notas"];
@@ -326,7 +518,7 @@ var BRANCHES = {
   rota: { t: "Rota / combo", side: "left" },
   proximos: { t: "Pr\xF3ximos passos", side: "left" }
 };
-var MAX_LEAVES = 4;
+var MAX_LEAVES = 3;
 var freshState = () => ({
   running: false,
   coach: null,
@@ -770,7 +962,7 @@ function updateKpis() {
   setRing("diagRing", n / N_CRM, n >= 8 ? "var(--ok)" : "var(--primary)");
   $("diagRingVal").textContent = `${Math.round(n / N_CRM * 100)}%`;
   $("crmBadge").textContent = `${n}/${N_CRM}`;
-  const faltam = Object.entries(CRM_CAMPOS).filter(([k]) => !state.crm[k]).map(([, v]) => v.split(" ")[0]);
+  const faltam = Object.entries(CRM_CAMPOS).filter(([k]) => !state.crm[k]).map(([, v]) => v.split(/[(/]/)[0].trim());
   $("diagFalta").textContent = faltam.length ? `falta: ${faltam.slice(0, 3).join(", ")}${faltam.length > 3 ? "\u2026" : ""}` : "completo \u2714";
   const me = state.talk["Voc\xEA"] || 0;
   const total = Object.values(state.talk).reduce((a, b) => a + b, 0);
@@ -817,7 +1009,7 @@ setInterval(() => {
     const txt = s < 60 ? `${s}s` : `${Math.floor(s / 60)}min`;
     $("coachAge").textContent = `atualizado h\xE1 ${txt} \xB7`;
   }
-  if (state.running) $("nextInfo").textContent = state.coach?.busy ? "analisando\u2026" : `pr\xF3xima em ~${Math.max(0, state.intervalSec - state.sinceAnalysis)}s`;
+  if (state.running) $("nextInfo").textContent = state.coach?.busy ? "analisando\u2026" : state.source === "demo" ? "" : `pr\xF3xima em ~${Math.max(0, state.intervalSec - state.sinceAnalysis)}s`;
   if (Object.values(state.map).some((ls) => ls.some((l) => {
     const a = Date.now() - l.at;
     return a >= NEW_MS && a < NEW_MS + 1e3;
@@ -877,14 +1069,46 @@ OK = usar \xB7 Cancelar = come\xE7ar sem dossi\xEA`)) {
     return;
   }
   $("btnStart").disabled = false;
+  beginSession(settings, setup, new Coach(settings, setup, stored.docs || [], leadDocs), settings.source);
+};
+$("btnStop").onclick = async () => {
+  if (!state.running) return;
+  clearInterval(state.tick);
+  clearTimeout(state.questionTimer);
+  $("btnStop").disabled = true;
+  if (state.source === "meet") await chrome.tabs.sendMessage(state.meetTabId, { target: "meet", type: "stop" }).catch(() => {
+  });
+  else if (state.source === "audio") await chrome.runtime.sendMessage({ target: "background", type: "stop-capture" });
+  await new Promise((r) => setTimeout(r, 600));
+  state.running = false;
+  $("btnStop").disabled = false;
+  $("btnStop").hidden = true;
+  $("btnStart").hidden = false;
+  $("btnDemo").hidden = false;
+  $("dot").classList.remove("on");
+  $("livePill").classList.remove("on");
+  $("liveTag").textContent = "ENCERRADA";
+  setStatus("Gerando a ata final\u2026");
+  try {
+    state.ataMd = await state.coach.ata(takeNewLines());
+    renderAta(state.ataMd);
+    $("ataOverlay").hidden = false;
+    if (state.source !== "demo") saveHistory();
+    setStatus(leadDocs.length ? "\u{1F4C2} O dossi\xEA deste lead continua carregado \u2014 em Prepara\xE7\xE3o, \u201Climpar dossi\xEA\u201D antes do pr\xF3ximo lead." : "", "warn");
+  } catch (e) {
+    setStatus(`Erro ao gerar ata: ${e.message}`, "error");
+  }
+};
+function beginSession(settings, setup, coach, source) {
   const meetTabId = state.meetTabId;
   Object.assign(state, freshState(), {
     meetTabId,
     running: true,
-    source: settings.source,
-    coach: new Coach(settings, setup, stored.docs || [], leadDocs),
+    source,
+    coach,
+    setup,
     startedAt: Date.now(),
-    intervalSec: settings.intervalSec
+    intervalSec: source === "demo" ? 9999 : settings.intervalSec
   });
   $("transcript").innerHTML = "";
   $("timeline").innerHTML = "";
@@ -922,12 +1146,13 @@ OK = usar \xB7 Cancelar = come\xE7ar sem dossi\xEA`)) {
   $("setupBox").hidden = true;
   $("proximo").textContent = "Ouvindo\u2026 abra com contexto, confirme tempo e participantes e combine o objetivo.";
   $("btnStart").hidden = true;
+  $("btnDemo").hidden = true;
   $("btnStop").hidden = false;
   $("dot").classList.add("on");
   $("livePill").classList.add("on");
   $("liveTag").textContent = "AO VIVO";
   addTimeline(setup.origem === "avanco" ? "Reuni\xE3o de avan\xE7o iniciada" : "Reuni\xE3o iniciada (lead novo)", "Abertura", "baixa");
-  if (leadDocs.length || setup.notas) {
+  if (source !== "demo" && (leadDocs.length || setup.notas)) {
     $("proximo").textContent = "Lendo o dossi\xEA do lead e montando o briefing\u2026";
     maybeAnalyze(true, PEDIDO_BRIEFING);
   }
@@ -938,32 +1163,43 @@ OK = usar \xB7 Cancelar = come\xE7ar sem dossi\xEA`)) {
       maybeAnalyze();
     }
   }, 1e3);
-};
-$("btnStop").onclick = async () => {
-  if (!state.running) return;
-  clearInterval(state.tick);
-  clearTimeout(state.questionTimer);
-  $("btnStop").disabled = true;
-  if (state.source === "meet") await chrome.tabs.sendMessage(state.meetTabId, { target: "meet", type: "stop" }).catch(() => {
+}
+var demoTimers = [];
+var demoSavedInputs = null;
+$("btnDemo").onclick = () => {
+  if (state.running) return;
+  demoSavedInputs = Object.fromEntries(SETUP_FIELDS.map((f) => [f, $(f).value]));
+  SETUP_FIELDS.forEach((f) => {
+    $(f).value = DEMO_SETUP[f] || "";
   });
-  else await chrome.runtime.sendMessage({ target: "background", type: "stop-capture" });
-  await new Promise((r) => setTimeout(r, 600));
-  state.running = false;
-  $("btnStop").disabled = false;
-  $("btnStop").hidden = true;
-  $("btnStart").hidden = false;
-  $("dot").classList.remove("on");
-  $("livePill").classList.remove("on");
-  $("liveTag").textContent = "ENCERRADA";
-  setStatus("Gerando a ata final\u2026");
-  try {
-    $("ata").textContent = await state.coach.ata(takeNewLines());
-    $("ataOverlay").hidden = false;
-    setStatus(leadDocs.length ? "\u{1F4C2} O dossi\xEA deste lead continua carregado \u2014 em Prepara\xE7\xE3o, \u201Climpar dossi\xEA\u201D antes do pr\xF3ximo lead." : "", "warn");
-  } catch (e) {
-    setStatus(`Erro ao gerar ata: ${e.message}`, "error");
-  }
+  showContext();
+  beginSession({ ...DEFAULTS }, { ...DEMO_SETUP }, new DemoCoach(), "demo");
+  setStatus("Demonstra\xE7\xE3o com uma reuni\xE3o fict\xEDcia. Nada \xE9 enviado ao Gemini.", "ok");
+  $("liveTag").textContent = "DEMONSTRA\xC7\xC3O";
+  const analisarEm = /* @__PURE__ */ new Set([3, 5, 7, 9, 11]);
+  DEMO_SCRIPT.forEach(([seg, speaker, text], i) => {
+    demoTimers.push(setTimeout(() => {
+      if (!state.running || state.source !== "demo") return;
+      onTranscript({ speaker, text, isFinal: true });
+      if (analisarEm.has(i)) setTimeout(() => maybeAnalyze(true), 400);
+    }, seg * 1e3));
+  });
+  const fim = DEMO_SCRIPT[DEMO_SCRIPT.length - 1][0] + 4;
+  demoTimers.push(setTimeout(() => {
+    if (state.source === "demo" && state.running) setStatus("Demonstra\xE7\xE3o conclu\xEDda. Clique em \u201CEncerrar + Ata\u201D para ver a ata.", "ok");
+  }, fim * 1e3));
 };
+function endDemo() {
+  demoTimers.forEach(clearTimeout);
+  demoTimers = [];
+  if (demoSavedInputs) {
+    SETUP_FIELDS.forEach((f) => {
+      $(f).value = demoSavedInputs[f];
+    });
+    demoSavedInputs = null;
+    showContext();
+  }
+}
 chrome.runtime.onMessage.addListener((msg, sender) => {
   if (msg.target !== "sidepanel") return;
   if (sender.tab && state.meetTabId && sender.tab.id !== state.meetTabId) return;
@@ -1217,6 +1453,94 @@ function renderMem() {
   $("memCount").hidden = !state.memoria.length;
   $("memCount").textContent = String(state.memoria.length);
 }
+function inline(el2, text) {
+  text.split(/(\*\*[^*]+\*\*)/).forEach((part) => {
+    if (/^\*\*[^*]+\*\*$/.test(part)) el2.append(Object.assign(document.createElement("strong"), { textContent: part.slice(2, -2) }));
+    else if (part) el2.append(document.createTextNode(part));
+  });
+}
+function renderAta(md) {
+  const box = $("ata");
+  box.innerHTML = "";
+  let ul = null;
+  for (const raw of (md || "").split("\n")) {
+    const line = raw.trimEnd();
+    if (/^#{1,4}\s/.test(line)) {
+      ul = null;
+      const h = el("h3");
+      inline(h, line.replace(/^#+\s*/, ""));
+      box.append(h);
+      continue;
+    }
+    if (/^\s*[-*•]\s+/.test(line)) {
+      if (!ul) {
+        ul = el("ul");
+        box.append(ul);
+      }
+      const li = el("li");
+      inline(li, line.replace(/^\s*[-*•]\s+/, ""));
+      ul.append(li);
+      continue;
+    }
+    ul = null;
+    if (line.trim()) {
+      const p = el("p");
+      inline(p, line);
+      box.append(p);
+    }
+  }
+  $("btnCopyFollow").hidden = !followUp(md);
+}
+function followUp(md) {
+  const m = (md || "").match(/#+[^\n]*follow[^\n]*\n([\s\S]*?)(?=\n#+\s|$)/i);
+  return m ? m[1].trim() : "";
+}
+$("btnCopyFollow").onclick = () => copy(followUp(state.ataMd), "Follow-up copiado \u2714");
+var normName = (t) => (t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").split(/\s[—–-]\s|,/)[0].trim();
+async function saveHistory() {
+  const { historico = [] } = await chrome.storage.local.get("historico");
+  historico.unshift({
+    id: Date.now(),
+    cliente: state.setup?.comQuem || "Sem nome",
+    data: (/* @__PURE__ */ new Date()).toISOString(),
+    origem: state.setup?.origem,
+    md: buildMarkdown()
+  });
+  await chrome.storage.local.set({ historico: historico.slice(0, 40) });
+  renderHistory();
+}
+async function renderHistory() {
+  const { historico = [] } = await chrome.storage.local.get("historico");
+  const alvo = normName($("comQuem").value);
+  const lista = alvo ? historico.filter((h) => normName(h.cliente) === alvo || normName(h.cliente).includes(alvo)) : historico.slice(0, 3);
+  const ul = $("histList");
+  ul.innerHTML = "";
+  lista.slice(0, 6).forEach((h) => {
+    const li = el("li");
+    const d = new Date(h.data);
+    li.append(el("span", "hist-date", d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })), el("span", "fn", h.cliente));
+    const add = el("button", "mini", "+ dossi\xEA");
+    add.title = "Usar a ata e o mapa desta reuni\xE3o como contexto";
+    add.onclick = () => {
+      const name = `reuniao-${d.toISOString().slice(0, 10)}.md`;
+      if (!leadDocs.some((x) => x.name === name)) {
+        if (!leadDocs.length) chrome.storage.local.set({ leadOwner: $("comQuem").value.trim() });
+        leadDocs.push({ name, content: h.md });
+        saveLead();
+      }
+      toast("Reuni\xE3o anterior adicionada ao dossi\xEA");
+    };
+    li.append(add);
+    ul.append(li);
+  });
+  $("histTitle").textContent = alvo ? `Reuni\xF5es anteriores com ${$("comQuem").value.split(/\s[—–-]\s|,/)[0].trim()}` : "\xDAltimas reuni\xF5es";
+  $("histBox").hidden = !lista.length;
+}
+$("comQuem").addEventListener("input", () => {
+  clearTimeout(renderHistory.h);
+  renderHistory.h = setTimeout(renderHistory, 300);
+});
+renderHistory();
 $("digaBox").onclick = () => copy($("diga").textContent, "Frase copiada \u2714");
 document.addEventListener("keydown", (e) => {
   if (e.target.closest('input, textarea, select, [contenteditable="plaintext-only"]')) return;
@@ -1233,6 +1557,10 @@ document.addEventListener("keydown", (e) => {
 $("btnCopyAta").onclick = () => copy(buildMarkdown(), "Ata copiada \u2714");
 $("btnFecharAta").onclick = () => {
   $("ataOverlay").hidden = true;
+  if (state.source === "demo") {
+    endDemo();
+    setStatus("");
+  }
 };
 $("btnBaixar").onclick = () => {
   const a = document.createElement("a");
@@ -1248,7 +1576,7 @@ function buildMarkdown() {
 ${ls.map((l) => `- ${l.text}${l.sub ? ` \u2192 ${l.sub}` : ""}`).join("\n")}` : "";
   }).filter(Boolean).join("\n\n");
   const transcricao = state.lines.map((l) => `**${l.speaker}:** ${l.text}`).join("\n\n");
-  return `${$("ata").textContent}
+  return `${state.ataMd || ""}
 
 ---
 

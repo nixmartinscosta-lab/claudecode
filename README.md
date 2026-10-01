@@ -28,6 +28,11 @@ O foco padrão é **vender combos com serviço (Business, Growth, Scale) e compo
 - **Preparação**: origem (🆕 lead novo da pré-venda / 🔁 avanço que você marcou) + **dossiê do lead** (arraste `.txt`/`.md`/`.csv` com conversas e registros). Ao começar, o Mentor faz um **briefing** e já monta o mapa com o histórico.
 - O Mentor conhece seus gaps (conforto no pós-venda, concluir pelo cliente, antecipar objeção, dois caminhos, fechamento/follow-up) e te corrige ao vivo.
 
+- **Ver demonstração**: simula uma reunião de exemplo completa (sem Meet e sem gastar API) para você ver tudo funcionando e treinar.
+- **Histórico**: cada reunião encerrada fica salva no navegador. Na reunião de avanço, digite o nome do lead na Preparação e clique em **+ dossiê** na reunião anterior.
+- **Ata formatada** com botão **Copiar follow-up**.
+- **Janela estreita**: com a janela do painel estreita (ao lado do Meet), tudo vira uma coluna na ordem de prioridade.
+
 ## Instalar (5 min, uma vez)
 
 1. Baixe esta pasta (Code → Download ZIP) e descompacte.

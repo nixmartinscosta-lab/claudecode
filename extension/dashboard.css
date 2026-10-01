@@ -416,3 +416,50 @@ button.danger { background: var(--danger); box-shadow: 0 1px 2px rgb(15 29 51 / 
 .ctx-invest { flex: 0 1 auto; max-width: 55%; }
 .mapctl { top: auto; bottom: 10px; }
 .mapctl { right: auto; left: 10px; }
+
+/* ---------------- histórico ---------------- */
+.hist { margin-top: 10px; }
+.hist-title { font-size: 11px; font-weight: 800; letter-spacing: .08em; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+.hist-date { font-family: var(--font-data); font-size: 11.5px; color: var(--muted); min-width: 46px; }
+/* ---------------- ata formatada ---------------- */
+.ata { padding: 18px 22px; }
+.ata-body { max-width: 72ch; color: var(--ink); line-height: 1.6; }
+.ata-body h3 { font-family: var(--font-display); font-size: 15px; margin: 18px 0 6px; padding-bottom: 4px; border-bottom: 1px solid var(--line); text-wrap: balance; }
+.ata-body h3:first-child { margin-top: 4px; }
+.ata-body p { margin: 6px 0; }
+.ata-body ul { margin: 4px 0 8px; padding-left: 20px; }
+.ata-body strong { color: var(--ink); }
+/* ---------------- mapa: mais legível no tamanho normal ---------------- */
+.map-stage { gap: 0 44px; padding: 22px 24px; }
+.leaves, .leaf { max-width: 210px; }
+.leaf { font-size: 13px; }
+.branch-node { font-size: 13.5px; }
+/* ---------------- janela estreita (Meet ao lado numa tela só) ---------------- */
+@media (max-width: 980px) {
+  body { overflow: auto; }
+  .top { flex-wrap: wrap; row-gap: 8px; padding: 8px 16px; }
+  .who { border-left: 0; padding-left: 0; }
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 10px 16px 0; }
+  .rails { margin: 10px 16px 0; overflow-x: auto; flex-wrap: nowrap; }
+  .rail { flex: none; }
+  .status { margin: 10px 16px 0; }
+  .layout { grid-template-columns: 1fr; padding: 10px 16px 16px; }
+  .col { overflow: visible; }
+  .col-center { overflow: visible; }
+  .board { min-height: 460px; }
+  .col-right { display: flex !important; }
+  .col-right .feed { max-height: 420px; }
+  .expand-right { display: none !important; }
+  .askbar { position: sticky; bottom: 8px; }
+}
+/* cabeçalho: nunca quebra os botões; nome longo vira reticências */
+.top > button, .top > a, .livepill, .timer { flex: none; white-space: nowrap; }
+.brandsub { white-space: nowrap; }
+.who { min-width: 0; flex: 0 1 auto; }
+.who > * { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 980px) {
+  .layout { flex: none; grid-template-columns: minmax(0, 1fr); }
+  .col { min-height: auto; }
+  .kpis, .rails, .layout { max-width: 100%; }
+}
+@media (max-width: 980px) { .col-left .askbar { position: static; margin-top: 0; box-shadow: var(--shadow); } }

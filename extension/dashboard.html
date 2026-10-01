@@ -20,6 +20,7 @@
   <span class="kbd-hint muted small"><kbd>A</kbd> ajuda <kbd>/</kbd> pergunta <kbd>C</kbd> copia <kbd>M</kbd> mapa</span>
   <button id="btnSetup" class="ghost">Preparação</button>
   <a href="options.html" target="_blank" class="ghost btnlink" title="Configurações">⚙</a>
+  <button id="btnDemo" class="ghost" title="Simula uma reunião de exemplo, sem Meet e sem API">Ver demonstração</button>
   <button id="btnStart" class="primary">▶ Começar</button>
   <button id="btnStop" class="danger" hidden>■ Encerrar + Ata</button>
 </header>
@@ -89,6 +90,10 @@
         <ul id="leadList" class="filelist"></ul>
         <button id="clearLead" class="mini" hidden>limpar dossiê (próximo lead)</button>
       </div>
+      <div id="histBox" class="hist" hidden>
+        <div id="histTitle" class="hist-title">Últimas reuniões</div>
+        <ul id="histList" class="filelist"></ul>
+      </div>
       <label>Tipo de reunião
         <select id="modo">
           <option value="diagnostico">Diagnóstico Comercial (até 90 min)</option>
@@ -107,7 +112,7 @@
 
     <div id="coach" class="card hero urg-baixa">
       <div class="card-h"><span class="tag-urg" id="urgTag">AGORA</span><span class="muted small"><span id="coachAge"></span> <span id="nextInfo"></span></span></div>
-      <div id="proximo" class="hero-text">Ligue as legendas no Meet e clique em <b>▶ Começar</b>.</div>
+      <div id="proximo" class="hero-text">Ligue as legendas no Meet e clique em <b>▶ Começar</b>. Primeira vez? Clique em <b>Ver demonstração</b>.</div>
       <div id="digaBox" class="say" hidden title="Clique para copiar (C)">
         <span class="say-label">Diga</span>
         <span id="diga"></span>
@@ -232,11 +237,12 @@
 <div id="ataOverlay" class="overlay" hidden>
   <div class="card ata">
     <div class="card-h"><h2>Ata final</h2><span class="spacer"></span>
-      <button id="btnCopyAta" class="mini">copiar</button>
+      <button id="btnCopyFollow" class="mini primary" hidden>Copiar follow-up</button>
+      <button id="btnCopyAta" class="mini">copiar tudo</button>
       <button id="btnBaixar" class="mini">baixar .md</button>
       <button id="btnFecharAta" class="mini">fechar</button>
     </div>
-    <pre id="ata"></pre>
+    <div id="ata" class="ata-body"></div>
   </div>
 </div>
 <script type="module" src="dashboard.bundle.js"></script>

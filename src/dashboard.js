@@ -1,4 +1,5 @@
 import { Coach } from './coach.js';
+import { DemoCoach, DEMO_SETUP, DEMO_SCRIPT } from './demo.js';
 import { CRM_CAMPOS, MOVIMENTOS, PORTOES, PEDIDO_BRIEFING } from './prompts.js';
 
 const $ = (id) => document.getElementById(id);
@@ -24,7 +25,7 @@ const BRANCHES = {
   rota: { t: 'Rota / combo', side: 'left' },
   proximos: { t: 'Próximos passos', side: 'left' },
 };
-const MAX_LEAVES = 4;
+const MAX_LEAVES = 3;
 
 const freshState = () => ({
   running: false, coach: null, source: 'meet', lines: [], sentUpTo: 0, interim: {}, startedAt: 0, tick: null,
@@ -291,7 +292,7 @@ function updateKpis() {
   setRing('diagRing', n / N_CRM, n >= 8 ? 'var(--ok)' : 'var(--primary)');
   $('diagRingVal').textContent = `${Math.round((n / N_CRM) * 100)}%`;
   $('crmBadge').textContent = `${n}/${N_CRM}`;
-  const faltam = Object.entries(CRM_CAMPOS).filter(([k]) => !state.crm[k]).map(([, v]) => v.split(' ')[0]);
+  const faltam = Object.entries(CRM_CAMPOS).filter(([k]) => !state.crm[k]).map(([, v]) => v.split(/[(/]/)[0].trim());
   $('diagFalta').textContent = faltam.length ? `falta: ${faltam.slice(0, 3).join(', ')}${faltam.length > 3 ? '…' : ''}` : 'completo ✔';
 
   const me = state.talk['Você'] || 0;
@@ -329,7 +330,7 @@ setInterval(() => {
     const txt = s < 60 ? `${s}s` : `${Math.floor(s / 60)}min`;
     $('coachAge').textContent = `atualizado há ${txt} ·`;
   }
-  if (state.running) $('nextInfo').textContent = state.coach?.busy ? 'analisando…' : `próxima em ~${Math.max(0, state.intervalSec - state.sinceAnalysis)}s`;
+  if (state.running) $('nextInfo').textContent = state.coach?.busy ? 'analisando…' : state.source === 'demo' ? '' : `próxima em ~${Math.max(0, state.intervalSec - state.sinceAnalysis)}s`;
   // tira o "NOVO" quando expira
   if (Object.values(state.map).some((ls) => ls.some((l) => { const a = Date.now() - l.at; return a >= NEW_MS && a < NEW_MS + 1000; }))) renderMap();
 }, 1000);
@@ -384,10 +385,36 @@ $('btnStart').onclick = async () => {
   }
   $('btnStart').disabled = false;
 
+  beginSession(settings, setup, new Coach(settings, setup, stored.docs || [], leadDocs), settings.source);
+};
+
+
+$('btnStop').onclick = async () => {
+  if (!state.running) return;
+  clearInterval(state.tick); clearTimeout(state.questionTimer);
+  $('btnStop').disabled = true;
+  if (state.source === 'meet') await chrome.tabs.sendMessage(state.meetTabId, { target: 'meet', type: 'stop' }).catch(() => {});
+  else if (state.source === 'audio') await chrome.runtime.sendMessage({ target: 'background', type: 'stop-capture' });
+  await new Promise((r) => setTimeout(r, 600)); // recebe as últimas falas antes de fechar
+  state.running = false;
+  $('btnStop').disabled = false;
+  $('btnStop').hidden = true; $('btnStart').hidden = false; $('btnDemo').hidden = false; $('dot').classList.remove('on'); $('livePill').classList.remove('on'); $('liveTag').textContent = 'ENCERRADA';
+  setStatus('Gerando a ata final…');
+  try {
+    state.ataMd = await state.coach.ata(takeNewLines());
+    renderAta(state.ataMd);
+    $('ataOverlay').hidden = false;
+    if (state.source !== 'demo') saveHistory();
+    setStatus(leadDocs.length ? '📂 O dossiê deste lead continua carregado — em Preparação, “limpar dossiê” antes do próximo lead.' : '', 'warn');
+  } catch (e) { setStatus(`Erro ao gerar ata: ${e.message}`, 'error'); }
+};
+
+// Começa a sessão (reunião real ou demonstração) com o painel zerado.
+function beginSession(settings, setup, coach, source) {
   const meetTabId = state.meetTabId;
   Object.assign(state, freshState(), {
-    meetTabId, running: true, source: settings.source, coach: new Coach(settings, setup, stored.docs || [], leadDocs),
-    startedAt: Date.now(), intervalSec: settings.intervalSec,
+    meetTabId, running: true, source, coach, setup,
+    startedAt: Date.now(), intervalSec: source === 'demo' ? 9999 : settings.intervalSec,
   });
   $('transcript').innerHTML = ''; $('timeline').innerHTML = '';
   // limpa o que sobrou da reunião anterior
@@ -402,10 +429,10 @@ $('btnStart').onclick = async () => {
   renderCrm(); renderMem(); renderMap(); updateKpis(); showContext();
   $('setupBox').hidden = true;
   $('proximo').textContent = 'Ouvindo… abra com contexto, confirme tempo e participantes e combine o objetivo.';
-  $('btnStart').hidden = true; $('btnStop').hidden = false; $('dot').classList.add('on'); $('livePill').classList.add('on'); $('liveTag').textContent = 'AO VIVO';
+  $('btnStart').hidden = true; $('btnDemo').hidden = true; $('btnStop').hidden = false; $('dot').classList.add('on'); $('livePill').classList.add('on'); $('liveTag').textContent = 'AO VIVO';
   addTimeline(setup.origem === 'avanco' ? 'Reunião de avanço iniciada' : 'Reunião iniciada (lead novo)', 'Abertura', 'baixa');
   // Com dossiê ou notas: briefing imediato, o mapa já começa preenchido.
-  if (leadDocs.length || setup.notas) {
+  if (source !== 'demo' && (leadDocs.length || setup.notas)) {
     $('proximo').textContent = 'Lendo o dossiê do lead e montando o briefing…';
     maybeAnalyze(true, PEDIDO_BRIEFING);
   }
@@ -414,25 +441,34 @@ $('btnStart').onclick = async () => {
     $('timer').textContent = fmt(elapsedSec());
     if (++state.sinceAnalysis >= state.intervalSec) { state.sinceAnalysis = 0; maybeAnalyze(); }
   }, 1000);
-};
+}
 
-$('btnStop').onclick = async () => {
-  if (!state.running) return;
-  clearInterval(state.tick); clearTimeout(state.questionTimer);
-  $('btnStop').disabled = true;
-  if (state.source === 'meet') await chrome.tabs.sendMessage(state.meetTabId, { target: 'meet', type: 'stop' }).catch(() => {});
-  else await chrome.runtime.sendMessage({ target: 'background', type: 'stop-capture' });
-  await new Promise((r) => setTimeout(r, 600)); // recebe as últimas falas antes de fechar
-  state.running = false;
-  $('btnStop').disabled = false;
-  $('btnStop').hidden = true; $('btnStart').hidden = false; $('dot').classList.remove('on'); $('livePill').classList.remove('on'); $('liveTag').textContent = 'ENCERRADA';
-  setStatus('Gerando a ata final…');
-  try {
-    $('ata').textContent = await state.coach.ata(takeNewLines());
-    $('ataOverlay').hidden = false;
-    setStatus(leadDocs.length ? '📂 O dossiê deste lead continua carregado — em Preparação, “limpar dossiê” antes do próximo lead.' : '', 'warn');
-  } catch (e) { setStatus(`Erro ao gerar ata: ${e.message}`, 'error'); }
+// ================= demonstração =================
+let demoTimers = [];
+let demoSavedInputs = null;
+$('btnDemo').onclick = () => {
+  if (state.running) return;
+  demoSavedInputs = Object.fromEntries(SETUP_FIELDS.map((f) => [f, $(f).value]));
+  SETUP_FIELDS.forEach((f) => { $(f).value = DEMO_SETUP[f] || ''; });
+  showContext();
+  beginSession({ ...DEFAULTS }, { ...DEMO_SETUP }, new DemoCoach(), 'demo');
+  setStatus('Demonstração com uma reunião fictícia. Nada é enviado ao Gemini.', 'ok');
+  $('liveTag').textContent = 'DEMONSTRAÇÃO';
+  const analisarEm = new Set([3, 5, 7, 9, 11]); // índice da fala após a qual o Mentor analisa
+  DEMO_SCRIPT.forEach(([seg, speaker, text], i) => {
+    demoTimers.push(setTimeout(() => {
+      if (!state.running || state.source !== 'demo') return;
+      onTranscript({ speaker, text, isFinal: true });
+      if (analisarEm.has(i)) setTimeout(() => maybeAnalyze(true), 400);
+    }, seg * 1000));
+  });
+  const fim = DEMO_SCRIPT[DEMO_SCRIPT.length - 1][0] + 4;
+  demoTimers.push(setTimeout(() => { if (state.source === 'demo' && state.running) setStatus('Demonstração concluída. Clique em “Encerrar + Ata” para ver a ata.', 'ok'); }, fim * 1000));
 };
+function endDemo() {
+  demoTimers.forEach(clearTimeout); demoTimers = [];
+  if (demoSavedInputs) { SETUP_FIELDS.forEach((f) => { $(f).value = demoSavedInputs[f]; }); demoSavedInputs = null; showContext(); }
+}
 
 // ================= transcrição =================
 chrome.runtime.onMessage.addListener((msg, sender) => {
@@ -641,6 +677,70 @@ function renderMem() {
   $('memCount').hidden = !state.memoria.length; $('memCount').textContent = String(state.memoria.length);
 }
 
+// ================= ata formatada =================
+function inline(el, text) {
+  text.split(/(\*\*[^*]+\*\*)/).forEach((part) => {
+    if (/^\*\*[^*]+\*\*$/.test(part)) el.append(Object.assign(document.createElement('strong'), { textContent: part.slice(2, -2) }));
+    else if (part) el.append(document.createTextNode(part));
+  });
+}
+function renderAta(md) {
+  const box = $('ata'); box.innerHTML = '';
+  let ul = null;
+  for (const raw of (md || '').split('\n')) {
+    const line = raw.trimEnd();
+    if (/^#{1,4}\s/.test(line)) { ul = null; const h = el('h3'); inline(h, line.replace(/^#+\s*/, '')); box.append(h); continue; }
+    if (/^\s*[-*•]\s+/.test(line)) { if (!ul) { ul = el('ul'); box.append(ul); } const li = el('li'); inline(li, line.replace(/^\s*[-*•]\s+/, '')); ul.append(li); continue; }
+    ul = null;
+    if (line.trim()) { const p = el('p'); inline(p, line); box.append(p); }
+  }
+  $('btnCopyFollow').hidden = !followUp(md);
+}
+// Extrai a seção "follow-up" da ata.
+function followUp(md) {
+  const m = (md || '').match(/#+[^\n]*follow[^\n]*\n([\s\S]*?)(?=\n#+\s|$)/i);
+  return m ? m[1].trim() : '';
+}
+$('btnCopyFollow').onclick = () => copy(followUp(state.ataMd), 'Follow-up copiado ✔');
+
+// ================= histórico de reuniões =================
+const normName = (t) => (t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').split(/\s[—–-]\s|,/)[0].trim();
+async function saveHistory() {
+  const { historico = [] } = await chrome.storage.local.get('historico');
+  historico.unshift({
+    id: Date.now(), cliente: state.setup?.comQuem || 'Sem nome', data: new Date().toISOString(),
+    origem: state.setup?.origem, md: buildMarkdown(),
+  });
+  await chrome.storage.local.set({ historico: historico.slice(0, 40) });
+  renderHistory();
+}
+async function renderHistory() {
+  const { historico = [] } = await chrome.storage.local.get('historico');
+  const alvo = normName($('comQuem').value);
+  const lista = alvo ? historico.filter((h) => normName(h.cliente) === alvo || normName(h.cliente).includes(alvo)) : historico.slice(0, 3);
+  const ul = $('histList'); ul.innerHTML = '';
+  lista.slice(0, 6).forEach((h) => {
+    const li = el('li');
+    const d = new Date(h.data);
+    li.append(el('span', 'hist-date', d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })), el('span', 'fn', h.cliente));
+    const add = el('button', 'mini', '+ dossiê');
+    add.title = 'Usar a ata e o mapa desta reunião como contexto';
+    add.onclick = () => {
+      const name = `reuniao-${d.toISOString().slice(0, 10)}.md`;
+      if (!leadDocs.some((x) => x.name === name)) {
+        if (!leadDocs.length) chrome.storage.local.set({ leadOwner: $('comQuem').value.trim() });
+        leadDocs.push({ name, content: h.md }); saveLead();
+      }
+      toast('Reunião anterior adicionada ao dossiê');
+    };
+    li.append(add); ul.append(li);
+  });
+  $('histTitle').textContent = alvo ? `Reuniões anteriores com ${$('comQuem').value.split(/\s[—–-]\s|,/)[0].trim()}` : 'Últimas reuniões';
+  $('histBox').hidden = !lista.length;
+}
+$('comQuem').addEventListener('input', () => { clearTimeout(renderHistory.h); renderHistory.h = setTimeout(renderHistory, 300); });
+renderHistory();
+
 // ================= atalhos =================
 $('digaBox').onclick = () => copy($('diga').textContent, 'Frase copiada ✔');
 document.addEventListener('keydown', (e) => {
@@ -655,7 +755,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 $('btnCopyAta').onclick = () => copy(buildMarkdown(), 'Ata copiada ✔');
-$('btnFecharAta').onclick = () => { $('ataOverlay').hidden = true; };
+$('btnFecharAta').onclick = () => { $('ataOverlay').hidden = true; if (state.source === 'demo') { endDemo(); setStatus(''); } };
 $('btnBaixar').onclick = () => {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([buildMarkdown()], { type: 'text/markdown' }));
@@ -668,7 +768,7 @@ function buildMarkdown() {
     return ls.length ? `### ${b.t}\n${ls.map((l) => `- ${l.text}${l.sub ? ` → ${l.sub}` : ''}`).join('\n')}` : '';
   }).filter(Boolean).join('\n\n');
   const transcricao = state.lines.map((l) => `**${l.speaker}:** ${l.text}`).join('\n\n');
-  return `${$('ata').textContent}\n\n---\n\n## Linha do raciocínio\n\n${$('sintese').textContent}\n\n## Mapa da reunião\n\n${mapa}\n\n---\n\n## Transcrição completa\n\n${transcricao}\n`;
+  return `${state.ataMd || ''}\n\n---\n\n## Linha do raciocínio\n\n${$('sintese').textContent}\n\n## Mapa da reunião\n\n${mapa}\n\n---\n\n## Transcrição completa\n\n${transcricao}\n`;
 }
 
 renderCrm(); renderMap(); updateKpis();
