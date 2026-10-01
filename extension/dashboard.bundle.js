@@ -62,7 +62,7 @@ FOCO COMERCIAL: o closer quer vender os COMBOS com servi\xE7o (Business, Growth,
 
 Se vier "CLOSER MARCOU COMO COBERTO", n\xE3o repita esses itens em falta_cobrir. Se vier "CLOSER CORRIGIU A FICHA", trate esses valores como verdade e n\xE3o os sobrescreva.
 
-Se vier "PEDIDO DO CLOSER", responda a ele com prioridade nos mesmos campos (resposta principal em "diga" e/ou "proximo_passo").`;
+Se vier "PEDIDO DO CLOSER", responda DIRETO no campo "resposta" (curto, pronto para usar: o valor oficial, a frase, o contorno) e mantenha os demais campos orientando o fluxo da reuni\xE3o. Sem pedido, "resposta" fica vazio.`;
 var CRM_CAMPOS = {
   resultado_desejado: "Resultado desejado",
   situacao_atual: "Situa\xE7\xE3o atual / gap",
@@ -91,6 +91,7 @@ var COACH_SCHEMA = obj({
   portao: { type: "string", enum: [...PORTOES, "Indefinido"] },
   urgencia: { type: "string", enum: ["baixa", "media", "alta"] },
   sintese: str,
+  resposta: str,
   frases_importantes: list,
   objecoes: { type: "array", items: obj({ objecao: str, contorno: str }) },
   temperatura: { type: "integer", minimum: 0, maximum: 100 },
@@ -474,11 +475,15 @@ var DemoCoach = class {
     this.busy = false;
     this.i = 0;
   }
-  async analyze() {
+  async analyze(_novas, pedido) {
     if (this.busy) return null;
     this.busy = true;
     await new Promise((r) => setTimeout(r, 900));
     this.busy = false;
+    if (pedido) {
+      const atual = DEMO_ANALISES[Math.max(0, Math.min(this.i - 1, DEMO_ANALISES.length - 1))];
+      return { data: { ...atual, resposta: "Exemplo: na reuni\xE3o real o Mentor responde aqui ao seu pedido usando sua base. Ex.: \u201CGrowth no anual parcelado fica R$ 5.599,20/m\xEAs, com Acelera\xE7\xE3o Comercial inclusa e implementa\xE7\xE3o isenta.\u201D" } };
+    }
     const data = DEMO_ANALISES[Math.min(this.i, DEMO_ANALISES.length - 1)];
     this.i++;
     return { data };
@@ -1015,6 +1020,75 @@ setInterval(() => {
     return a >= NEW_MS && a < NEW_MS + 1e3;
   }))) renderMap();
 }, 1e3);
+async function checkReady() {
+  if (state.running) return;
+  const st = await chrome.storage.local.get(["geminiKey", "docs", "source"]);
+  const items = [];
+  items.push(st.geminiKey ? ["ok", "Chave do Gemini"] : ["bad", "Falta a chave do Gemini", "options"]);
+  items.push(st.docs?.length ? ["ok", `Base: ${st.docs.length} arquivo(s)`] : ["warn", "Base vazia (suba os .md)", "options"]);
+  if ((st.source || "meet") === "meet") {
+    let tab = null;
+    try {
+      tab = await findMeetTab();
+    } catch {
+    }
+    if (!tab) items.push(["warn", "Abra a sala no Google Meet"]);
+    else {
+      items.push(["ok", "Meet aberto"]);
+      let probe = null;
+      try {
+        probe = await chrome.tabs.sendMessage(tab.id, { target: "meet", type: "ping" });
+      } catch {
+      }
+      if (!probe) items.push(["warn", "Legendas: conecto ao come\xE7ar"]);
+      else items.push(probe.captions ? ["ok", "Legendas ligadas"] : ["warn", "Ligue as legendas (tecla c)"]);
+    }
+  } else items.push(["ok", "Fonte: \xE1udio (Deepgram)"]);
+  const box = $("ready");
+  box.innerHTML = "";
+  items.forEach(([lvl, txt, act]) => {
+    const c = el(act ? "button" : "span", `rd rd-${lvl}`, txt);
+    if (act === "options") c.onclick = () => chrome.runtime.openOptionsPage();
+    box.append(c);
+  });
+}
+checkReady();
+setInterval(checkReady, 4e3);
+chrome.storage.onChanged.addListener(() => checkReady());
+function updateSignal() {
+  const pill = $("sigPill");
+  if (!state.running) {
+    pill.hidden = true;
+    return;
+  }
+  pill.hidden = false;
+  const now = Date.now();
+  const desde = Math.floor((now - (state.lastSignalAt || state.startedAt)) / 1e3);
+  let lvl = "ok";
+  let txt = "Ouvindo";
+  if (state.source === "meet" && state.captionsOn === false) {
+    lvl = "bad";
+    txt = "Legendas off (tecla c)";
+  } else if (!state.lastSignalAt && desde >= 10) {
+    lvl = "warn";
+    txt = "Aguardando fala\u2026";
+  } else if (desde >= 20) {
+    lvl = "warn";
+    txt = `Sem fala h\xE1 ${desde}s`;
+  }
+  pill.className = `sigpill sig-${lvl}`;
+  $("sigTxt").textContent = txt;
+}
+setInterval(updateSignal, 1e3);
+setInterval(async () => {
+  if (!state.running || state.source !== "meet" || !state.meetTabId) return;
+  try {
+    const r = await chrome.tabs.sendMessage(state.meetTabId, { target: "meet", type: "ping" });
+    state.captionsOn = !!r?.captions;
+  } catch {
+    state.captionsOn = null;
+  }
+}, 4e3);
 var isMeet = (t) => /^https:\/\/meet\.google\.com\//.test(t?.url || t?.pendingUrl || "");
 async function findMeetTab() {
   if (state.meetTabId) {
@@ -1138,6 +1212,7 @@ function beginSession(settings, setup, coach, source) {
     li.className = "";
   });
   $("sintese").textContent = "Aguardando a conversa\u2026";
+  $("ansBox").hidden = true;
   renderCrm();
   renderMem();
   renderMap();
@@ -1211,6 +1286,7 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
   if (msg.type === "transcript" && state.running) onTranscript(msg);
 });
 function onTranscript({ speaker, text, isFinal }) {
+  state.lastSignalAt = Date.now();
   if (!isFinal) {
     state.interim[speaker] = `${speaker}: ${text}`;
     $("interim").textContent = Object.values(state.interim).filter(Boolean).join("  \xB7  ");
@@ -1334,8 +1410,22 @@ function animate(id) {
   void e.offsetWidth;
   e.classList.add("enter");
 }
+function pedidoLabel(p) {
+  if (p === PEDIDO_BRIEFING) return "Briefing do lead";
+  const m = p.match(/^Analise esta fala[^"]*"(.*)"$/s);
+  if (m) return `An\xE1lise da fala: ${m[1]}`;
+  const a = p.match(/^Aprofunde este ponto[^"]*"(.*)"$/s);
+  if (a) return `Aprofundar: ${a[1]}`;
+  return p;
+}
 function render(d, pedido) {
   setStatus("");
+  if (pedido && d.resposta) {
+    $("ansQ").textContent = pedidoLabel(pedido);
+    $("ansA").textContent = d.resposta;
+    $("ansBox").hidden = false;
+    animate("ansA");
+  }
   $("coach").closest(".col").scrollTo({ top: 0, behavior: "smooth" });
   const urg = d.urgencia || "baixa";
   $("coach").className = `card hero urg-${urg}`;
@@ -1541,6 +1631,17 @@ $("comQuem").addEventListener("input", () => {
   renderHistory.h = setTimeout(renderHistory, 300);
 });
 renderHistory();
+$("ansA").onclick = () => copy($("ansA").textContent, "Resposta copiada \u2714");
+$("ansClose").onclick = () => {
+  $("ansBox").hidden = true;
+};
+var quickChips = [...document.querySelectorAll(".chip[data-q]")];
+quickChips.forEach((c, i) => {
+  if (i < 9) {
+    const k = el("kbd", "chipkey", String(i + 1));
+    c.prepend(k);
+  }
+});
 $("digaBox").onclick = () => copy($("diga").textContent, "Frase copiada \u2714");
 document.addEventListener("keydown", (e) => {
   if (e.target.closest('input, textarea, select, [contenteditable="plaintext-only"]')) return;
@@ -1552,6 +1653,7 @@ document.addEventListener("keydown", (e) => {
   } else if (k === "a") $("btnAjuda").click();
   else if (k === "c" && $("diga").textContent) copy($("diga").textContent, "Frase copiada \u2714");
   else if (k === "m") toggleMapFull();
+  else if (/^[1-9]$/.test(e.key) && quickChips[Number(e.key) - 1]) quickChips[Number(e.key) - 1].click();
   else if (e.key === "Escape" && document.body.classList.contains("map-full")) toggleMapFull();
 });
 $("btnCopyAta").onclick = () => copy(buildMarkdown(), "Ata copiada \u2714");

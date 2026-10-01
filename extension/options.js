@@ -28,12 +28,12 @@ function renderDocs() {
     const row = document.createElement('div');
     row.className = 'doc';
     const name = document.createElement('span');
-    name.textContent = `📄 ${d.name}`;
+    name.className = 'nm';
+    name.textContent = d.name;
     const size = document.createElement('span');
-    size.className = 'muted small';
-    size.textContent = `${Math.round(d.content.length / 1000)}k caracteres`;
+    size.className = 'sz';
+    size.textContent = `${Math.max(1, Math.round(d.content.length / 1000))}k caracteres`;
     const spacer = document.createElement('span');
-    spacer.className = 'spacer';
     const del = document.createElement('button');
     del.className = 'mini';
     del.textContent = 'remover';
@@ -67,6 +67,30 @@ $('btnMic').onclick = async () => {
     $('micStatus').textContent = '✔ Microfone liberado';
   } catch {
     $('micStatus').textContent = '✖ Bloqueado — libere no cadeado da barra de endereço';
+  }
+};
+
+// Testa a chave e o modelo direto na API do Gemini.
+$('btnTest').onclick = async () => {
+  const key = $('geminiKey').value.trim();
+  const model = $('model').value.trim() || DEFAULTS.model;
+  const out = $('testResult');
+  if (!key) { out.className = 'result bad'; out.textContent = 'Cole a chave antes de testar.'; return; }
+  out.className = 'result wait'; out.textContent = 'Testando…';
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}`, { headers: { 'x-goog-api-key': key } });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok) {
+      out.className = 'result ok';
+      out.textContent = `✔ Chave válida. Modelo ${data.displayName || model} disponível.`;
+      await chrome.storage.local.set({ geminiKey: key, model });
+    } else if (res.status === 404) {
+      out.className = 'result bad'; out.textContent = `A chave funcionou, mas o modelo “${model}” não existe. Confira o código do modelo no passo 4.`;
+    } else {
+      out.className = 'result bad'; out.textContent = `Chave recusada: ${data.error?.message || `erro ${res.status}`}`;
+    }
+  } catch {
+    out.className = 'result bad'; out.textContent = 'Sem conexão com o Gemini. Confira a internet e tente de novo.';
   }
 };
 

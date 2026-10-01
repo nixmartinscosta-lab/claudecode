@@ -33,6 +33,10 @@ O foco padrão é **vender combos com serviço (Business, Growth, Scale) e compo
 - **Ata formatada** com botão **Copiar follow-up**.
 - **Janela estreita**: com a janela do painel estreita (ao lado do Meet), tudo vira uma coluna na ordem de prioridade.
 
+- **Pronto pra reunião**: na Preparação, selos mostram se a chave, a base, o Meet e as legendas estão ok. Durante a reunião, o selo no topo mostra **Ouvindo / Aguardando fala / Legendas off**.
+- **Resposta ao seu pedido** em cartão próprio; atalhos rápidos nas teclas **1–7**.
+- **Testar chave** nas Configurações valida a chave e o modelo do Gemini na hora.
+
 ## Instalar (5 min, uma vez)
 
 1. Baixe esta pasta (Code → Download ZIP) e descompacte.

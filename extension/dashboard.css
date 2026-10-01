@@ -463,3 +463,25 @@ button.danger { background: var(--danger); box-shadow: 0 1px 2px rgb(15 29 51 / 
   .kpis, .rails, .layout { max-width: 100%; }
 }
 @media (max-width: 980px) { .col-left .askbar { position: static; margin-top: 0; box-shadow: var(--shadow); } }
+
+/* ---------------- prontidão ---------------- */
+.ready { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 6px; }
+.rd { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 650; border: 1px solid var(--line); background: var(--panel-2); color: var(--ink-2); }
+.rd::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
+.rd-ok { background: var(--ok-soft); border-color: var(--ok-line); color: var(--ok-ink); } .rd-ok::before { background: var(--ok); }
+.rd-warn { background: var(--warn-soft); border-color: var(--warn-line); color: var(--warn-ink); } .rd-warn::before { background: var(--warn); }
+.rd-bad { background: var(--danger-soft); border-color: var(--danger-line); color: var(--danger); } .rd-bad::before { background: var(--danger); }
+button.rd { cursor: pointer; padding: 3px 10px; box-shadow: none; }
+/* ---------------- sinal ao vivo ---------------- */
+.sigpill { flex: none; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; white-space: nowrap; border: 1px solid var(--line); background: var(--panel); }
+.sigpill i { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.sig-ok { color: var(--ok-ink); background: var(--ok-soft); border-color: var(--ok-line); } .sig-ok i { background: var(--ok); animation: pulse 1.6s infinite; }
+.sig-warn { color: var(--warn-ink); background: var(--warn-soft); border-color: var(--warn-line); } .sig-warn i { background: var(--warn); }
+.sig-bad { color: var(--danger); background: var(--danger-soft); border-color: var(--danger-line); } .sig-bad i { background: var(--danger); animation: pulse .9s infinite; }
+/* ---------------- resposta ao pedido ---------------- */
+.anscard { border: 1.5px solid #c9d6f2; background: var(--panel); }
+.ans-q { font-size: 12.5px; color: var(--muted); font-weight: 600; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.ans-a { margin-top: 6px; padding: 10px 12px; border-radius: 10px; background: var(--primary-soft); color: var(--primary-ink); font-size: 15.5px; line-height: 1.45; cursor: pointer; white-space: pre-wrap; border: 1px solid transparent; }
+.ans-a:hover { border-color: var(--primary); }
+.ans-a.enter { animation: enter .45s cubic-bezier(.2,.8,.2,1); }
+.chipkey { margin-right: 6px; font-size: 10px; padding: 0 4px; border-bottom-width: 1px; color: var(--muted); }

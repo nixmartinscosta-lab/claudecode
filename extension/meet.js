@@ -146,7 +146,7 @@
       blocks.clear();
       sendResponse({ ok: true });
     } else if (msg.type === 'ping') {
-      sendResponse({ ok: true });
+      sendResponse({ ok: true, captions: !!findRegion() });
     }
   });
 })();

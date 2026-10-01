@@ -15,6 +15,7 @@
   <div class="brandbox"><span class="logo">M</span><div class="brandtxt"><strong class="brand">Mentor</strong><span class="brandsub">copiloto do closer</span></div></div>
   <span class="livepill" id="livePill"><span id="dot" class="dot"></span><span id="liveTag">PRONTO</span></span>
   <span id="timer" class="timer mono">00:00</span>
+  <span id="sigPill" class="sigpill" hidden title="Se o Mentor está recebendo a conversa"><i></i><span id="sigTxt">Ouvindo</span></span>
   <div class="who"><span id="clienteTop" class="cliente">Nova reunião</span><span id="modoTop" class="muted small"></span></div>
   <span class="spacer"></span>
   <span class="kbd-hint muted small"><kbd>A</kbd> ajuda <kbd>/</kbd> pergunta <kbd>C</kbd> copia <kbd>M</kbd> mapa</span>
@@ -79,6 +80,7 @@
   <aside class="col col-left">
     <div id="setupBox" class="card setup">
       <div class="card-h"><h2>Preparação (30 s)</h2><span id="kbInfo" class="muted small"></span></div>
+      <div id="ready" class="ready" aria-live="polite"></div>
       <div class="origem" role="radiogroup">
         <label class="seg"><input type="radio" name="origem" value="prevenda" checked><span>Lead novo<br><small>pré-venda marcou</small></span></label>
         <label class="seg"><input type="radio" name="origem" value="avanco"><span>Avanço<br><small>eu marquei p/ continuar</small></span></label>
@@ -118,6 +120,12 @@
         <span id="diga"></span>
         <span class="say-copy">copiar</span>
       </div>
+    </div>
+
+    <div id="ansBox" class="card anscard" hidden>
+      <div class="card-h"><span class="label">Resposta ao seu pedido</span><button id="ansClose" class="mini" title="Fechar">✕</button></div>
+      <div id="ansQ" class="ans-q"></div>
+      <div id="ansA" class="ans-a" title="Clique para copiar"></div>
     </div>
 
     <div id="objBox" class="card objcard" hidden>

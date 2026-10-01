@@ -64,7 +64,7 @@ FOCO COMERCIAL: o closer quer vender os COMBOS com serviço (Business, Growth, S
 
 Se vier "CLOSER MARCOU COMO COBERTO", não repita esses itens em falta_cobrir. Se vier "CLOSER CORRIGIU A FICHA", trate esses valores como verdade e não os sobrescreva.
 
-Se vier "PEDIDO DO CLOSER", responda a ele com prioridade nos mesmos campos (resposta principal em "diga" e/ou "proximo_passo").`;
+Se vier "PEDIDO DO CLOSER", responda DIRETO no campo "resposta" (curto, pronto para usar: o valor oficial, a frase, o contorno) e mantenha os demais campos orientando o fluxo da reunião. Sem pedido, "resposta" fica vazio.`;
 
 export const CRM_CAMPOS = {
   resultado_desejado: 'Resultado desejado',
@@ -94,6 +94,7 @@ export const COACH_SCHEMA = obj({
   portao: { type: 'string', enum: [...PORTOES, 'Indefinido'] },
   urgencia: { type: 'string', enum: ['baixa', 'media', 'alta'] },
   sintese: str,
+  resposta: str,
   frases_importantes: list,
   objecoes: { type: 'array', items: obj({ objecao: str, contorno: str }) },
   temperatura: { type: 'integer', minimum: 0, maximum: 100 },

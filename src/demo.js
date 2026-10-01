@@ -115,11 +115,16 @@ Marcos, obrigado pela conversa! Ficou claro que a meta de 12 projetos/mês está
 
 export class DemoCoach {
   constructor() { this.busy = false; this.i = 0; }
-  async analyze() {
+  async analyze(_novas, pedido) {
     if (this.busy) return null;
     this.busy = true;
     await new Promise((r) => setTimeout(r, 900)); // simula o tempo de resposta
     this.busy = false;
+    if (pedido) {
+      // Pedido feito durante a demonstração: resposta de exemplo, sem avançar o roteiro.
+      const atual = DEMO_ANALISES[Math.max(0, Math.min(this.i - 1, DEMO_ANALISES.length - 1))];
+      return { data: { ...atual, resposta: 'Exemplo: na reunião real o Mentor responde aqui ao seu pedido usando sua base. Ex.: “Growth no anual parcelado fica R$ 5.599,20/mês, com Aceleração Comercial inclusa e implementação isenta.”' } };
+    }
     const data = DEMO_ANALISES[Math.min(this.i, DEMO_ANALISES.length - 1)];
     this.i++;
     return { data };
