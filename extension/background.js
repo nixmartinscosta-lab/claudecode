@@ -3,10 +3,20 @@
 let meetingTabId = null;
 
 // Clique no ícone = abre o painel E concede activeTab na aba da reunião (necessário pro tabCapture).
-chrome.action.onClicked.addListener(async (tab) => {
+// sidePanel.open PRECISA ser a primeira chamada (sem await antes), senão o Chrome
+// perde o "gesto do usuário" e o painel não abre.
+chrome.action.onClicked.addListener((tab) => {
+  chrome.sidePanel.open({ tabId: tab.id }).catch((e) => console.error('sidePanel.open', e));
   meetingTabId = tab.id;
-  await chrome.storage.session.set({ meetingTabId, meetingTabTitle: tab.title || '' });
-  await chrome.sidePanel.open({ tabId: tab.id });
+  chrome.storage.session.set({ meetingTabId, meetingTabTitle: tab.title || '' });
+});
+
+// Selo "ON" no ícone quando a extensão está ativa numa aba do Meet.
+chrome.runtime.onMessage.addListener((msg, sender) => {
+  if (msg.target === 'background' && msg.type === 'meet-ready' && sender.tab) {
+    chrome.action.setBadgeText({ tabId: sender.tab.id, text: 'ON' });
+    chrome.action.setBadgeBackgroundColor({ tabId: sender.tab.id, color: '#16a34a' });
+  }
 });
 
 async function ensureOffscreen() {

@@ -4,6 +4,7 @@
 (() => {
   if (window.__mentorMeet) return;
   window.__mentorMeet = true;
+  chrome.runtime.sendMessage({ target: 'background', type: 'meet-ready' }).catch(() => {});
 
   let running = false;
   let poll = null;
