@@ -59,7 +59,7 @@
     <div class="talk-legend"><span><i class="sw sw-me"></i>Você</span><span id="talkTxt" class="kpi-sub">—</span><span><i class="sw sw-them"></i>Cliente</span></div>
   </div>
   <div class="kpi kpi-mini">
-    <div class="kpi-label"><span class="ico ico-violet"></span>Suas perguntas</div>
+    <div class="kpi-label"><span class="ico ico-violet"></span>Perguntas</div>
     <div class="kpi-row"><span id="qVal" class="kpi-val">0</span><div class="spark" id="qSpark"></div></div>
   </div>
   <div class="kpi kpi-mini">
@@ -179,15 +179,19 @@
 
     </div>
     <div class="card board">
+      <div class="board-h">
       <div class="tabs">
-        <button class="tab active" data-tab="tMapa">Mapa mental</button>
+        <button class="tab active" data-tab="tMapa">Mapa</button>
         <button class="tab" data-tab="tCrm">Ficha CRM <span id="crmBadge" class="badge">0/10</span></button>
         <button class="tab" data-tab="tMem">Memória <span id="memCount" class="badge" hidden></span></button>
         <button class="tab" data-tab="tTimeline">Linha do tempo <span id="tlCount" class="badge" hidden></span></button>
       </div>
+        <div class="viewseg" id="viewSeg" role="group" aria-label="Visualização do mapa"><button data-v="quadro" class="on">Quadro</button><button data-v="mapa">Mapa</button></div>
+      </div>
 
       <div id="tMapa" class="tabpane">
-        <div id="mapViewport" class="map-viewport">
+        <div id="quadro" class="quadro"></div>
+        <div id="mapViewport" class="map-viewport" hidden>
           <div class="mapctl" id="mapCtl">
           <button id="zoomOut" class="mini" title="Diminuir">−</button>
           <button id="zoomFit" class="mini" title="Ajustar">Ajustar</button>

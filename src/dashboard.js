@@ -51,6 +51,19 @@ function setRing(id, frac, color) {
   if (color) c.style.stroke = color;
 }
 function bump(id) { const k = $(id).closest('.kpi'); k.classList.remove('bump'); void k.offsetWidth; k.classList.add('bump'); }
+// Escreve o texto destacando números, valores e percentuais (marca-texto).
+const NUM_RE = /(R\$\s?\d+(?:[.,]\d+)*(?:\s?(?:mil|milhões|milhão|k)\b)?|\d+(?:[.,]\d+)*(?:\s?(?:%|mil\b|milhões\b|milhão\b|k\b))?)/gi;
+function hl(node, text) {
+  node.textContent = '';
+  String(text ?? '').split(NUM_RE).forEach((part, i) => {
+    if (!part) return;
+    if (i % 2 === 1) { const m = document.createElement('mark'); m.className = 'num'; m.textContent = part; node.append(m); }
+    else node.append(document.createTextNode(part));
+  });
+  return node;
+}
+// Como setText, mas com destaque de números; compara pelo texto bruto.
+function setRich(id, v) { const e = $(id); if (e.dataset.raw === String(v)) return false; e.dataset.raw = String(v); hl(e, v); return true; }
 function setText(id, v) { if ($(id).textContent !== String(v)) { $(id).textContent = v; return true; } return false; }
 
 // ================= montagem =================
@@ -129,7 +142,7 @@ $('btnExpand').onclick = () => { document.body.classList.toggle('right-collapsed
 function renderCrm(novos = []) {
   const dl = $('crm'); dl.innerHTML = '';
   for (const [k, rotulo] of Object.entries(CRM_CAMPOS)) {
-    const dd = el('dd', '', state.crm[k] || '—');
+    const dd = state.crm[k] ? hl(el('dd'), state.crm[k]) : el('dd', '', 'ainda não levantado');
     dd.id = `crm_${k}`;
     dd.contentEditable = 'plaintext-only';
     dd.spellcheck = false;
@@ -176,9 +189,9 @@ function renderMap() {
     const ul = el('ul', 'leaves');
     const limit = state.expanded.has(k) ? leaves.length : MAX_LEAVES;
     leaves.slice(0, limit).forEach((l, i) => {
-      const li = el('li', `leaf${k === 'dor' ? ' quote' : ''}${l.done ? ' done' : ''}${now - l.at < NEW_MS ? ' isnew' : ''}`, l.text);
+      const li = hl(el('li', `leaf${k === 'dor' ? ' quote' : ''}${l.done ? ' done' : ''}${now - l.at < NEW_MS ? ' isnew' : ''}`), l.text);
       li.dataset.key = `${k}:${l.text}`;
-      if (l.sub) li.append(el('span', 'sub', l.sub));
+      if (l.sub) li.append(hl(el('span', 'sub'), l.sub));
       li.title = `${l.text}${l.sub ? `\n↳ ${l.sub}` : ''}\n\nclique = copiar · duplo clique = aprofundar`;
       li.onclick = () => copy(l.sub || l.text);
       li.ondblclick = () => maybeAnalyze(true, `Aprofunde este ponto do mapa e me diga como usar agora: "${l.text}"`);
@@ -192,8 +205,51 @@ function renderMap() {
     br.append(node, ul);
     $(b.side === 'left' ? 'mapLeft' : 'mapRight').append(br);
   }
+  renderQuadro();
   requestAnimationFrame(() => { fitIfAuto(); drawLinks(); });
 }
+
+// Quadro: os mesmos ramos em cartões com letra grande (ordem da linha do ACR).
+const QUADRO_ORDEM = ['resultado', 'operacao', 'dor', 'causa', 'impacto', 'decisores', 'objecoes', 'rota', 'proximos'];
+function renderQuadro() {
+  const box = $('quadro'); box.innerHTML = '';
+  const now = Date.now();
+  for (const k of QUADRO_ORDEM) {
+    const leaves = [...(state.map[k] || [])].reverse();
+    const card = el('section', `qcard ${k}${leaves.length ? '' : ' empty'}${leaves.some((l) => now - l.at < NEW_MS) ? ' hot' : ''}`);
+    card.style.setProperty('--c', `var(--b-${k})`);
+    const head = el('div', 'qhead', BRANCHES[k].t);
+    head.append(el('span', 'cnt', String(leaves.length)));
+    card.append(head);
+    if (!leaves.length) card.append(el('div', 'qempty', 'ainda não apareceu'));
+    else {
+      const ul = el('ul');
+      leaves.forEach((l) => {
+        const li = hl(el('li', `${l.done ? 'done' : ''}${now - l.at < NEW_MS ? ' isnew' : ''}`), l.text);
+        if (l.sub) li.append(hl(el('span', 'sub'), l.sub));
+        li.title = 'clique = copiar · duplo clique = aprofundar';
+        li.onclick = () => copy(l.sub || l.text);
+        li.ondblclick = () => maybeAnalyze(true, `Aprofunde este ponto do mapa e me diga como usar agora: "${l.text}"`);
+        ul.append(li);
+      });
+      card.append(ul);
+    }
+    box.append(card);
+  }
+}
+
+// Alterna Quadro / Mapa (lembra a escolha).
+function setMapView(v) {
+  state.mapView = v;
+  document.querySelectorAll('#viewSeg button').forEach((b) => b.classList.toggle('on', b.dataset.v === v));
+  $('quadro').hidden = v !== 'quadro';
+  $('mapViewport').hidden = v !== 'mapa';
+  document.querySelector('.map-legend').hidden = v !== 'mapa';
+  chrome.storage.local.set({ mapView: v });
+  if (v === 'mapa') requestAnimationFrame(() => { fit(); drawLinks(); });
+}
+document.querySelectorAll('#viewSeg button').forEach((b) => { b.onclick = () => setMapView(b.dataset.v); });
+chrome.storage.local.get('mapView').then(({ mapView }) => setMapView(mapView || 'quadro'));
 
 // Liga raiz → ramos → folhas com curvas (coordenadas do palco, sem o zoom).
 function drawLinks() {
@@ -548,11 +604,11 @@ function onTranscript({ speaker, text, isFinal }) {
   const last = state.lines[state.lines.length - 1];
   if (last && last.speaker === speaker && state.lines.length > state.sentUpTo) {
     last.text += ` ${text}`;
-    last.el.lastChild.textContent = ` ${last.text}`;
+    hl(last.el.querySelector('.tx'), last.text);
     if (perguntas && !isMe) last.el.classList.add('q');
   } else {
     const p = el('p', `${isMe ? 'me' : 'them'}${perguntas && !isMe ? ' q' : ''}`);
-    p.append(el('b', '', `${speaker}:`), document.createTextNode(` ${text}`));
+    p.append(el('b', '', `${speaker}: `), hl(el('span', 'tx'), text));
     const line = { speaker, text, el: p };
     p.title = 'Clique: o Mentor analisa este trecho';
     p.onclick = () => maybeAnalyze(true, `Analise esta fala e me diga como usar agora: "${line.speaker}: ${line.text}"`);
@@ -617,7 +673,10 @@ function addTimeline(text, mov, urg) {
 function renderSintese(txt) {
   if (!txt) return;
   const p = $('sintese'); p.innerHTML = '';
-  txt.split(/(\[[^\]]*\])/).forEach((part) => p.append(/^\[.*\]$/.test(part) ? el('mark', '', part.slice(1, -1)) : document.createTextNode(part)));
+  txt.split(/(\[[^\]]*\])/).forEach((part) => {
+    if (/^\[.*\]$/.test(part)) p.append(el('mark', 'gap', part.slice(1, -1)));
+    else if (part) { const sp = el('span'); hl(sp, part); p.append(sp); }
+  });
   const box = $('threadBox'); box.classList.remove('flash'); void box.offsetWidth; box.classList.add('flash');
 }
 function animate(id) { const e = $(id); e.classList.remove('enter'); void e.offsetWidth; e.classList.add('enter'); }
@@ -632,22 +691,22 @@ function render(d, pedido) {
   setStatus('');
   if (pedido && d.resposta) {
     $('ansQ').textContent = pedidoLabel(pedido);
-    $('ansA').textContent = d.resposta;
+    hl($('ansA'), d.resposta);
     $('ansBox').hidden = false; animate('ansA');
   }
   $('coach').closest('.col').scrollTo({ top: 0, behavior: 'smooth' });
   const urg = d.urgencia || 'baixa';
   $('coach').className = `card hero urg-${urg}`;
   $('urgTag').textContent = urg === 'alta' ? 'AGIR AGORA' : urg === 'media' ? 'OPORTUNIDADE' : 'AGORA';
-  if (setText('proximo', d.proximo_passo || 'Continue ouvindo.')) animate('proximo');
-  if (setText('diga', d.diga || '')) animate('digaBox');
+  if (setRich('proximo', d.proximo_passo || 'Continue ouvindo.')) animate('proximo');
+  if (setRich('diga', d.diga || '')) animate('digaBox');
   $('digaBox').hidden = !d.diga;
 
   // Objeções
   const obj = d.objecoes || [];
   $('objBox').hidden = !obj.length; $('objList').innerHTML = '';
   obj.forEach((o) => {
-    const item = el('div', 'obj-item'); const a = el('div', 'obj-a', o.contorno);
+    const item = el('div', 'obj-item'); const a = hl(el('div', 'obj-a'), o.contorno);
     a.onclick = () => copy(o.contorno, 'Contorno copiado ✔');
     item.append(el('div', 'obj-q', `“${o.objecao}”`), a); $('objList').append(item);
     if (!state.openObj.includes(o.objecao)) { state.objTotal++; addTimeline(`Objeção: “${o.objecao}”`, 'Objeção', 'alta'); }
@@ -736,7 +795,7 @@ function renderMem() {
     const pin = el('span', 'pin', state.pinned.has(m.text) ? '★' : '☆');
     pin.onclick = (e) => { e.stopPropagation(); state.pinned.has(m.text) ? state.pinned.delete(m.text) : state.pinned.add(m.text); renderMem(); };
     li.onclick = () => copy(m.text);
-    li.append(pin, el('span', '', m.text)); ul.append(li);
+    li.append(pin, hl(el('span'), m.text)); ul.append(li);
   });
   $('memCount').hidden = !state.memoria.length; $('memCount').textContent = String(state.memoria.length);
 }

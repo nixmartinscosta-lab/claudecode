@@ -596,6 +596,27 @@ function bump(id) {
   void k.offsetWidth;
   k.classList.add("bump");
 }
+var NUM_RE = /(R\$\s?\d+(?:[.,]\d+)*(?:\s?(?:mil|milhões|milhão|k)\b)?|\d+(?:[.,]\d+)*(?:\s?(?:%|mil\b|milhões\b|milhão\b|k\b))?)/gi;
+function hl(node, text) {
+  node.textContent = "";
+  String(text ?? "").split(NUM_RE).forEach((part, i) => {
+    if (!part) return;
+    if (i % 2 === 1) {
+      const m = document.createElement("mark");
+      m.className = "num";
+      m.textContent = part;
+      node.append(m);
+    } else node.append(document.createTextNode(part));
+  });
+  return node;
+}
+function setRich(id, v) {
+  const e = $(id);
+  if (e.dataset.raw === String(v)) return false;
+  e.dataset.raw = String(v);
+  hl(e, v);
+  return true;
+}
 function setText(id, v) {
   if ($(id).textContent !== String(v)) {
     $(id).textContent = v;
@@ -736,7 +757,7 @@ function renderCrm(novos = []) {
   const dl = $("crm");
   dl.innerHTML = "";
   for (const [k, rotulo] of Object.entries(CRM_CAMPOS)) {
-    const dd = el("dd", "", state.crm[k] || "\u2014");
+    const dd = state.crm[k] ? hl(el("dd"), state.crm[k]) : el("dd", "", "ainda n\xE3o levantado");
     dd.id = `crm_${k}`;
     dd.contentEditable = "plaintext-only";
     dd.spellcheck = false;
@@ -800,9 +821,9 @@ function renderMap() {
     const ul = el("ul", "leaves");
     const limit = state.expanded.has(k) ? leaves.length : MAX_LEAVES;
     leaves.slice(0, limit).forEach((l, i) => {
-      const li = el("li", `leaf${k === "dor" ? " quote" : ""}${l.done ? " done" : ""}${now - l.at < NEW_MS ? " isnew" : ""}`, l.text);
+      const li = hl(el("li", `leaf${k === "dor" ? " quote" : ""}${l.done ? " done" : ""}${now - l.at < NEW_MS ? " isnew" : ""}`), l.text);
       li.dataset.key = `${k}:${l.text}`;
-      if (l.sub) li.append(el("span", "sub", l.sub));
+      if (l.sub) li.append(hl(el("span", "sub"), l.sub));
       li.title = `${l.text}${l.sub ? `
 \u21B3 ${l.sub}` : ""}
 
@@ -822,11 +843,56 @@ clique = copiar \xB7 duplo clique = aprofundar`;
     br.append(node, ul);
     $(b.side === "left" ? "mapLeft" : "mapRight").append(br);
   }
+  renderQuadro();
   requestAnimationFrame(() => {
     fitIfAuto();
     drawLinks();
   });
 }
+var QUADRO_ORDEM = ["resultado", "operacao", "dor", "causa", "impacto", "decisores", "objecoes", "rota", "proximos"];
+function renderQuadro() {
+  const box = $("quadro");
+  box.innerHTML = "";
+  const now = Date.now();
+  for (const k of QUADRO_ORDEM) {
+    const leaves = [...state.map[k] || []].reverse();
+    const card = el("section", `qcard ${k}${leaves.length ? "" : " empty"}${leaves.some((l) => now - l.at < NEW_MS) ? " hot" : ""}`);
+    card.style.setProperty("--c", `var(--b-${k})`);
+    const head = el("div", "qhead", BRANCHES[k].t);
+    head.append(el("span", "cnt", String(leaves.length)));
+    card.append(head);
+    if (!leaves.length) card.append(el("div", "qempty", "ainda n\xE3o apareceu"));
+    else {
+      const ul = el("ul");
+      leaves.forEach((l) => {
+        const li = hl(el("li", `${l.done ? "done" : ""}${now - l.at < NEW_MS ? " isnew" : ""}`), l.text);
+        if (l.sub) li.append(hl(el("span", "sub"), l.sub));
+        li.title = "clique = copiar \xB7 duplo clique = aprofundar";
+        li.onclick = () => copy(l.sub || l.text);
+        li.ondblclick = () => maybeAnalyze(true, `Aprofunde este ponto do mapa e me diga como usar agora: "${l.text}"`);
+        ul.append(li);
+      });
+      card.append(ul);
+    }
+    box.append(card);
+  }
+}
+function setMapView(v) {
+  state.mapView = v;
+  document.querySelectorAll("#viewSeg button").forEach((b) => b.classList.toggle("on", b.dataset.v === v));
+  $("quadro").hidden = v !== "quadro";
+  $("mapViewport").hidden = v !== "mapa";
+  document.querySelector(".map-legend").hidden = v !== "mapa";
+  chrome.storage.local.set({ mapView: v });
+  if (v === "mapa") requestAnimationFrame(() => {
+    fit();
+    drawLinks();
+  });
+}
+document.querySelectorAll("#viewSeg button").forEach((b) => {
+  b.onclick = () => setMapView(b.dataset.v);
+});
+chrome.storage.local.get("mapView").then(({ mapView }) => setMapView(mapView || "quadro"));
 function drawLinks() {
   const stage = $("mapStage");
   const svg = $("mapSvg");
@@ -1301,11 +1367,11 @@ function onTranscript({ speaker, text, isFinal }) {
   const last = state.lines[state.lines.length - 1];
   if (last && last.speaker === speaker && state.lines.length > state.sentUpTo) {
     last.text += ` ${text}`;
-    last.el.lastChild.textContent = ` ${last.text}`;
+    hl(last.el.querySelector(".tx"), last.text);
     if (perguntas && !isMe) last.el.classList.add("q");
   } else {
     const p = el("p", `${isMe ? "me" : "them"}${perguntas && !isMe ? " q" : ""}`);
-    p.append(el("b", "", `${speaker}:`), document.createTextNode(` ${text}`));
+    p.append(el("b", "", `${speaker}: `), hl(el("span", "tx"), text));
     const line = { speaker, text, el: p };
     p.title = "Clique: o Mentor analisa este trecho";
     p.onclick = () => maybeAnalyze(true, `Analise esta fala e me diga como usar agora: "${line.speaker}: ${line.text}"`);
@@ -1398,7 +1464,14 @@ function renderSintese(txt) {
   if (!txt) return;
   const p = $("sintese");
   p.innerHTML = "";
-  txt.split(/(\[[^\]]*\])/).forEach((part) => p.append(/^\[.*\]$/.test(part) ? el("mark", "", part.slice(1, -1)) : document.createTextNode(part)));
+  txt.split(/(\[[^\]]*\])/).forEach((part) => {
+    if (/^\[.*\]$/.test(part)) p.append(el("mark", "gap", part.slice(1, -1)));
+    else if (part) {
+      const sp = el("span");
+      hl(sp, part);
+      p.append(sp);
+    }
+  });
   const box = $("threadBox");
   box.classList.remove("flash");
   void box.offsetWidth;
@@ -1422,7 +1495,7 @@ function render(d, pedido) {
   setStatus("");
   if (pedido && d.resposta) {
     $("ansQ").textContent = pedidoLabel(pedido);
-    $("ansA").textContent = d.resposta;
+    hl($("ansA"), d.resposta);
     $("ansBox").hidden = false;
     animate("ansA");
   }
@@ -1430,15 +1503,15 @@ function render(d, pedido) {
   const urg = d.urgencia || "baixa";
   $("coach").className = `card hero urg-${urg}`;
   $("urgTag").textContent = urg === "alta" ? "AGIR AGORA" : urg === "media" ? "OPORTUNIDADE" : "AGORA";
-  if (setText("proximo", d.proximo_passo || "Continue ouvindo.")) animate("proximo");
-  if (setText("diga", d.diga || "")) animate("digaBox");
+  if (setRich("proximo", d.proximo_passo || "Continue ouvindo.")) animate("proximo");
+  if (setRich("diga", d.diga || "")) animate("digaBox");
   $("digaBox").hidden = !d.diga;
   const obj2 = d.objecoes || [];
   $("objBox").hidden = !obj2.length;
   $("objList").innerHTML = "";
   obj2.forEach((o) => {
     const item = el("div", "obj-item");
-    const a = el("div", "obj-a", o.contorno);
+    const a = hl(el("div", "obj-a"), o.contorno);
     a.onclick = () => copy(o.contorno, "Contorno copiado \u2714");
     item.append(el("div", "obj-q", `\u201C${o.objecao}\u201D`), a);
     $("objList").append(item);
@@ -1537,7 +1610,7 @@ function renderMem() {
       renderMem();
     };
     li.onclick = () => copy(m.text);
-    li.append(pin, el("span", "", m.text));
+    li.append(pin, hl(el("span"), m.text));
     ul.append(li);
   });
   $("memCount").hidden = !state.memoria.length;

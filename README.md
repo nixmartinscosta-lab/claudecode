@@ -37,6 +37,9 @@ O foco padrão é **vender combos com serviço (Business, Growth, Scale) e compo
 - **Resposta ao seu pedido** em cartão próprio; atalhos rápidos nas teclas **1–7**.
 - **Testar chave** nas Configurações valida a chave e o modelo do Gemini na hora.
 
+- **Legibilidade máxima**: todo texto com contraste medido (WCAG AAA ≥ 7:1 no texto principal), sem texto apagado; fontes maiores; **números, R$ e % em marca-texto** em tudo (transcrição, mapa, ficha, respostas).
+- **Quadro** (padrão) ou **Mapa**: o Quadro mostra os 9 ramos do mapa em cartões com letra grande; o Mapa mostra as conexões.
+
 ## Instalar (5 min, uma vez)
 
 1. Baixe esta pasta (Code → Download ZIP) e descompacte.
