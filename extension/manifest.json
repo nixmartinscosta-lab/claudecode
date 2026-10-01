@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+  "name": "Mentor de Reunião (Claude)",
+  "version": "1.0.0",
+  "description": "Lê a reunião do Google Meet em tempo real e te guia como closer: próximo passo, o que falar, preço oficial e o que falta cobrir.",
+  "permissions": [
+    "sidePanel",
+    "tabCapture",
+    "offscreen",
+    "storage",
+    "activeTab",
+    "unlimitedStorage"
+  ],
+  "host_permissions": [
+    "https://api.anthropic.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Abrir Mentor de Reunião"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "options_page": "options.html",
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+M"
+      }
+    }
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src https://api.anthropic.com wss://api.deepgram.com"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://meet.google.com/*"
+      ],
+      "js": [
+        "meet.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

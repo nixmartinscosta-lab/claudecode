@@ -1,0 +1,17 @@
+{
+  "name": "copiloto-reuniao",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Extensão Chrome: IA escuta a reunião em tempo real e te guia estrategicamente.",
+  "type": "module",
+  "scripts": {
+    "build": "esbuild src/sidepanel.js --bundle --format=esm --target=chrome120 --outfile=extension/sidepanel.bundle.js",
+    "watch": "npm run build -- --watch"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}

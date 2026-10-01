@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mentor — Configurações</title>
+<link rel="stylesheet" href="sidepanel.css">
+<style>
+  body { max-width: 640px; margin: 0 auto; padding: 20px 16px 40px; }
+  h1 { font-size: 20px; } h2 { font-size: 15px; margin-top: 26px; }
+  .check { display: flex; gap: 8px; align-items: center; color: var(--fg); font-size: 14px; }
+  .check input { width: auto; margin: 0; }
+  .doc { display: flex; gap: 8px; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--line); }
+  .ok { color: var(--ok); }
+</style>
+</head>
+<body>
+<h1>⚙ Mentor de Reunião — Configurações</h1>
+
+<h2>1. Chave da Claude (obrigatória)</h2>
+<label>Anthropic API key — crie em console.anthropic.com → API Keys
+  <input id="anthropicKey" type="password" placeholder="sk-ant-...">
+</label>
+
+<h2>2. Base de conhecimento (seus .md)</h2>
+<p class="muted small">Playbook, política de preços, método ACR, contexto, cadência, prova social, script… O Mentor segue isso como doutrina. Fica salvo só neste navegador.</p>
+<input id="files" type="file" accept=".md,.txt,.markdown" multiple>
+<div id="docs"></div>
+<p id="kbSize" class="muted small"></p>
+
+<h2>3. De onde vem a transcrição</h2>
+<label>Fonte
+  <select id="source">
+    <option value="meet">Legendas do Google Meet (grátis, recomendado)</option>
+    <option value="audio">Áudio da aba + microfone via Deepgram (Zoom/Teams web, etc.)</option>
+  </select>
+</label>
+<div id="audioOpts">
+  <label>Deepgram API key (deepgram.com — tem crédito grátis)
+    <input id="deepgramKey" type="password" placeholder="só para a fonte de áudio">
+  </label>
+  <label class="check"><input id="useMic" type="checkbox"> Transcrever também meu microfone (identifica você como "Você")</label>
+  <button id="btnMic">Liberar microfone</button> <span id="micStatus" class="small"></span>
+  <label>Modelo Deepgram <input id="dgModel" placeholder="nova-2"></label>
+  <label>Idioma <input id="dgLanguage" placeholder="pt-BR"></label>
+</div>
+
+<h2>4. Inteligência</h2>
+<label>Modelo
+  <select id="model">
+    <option value="claude-opus-5-5">Claude Opus 5.5 (melhor raciocínio — padrão)</option>
+    <option value="claude-sonnet-5-5">Claude Sonnet 5.5 (mais rápido e barato)</option>
+    <option value="claude-haiku-4-5">Claude Haiku 4.5 (o mais barato, menos preciso)</option>
+  </select>
+</label>
+<label>Profundidade (effort) — mais baixo = responde mais rápido
+  <select id="effort">
+    <option value="low">Baixa (recomendado ao vivo)</option>
+    <option value="medium">Média</option>
+    <option value="high">Alta</option>
+  </select>
+</label>
+<label>Orientar automaticamente a cada (segundos) — só gasta se houve fala nova
+  <input id="intervalSec" type="number" min="10" max="300">
+</label>
+
+<p><button id="btnSave" class="primary">Salvar</button> <span id="saved" class="ok small"></span></p>
+<script src="options.js"></script>
+</body>
+</html>
