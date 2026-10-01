@@ -88,7 +88,7 @@ export class Coach {
   }
 
   // newLines: [{speaker, text}] desde a última análise. pedido: pergunta livre do closer.
-  async analyze(newLines, pedido) {
+  async analyze(newLines, pedido, notas = []) {
     const partes = [];
     if (!this.contents.length) partes.push(contextoInicial(this.setup));
     partes.push(
@@ -96,6 +96,7 @@ export class Coach {
         ? `TRANSCRIÇÃO NOVA (desde a última análise):\n${newLines.map((l) => `${l.speaker}: ${l.text}`).join('\n')}`
         : 'TRANSCRIÇÃO NOVA: (nada novo)',
     );
+    partes.push(...notas);
     if (pedido) partes.push(`PEDIDO DO CLOSER: ${pedido}`);
 
     const res = await this.send(partes.join('\n\n'), true);

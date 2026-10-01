@@ -7,31 +7,59 @@
 <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
+<!-- ===== Barra superior ===== -->
 <header class="top">
   <span id="dot" class="dot"></span>
   <strong class="brand">Mentor</strong>
   <span id="timer" class="mono muted">00:00</span>
-  <span id="clienteTop" class="muted"></span>
+  <span id="clienteTop" class="cliente"></span>
   <span class="spacer"></span>
-  <span id="custo" class="muted small mono"></span>
-  <button id="btnSetup" class="ghost" title="Preparação">✎ Preparação</button>
+  <span class="kbd-hint muted small" title="Atalhos">A ajuda · / pergunta · C copia frase</span>
+  <button id="btnSetup" class="ghost">✎ Preparação</button>
   <a href="options.html" target="_blank" class="ghost btnlink" title="Configurações">⚙</a>
   <button id="btnStart" class="primary">▶ Começar</button>
   <button id="btnStop" class="danger" hidden>■ Encerrar + Ata</button>
 </header>
 <div id="status" class="status" hidden></div>
 
-<nav class="steppers">
-  <div><span class="steplabel">Movimento</span><ol id="movimentos" class="steps"></ol><span id="etapa" class="muted small"></span></div>
-  <div><span class="steplabel">Portões</span><ol id="portoes" class="steps"></ol></div>
+<!-- ===== Indicadores ao vivo ===== -->
+<section class="kpis">
+  <div class="kpi kpi-temp">
+    <div class="kpi-label">Temperatura do negócio</div>
+    <div class="gauge"><div id="tempFill" class="gauge-fill"></div></div>
+    <div class="kpi-row"><span id="tempVal" class="kpi-val">—</span><span id="tempMotivo" class="muted small"></span></div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Diagnóstico (ficha CRM)</div>
+    <div class="kpi-row"><span id="diagVal" class="kpi-val">0/10</span></div>
+    <div class="bar"><div id="diagFill" class="bar-fill"></div></div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Quem está falando</div>
+    <div class="talk"><div id="talkMe" class="talk-me"></div><div id="talkThem" class="talk-them"></div></div>
+    <div class="kpi-row small"><span id="talkTxt" class="muted">Você — · Cliente —</span></div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Suas perguntas</div>
+    <div class="kpi-row"><span id="qVal" class="kpi-val">0</span><span class="muted small">feitas por você</span></div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Última análise</div>
+    <div class="kpi-row"><span id="lastVal" class="kpi-val">—</span><span id="nextInfo" class="muted small"></span></div>
+  </div>
+</section>
+
+<!-- ===== Trilho da reunião ===== -->
+<nav class="rails">
+  <div class="rail"><span class="rail-label">Movimento</span><ol id="movimentos" class="steps"></ol><span id="etapa" class="etapa"></span></div>
+  <div class="rail"><span class="rail-label">Portões</span><ol id="portoes" class="steps"></ol></div>
 </nav>
 
 <main class="grid">
-  <!-- COLUNA 1: o que fazer agora -->
+  <!-- ===== COLUNA 1 — AÇÃO ===== -->
   <section class="col">
-    <div id="setupBox" class="card">
-      <h2>Preparação (30 s)</h2>
-      <div id="kbInfo" class="muted small"></div>
+    <div id="setupBox" class="card setup">
+      <div class="card-h"><h2>Preparação (30 s)</h2><span id="kbInfo" class="muted small"></span></div>
       <div class="two">
         <label>Tipo de reunião
           <select id="modo">
@@ -48,60 +76,112 @@
       <label>Objetivo desta reunião <input id="objetivo" placeholder="Validar causa-raiz e sair com microdecisão + data"></label>
       <label>Foco comercial <input id="foco"></label>
       <label>O que a pré-venda levantou / hipóteses
-        <textarea id="notas" rows="4" placeholder="Porte, base instalada, vendas/mês, time, ferramentas, dor registrada…"></textarea>
+        <textarea id="notas" rows="3" placeholder="Porte, base instalada, vendas/mês, time, ferramentas, dor registrada…"></textarea>
       </label>
     </div>
 
-    <div id="coach" class="card now urg-baixa">
-      <div class="label">AGORA</div>
-      <div id="proximo" class="big">Clique em <b>▶ Começar</b> com as legendas do Meet ligadas.</div>
-      <div id="digaBox" hidden>
-        <div class="label">DIGA <button id="btnCopy" class="mini">copiar</button></div>
-        <div id="diga" class="say"></div>
+    <div id="coach" class="card hero urg-baixa">
+      <div class="card-h"><span class="tag-urg" id="urgTag">AGORA</span><span id="coachAge" class="muted small"></span></div>
+      <div id="proximo" class="hero-text">Ligue as legendas no Meet e clique em <b>▶ Começar</b>.</div>
+      <div id="digaBox" class="say" hidden title="Clique para copiar (C)">
+        <span class="say-label">DIGA</span>
+        <span id="diga"></span>
+        <span class="say-copy">copiar</span>
       </div>
     </div>
+
+    <div id="objBox" class="card objcard" hidden>
+      <div class="card-h"><span class="label obj">🛡 OBJEÇÃO NA MESA</span><span class="muted small">clique no contorno = copiar</span></div>
+      <div id="objList"></div>
+    </div>
+
     <div class="two">
-      <div id="perguntasBox" class="card" hidden><div class="label">PERGUNTE</div><ul id="perguntas"></ul></div>
-      <div id="alertasBox" class="card warnbox" hidden><div class="label warn">⚠ ATENÇÃO</div><ul id="alertas"></ul></div>
+      <div id="perguntasBox" class="card" hidden>
+        <div class="card-h"><span class="label">PERGUNTE</span><span class="muted small">clique = copiar</span></div>
+        <ul id="perguntas" class="chips-v"></ul>
+      </div>
+      <div id="alertasBox" class="card warnbox" hidden>
+        <div class="card-h"><span class="label warn">⚠ ATENÇÃO</span></div>
+        <ul id="alertas"></ul>
+      </div>
     </div>
-    <div id="falta_cobrirBox" class="card" hidden><div class="label">☐ FALTA COBRIR</div><ul id="falta_cobrir" class="checks"></ul></div>
-    <div class="ask">
-      <input id="pedido" placeholder="Pergunte rápido: “quanto fica o Growth anual à vista?”  (Enter)">
-      <button id="btnAjuda" class="primary">Me ajuda AGORA</button>
+
+    <div id="falta_cobrirBox" class="card" hidden>
+      <div class="card-h"><span class="label">FALTA COBRIR</span><span class="muted small">marque quando cobrir</span></div>
+      <ul id="falta_cobrir" class="checklist"></ul>
+    </div>
+
+    <div class="askbar card">
+      <div class="quick">
+        <button class="chip" data-q="Qual combo/composição faz sentido agora e qual o investimento oficial?">💰 Preço do combo</button>
+        <button class="chip" data-q="Como trato a objeção que o integrador acabou de levantar?">🛡 Tratar objeção</button>
+        <button class="chip" data-q="Já dá pra pedir a microdecisão? Me dê a frase exata.">🎯 Fechar agora</button>
+        <button class="chip" data-q="Faça a síntese de diagnóstico até aqui para eu validar com o cliente.">📋 Síntese ACR</button>
+        <button class="chip" data-q="Qual prova social aprovada uso agora? Frase pronta com snapshot e amostra.">📊 Prova social</button>
+      </div>
+      <div class="ask">
+        <input id="pedido" placeholder="Pergunte qualquer coisa ao Mentor…  ( / )">
+        <button id="btnAjuda" class="primary">Me ajuda AGORA</button>
+      </div>
     </div>
   </section>
 
-  <!-- COLUNA 2: dados do closer -->
+  <!-- ===== COLUNA 2 — MAPA DA REUNIÃO ===== -->
   <section class="col">
-    <div id="rotaBox" class="card rota">
-      <div class="label">ROTA RECOMENDADA</div>
-      <div id="rotaSolucao" class="big muted">Aguardando dor e causa-raiz validadas…</div>
-      <div id="rotaMotivo" class="small"></div>
-      <div id="rotaInvest" class="invest"></div>
+    <div id="rotaBox" class="card rota empty">
+      <div class="card-h"><span class="label">ROTA RECOMENDADA</span><span id="rotaNew" class="new" hidden>NOVO</span></div>
+      <div id="rotaSolucao" class="rota-sol">Aguardando dor e causa-raiz validadas…</div>
+      <div id="rotaMotivo" class="rota-mot"></div>
+      <div id="rotaInvest" class="invest" hidden></div>
     </div>
-    <div class="card">
-      <div class="row"><div class="label">FICHA CRM</div><span class="spacer"></span><span id="crmCount" class="muted small"></span></div>
-      <dl id="crm" class="crm"></dl>
-    </div>
-    <div class="card">
-      <div class="label">🧠 MEMÓRIA <span id="memCount" class="muted"></span></div>
-      <ul id="memoria" class="mem"></ul>
+
+    <div class="card feed">
+      <div class="tabs">
+        <button class="tab active" data-tab="tMapa">🧠 Mapa mental</button>
+        <button class="tab" data-tab="tCrm">Ficha CRM <span id="crmBadge" class="badge">0/10</span></button>
+        <button class="tab" data-tab="tMem">Memória <span id="memCount" class="badge" hidden></span></button>
+      </div>
+      <div id="tMapa" class="tabpane">
+        <div class="map">
+          <div class="map-root"><span id="mapCliente">Integrador</span><span id="mapTemp" class="map-temp"></span></div>
+          <div id="mapBranches" class="map-branches"></div>
+        </div>
+      </div>
+      <div id="tCrm" class="tabpane" hidden>
+        <div class="muted small">Clique num campo para corrigir — o Mentor passa a respeitar sua versão.</div>
+        <dl id="crm" class="crm"></dl>
+      </div>
+      <div id="tMem" class="tabpane" hidden>
+        <div class="muted small">☆ fixa no topo</div>
+        <ul id="memoria" class="mem"></ul>
+      </div>
     </div>
   </section>
 
-  <!-- COLUNA 3: transcrição -->
+  <!-- ===== COLUNA 3 — CONVERSA ===== -->
   <section class="col">
-    <div class="card transcard">
-      <div class="label">TRANSCRIÇÃO AO VIVO</div>
-      <div id="transcript" class="transcript"></div>
-      <div id="interim" class="interim"></div>
+    <div class="card feed">
+      <div class="tabs">
+        <button class="tab active" data-tab="tTranscript">💬 Ao vivo</button>
+        <button class="tab" data-tab="tTimeline">🕒 Linha do tempo <span id="tlCount" class="badge" hidden></span></button>
+      </div>
+      <div id="tTranscript" class="tabpane">
+        <div id="transcript" class="transcript"></div>
+        <div id="interim" class="interim"></div>
+        <div class="muted small hint">Clique numa fala para o Mentor analisar aquele trecho.</div>
+      </div>
+      <div id="tTimeline" class="tabpane" hidden>
+        <ol id="timeline" class="timeline"></ol>
+      </div>
     </div>
   </section>
 </main>
 
+<div id="toast" class="toast" hidden></div>
+
 <div id="ataOverlay" class="overlay" hidden>
   <div class="card ata">
-    <div class="row"><h2>Ata final</h2><span class="spacer"></span>
+    <div class="card-h"><h2>Ata final</h2><span class="spacer"></span>
       <button id="btnCopyAta" class="mini">copiar</button>
       <button id="btnBaixar" class="mini">baixar .md</button>
       <button id="btnFecharAta" class="mini">fechar</button>

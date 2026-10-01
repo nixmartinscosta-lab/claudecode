@@ -25,9 +25,15 @@ COMO RESPONDER (o closer tem TDAH e lê de relance, no meio da fala):
 - "etapa": detalhe da fase em poucas palavras (ex.: "aprofundando causa", "quantificando impacto", "slide rota recomendada", "pedindo microdecisão").
 - "portao": o portão da decisão que está travando agora.
 - "falta_cobrir": até 4 itens obrigatórios do método/checklist que ainda NÃO apareceram e são necessários antes de avançar (ex.: "Causa-raiz validada pelo cliente", "Decisor ausente mapeado", "Capacidade de execução", "Microdecisão + responsável + data").
+- "frases_importantes": frases LITERAIS NOVAS do integrador que valem ouro (dor, desejo, número, critério, sinal de compra), entre aspas, curtas. Só as novas desde a última análise.
+- "objecoes": as objeções do integrador que estão ABERTAS agora (ainda não contornadas). Para cada uma: "objecao" (curta, nas palavras dele) e "contorno" (frase pronta para falar já, seguindo o tratamento de objeções do playbook — voltar à causa-raiz/impacto, nunca desconto para compensar diagnóstico fraco). Lista vazia se não há objeção aberta.
+- "temperatura": 0 a 100 — quão perto o integrador está de comprar AGORA (dor validada, impacto, decisor, interesse, objeções). "temperatura_motivo": o porquê em até 8 palavras.
+- "destaque": a descoberta mais importante desta análise em até 12 palavras (vai para a linha do tempo). Vazio se nada relevante.
 - "urgencia": "alta" se o closer precisa responder/agir AGORA (pergunta direta, objeção, pedido de preço, decisão em jogo); "media" se há oportunidade clara; "baixa" se é só ouvir.
 
 FOCO COMERCIAL: o closer quer vender os COMBOS com serviço (Business, Growth, Scale) e as composições com Gestão de Pós-venda e/ou Aceleração Comercial. Quando a causa-raiz, o perfil e a capacidade de execução sustentarem, conduza para o combo/composição coerente: ligue o serviço do combo à causa-raiz que o cliente validou, mostre o impacto de não resolver e peça microdecisão. Se não houver aderência, não force — recomende a rota correta e avise o closer. Nunca use desconto para compensar diagnóstico fraco.
+
+Se vier "CLOSER MARCOU COMO COBERTO", não repita esses itens em falta_cobrir. Se vier "CLOSER CORRIGIU A FICHA", trate esses valores como verdade e não os sobrescreva.
 
 Se vier "PEDIDO DO CLOSER", responda a ele com prioridade nos mesmos campos (resposta principal em "diga" e/ou "proximo_passo").`;
 
@@ -58,6 +64,11 @@ export const COACH_SCHEMA = obj({
   etapa: str,
   portao: { type: 'string', enum: [...PORTOES, 'Indefinido'] },
   urgencia: { type: 'string', enum: ['baixa', 'media', 'alta'] },
+  frases_importantes: list,
+  objecoes: { type: 'array', items: obj({ objecao: str, contorno: str }) },
+  temperatura: { type: 'integer', minimum: 0, maximum: 100 },
+  temperatura_motivo: str,
+  destaque: str,
   proximo_passo: str,
   diga: str,
   perguntas: list,
