@@ -316,15 +316,15 @@ var MODO_NOME = { diagnostico: "Diagn\xF3stico Comercial", ecossistema: "Reuni\x
 var N_CRM = Object.keys(CRM_CAMPOS).length;
 var NEW_MS = 12e3;
 var BRANCHES = {
-  resultado: { t: "\u{1F3AF} Resultado desejado", side: "right" },
-  operacao: { t: "\u{1F3ED} Opera\xE7\xE3o hoje", side: "right" },
-  dor: { t: "\u{1F4A2} Dor (palavras dele)", side: "right" },
-  causa: { t: "\u{1F50D} Causa-raiz", side: "right" },
-  impacto: { t: "\u{1F4C9} Impacto", side: "right" },
-  decisores: { t: "\u{1F465} Decisores & execu\xE7\xE3o", side: "left" },
-  objecoes: { t: "\u{1F6E1} Obje\xE7\xF5es \u2192 contorno", side: "left" },
-  rota: { t: "\u{1F9E9} Rota / combo", side: "left" },
-  proximos: { t: "\u2705 Pr\xF3ximos passos", side: "left" }
+  resultado: { t: "Resultado desejado", side: "right" },
+  operacao: { t: "Opera\xE7\xE3o hoje", side: "right" },
+  dor: { t: "Dor, nas palavras dele", side: "right" },
+  causa: { t: "Causa-raiz", side: "right" },
+  impacto: { t: "Impacto", side: "right" },
+  decisores: { t: "Decisores e execu\xE7\xE3o", side: "left" },
+  objecoes: { t: "Obje\xE7\xF5es e contorno", side: "left" },
+  rota: { t: "Rota / combo", side: "left" },
+  proximos: { t: "Pr\xF3ximos passos", side: "left" }
 };
 var MAX_LEAVES = 4;
 var freshState = () => ({
@@ -387,6 +387,12 @@ function setStatus(text, level = "") {
 }
 var fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 var elapsedSec = () => state.startedAt ? Math.floor((Date.now() - state.startedAt) / 1e3) : 0;
+function setRing(id, frac, color) {
+  const c = $(id);
+  const len = 113.1;
+  c.style.strokeDashoffset = String(len * (1 - Math.max(0, Math.min(1, frac))));
+  if (color) c.style.stroke = color;
+}
 function bump(id) {
   const k = $(id).closest(".kpi");
   k.classList.remove("bump");
@@ -409,7 +415,6 @@ document.querySelectorAll(".tabs").forEach((bar) => bar.addEventListener("click"
     b.classList.toggle("active", b === btn);
     $(b.dataset.tab).hidden = b !== btn;
   });
-  $("mapCtl").style.visibility = btn.dataset.tab === "tMapa" ? "visible" : "hidden";
   if (btn.dataset.tab === "tTimeline") {
     $("tlCount").hidden = true;
     $("tlCount").textContent = "";
@@ -428,7 +433,7 @@ chrome.storage.local.get(["setup", "docs", "leadDocs"]).then(({ setup, docs, lea
   leadDocs = ld || [];
   renderLeadFiles();
   if (!$("foco").value) $("foco").value = FOCO_PADRAO;
-  $("kbInfo").textContent = docs?.length ? `\u{1F4DA} ${docs.length} arquivo(s) na base` : "\u26A0 Suba seus .md em \u2699";
+  $("kbInfo").textContent = docs?.length ? `${docs.length} arquivo(s) na base` : "Suba seus .md nas configura\xE7\xF5es";
   showContext();
 });
 SETUP_FIELDS.forEach((f) => $(f).addEventListener("input", showContext));
@@ -755,14 +760,15 @@ function updateMapFrom(d) {
   (state.map.objecoes || []).forEach((l) => {
     l.done = !abertas.includes(l.text.toLowerCase());
   });
-  if (d.rota?.solucao) addLeaf("rota", d.rota.solucao, d.rota.investimento ? `\u{1F4B0} ${d.rota.investimento}` : "");
+  if (d.rota?.solucao) addLeaf("rota", d.rota.solucao, d.rota.investimento ? d.rota.investimento : "");
   addLeaf("proximos", c.proxima_acao);
   renderMap();
 }
 function updateKpis() {
   const n = Object.values(state.crm).filter(Boolean).length;
   if (setText("diagVal", `${n}/${N_CRM}`) && n) bump("diagVal");
-  $("diagFill").style.width = `${n / N_CRM * 100}%`;
+  setRing("diagRing", n / N_CRM, n >= 8 ? "var(--ok)" : "var(--primary)");
+  $("diagRingVal").textContent = `${Math.round(n / N_CRM * 100)}%`;
   $("crmBadge").textContent = `${n}/${N_CRM}`;
   const faltam = Object.entries(CRM_CAMPOS).filter(([k]) => !state.crm[k]).map(([, v]) => v.split(" ")[0]);
   $("diagFalta").textContent = faltam.length ? `falta: ${faltam.slice(0, 3).join(", ")}${faltam.length > 3 ? "\u2026" : ""}` : "completo \u2714";
@@ -771,7 +777,7 @@ function updateKpis() {
   const pct = total ? Math.round(me / total * 100) : 0;
   $("talkMe").style.width = `${pct}%`;
   $("talkThem").style.width = `${total ? 100 - pct : 0}%`;
-  $("talkTxt").textContent = total ? `Voc\xEA ${pct}% \xB7 Cliente ${100 - pct}%` : "Voc\xEA \u2014 \xB7 Cliente \u2014";
+  $("talkTxt").textContent = total ? `${pct}% \xB7 ${100 - pct}%` : "\u2014";
   const demais = total > 150 && pct > 55;
   $("talkTxt").closest(".kpi").classList.toggle("alert", demais);
   if (demais && !state.talkWarned) {
@@ -898,8 +904,12 @@ OK = usar \xB7 Cancelar = come\xE7ar sem dossi\xEA`)) {
   ["tempMotivo", "condDica", "tempTrend", "condTrend", "etapa"].forEach((id) => {
     $(id).textContent = "";
   });
-  $("tempFill").style.width = "100%";
-  $("tempMark").style.opacity = 0;
+  ["tempRing", "condRing", "diagRing"].forEach((r) => setRing(r, 0));
+  ["tempRingVal", "condRingVal"].forEach((r) => {
+    $(r).textContent = "\u2014";
+  });
+  $("tempBand").textContent = "";
+  $("tempBand").className = "band";
   [...$("movimentos").children, ...$("portoes").children].forEach((li) => {
     li.className = "";
   });
@@ -914,7 +924,8 @@ OK = usar \xB7 Cancelar = come\xE7ar sem dossi\xEA`)) {
   $("btnStart").hidden = true;
   $("btnStop").hidden = false;
   $("dot").classList.add("on");
-  $("liveTag").hidden = false;
+  $("livePill").classList.add("on");
+  $("liveTag").textContent = "AO VIVO";
   addTimeline(setup.origem === "avanco" ? "Reuni\xE3o de avan\xE7o iniciada" : "Reuni\xE3o iniciada (lead novo)", "Abertura", "baixa");
   if (leadDocs.length || setup.notas) {
     $("proximo").textContent = "Lendo o dossi\xEA do lead e montando o briefing\u2026";
@@ -942,7 +953,8 @@ $("btnStop").onclick = async () => {
   $("btnStop").hidden = true;
   $("btnStart").hidden = false;
   $("dot").classList.remove("on");
-  $("liveTag").hidden = true;
+  $("livePill").classList.remove("on");
+  $("liveTag").textContent = "ENCERRADA";
   setStatus("Gerando a ata final\u2026");
   try {
     $("ata").textContent = await state.coach.ata(takeNewLines());
@@ -1091,7 +1103,7 @@ function render(d, pedido) {
   $("coach").closest(".col").scrollTo({ top: 0, behavior: "smooth" });
   const urg = d.urgencia || "baixa";
   $("coach").className = `card hero urg-${urg}`;
-  $("urgTag").textContent = urg === "alta" ? "\u{1F534} AGIR AGORA" : urg === "media" ? "\u{1F7E0} OPORTUNIDADE" : "\u{1F7E2} AGORA";
+  $("urgTag").textContent = urg === "alta" ? "AGIR AGORA" : urg === "media" ? "OPORTUNIDADE" : "AGORA";
   if (setText("proximo", d.proximo_passo || "Continue ouvindo.")) animate("proximo");
   if (setText("diga", d.diga || "")) animate("digaBox");
   $("digaBox").hidden = !d.diga;
@@ -1128,26 +1140,30 @@ function render(d, pedido) {
   if (Number.isFinite(d.temperatura)) {
     const t = Math.max(0, Math.min(100, Math.round(d.temperatura)));
     const prev = state.temp;
-    $("tempFill").style.width = `${100 - t}%`;
-    $("tempMark").style.left = `calc(${t}% - 2px)`;
-    $("tempMark").style.opacity = 1;
+    const faixa = t >= 70 ? "quente" : t >= 40 ? "morno" : "frio";
+    setRing("tempRing", t / 100, faixa === "quente" ? "var(--danger)" : faixa === "morno" ? "var(--warn)" : "var(--cold)");
+    $("tempBand").textContent = faixa === "quente" ? "quente" : faixa === "morno" ? "morno" : "frio";
+    $("tempBand").className = `band ${faixa}`;
     if (setText("tempVal", `${t}\xB0`)) bump("tempVal");
+    $("tempRingVal").textContent = t;
     $("tempMotivo").textContent = d.temperatura_motivo || "";
     $("tempMotivo").title = d.temperatura_motivo || "";
     $("tempTrend").textContent = prev == null || prev === t ? "" : t > prev ? `\u25B2 +${t - prev}` : `\u25BC ${t - prev}`;
     $("tempTrend").className = `trend ${prev != null && t > prev ? "up" : "down"}`;
-    $("mapTemp").textContent = `\u{1F321} ${t}\xB0`;
+    $("mapTemp").textContent = `${t}\xB0`;
     state.temp = t;
   }
   if (Number.isFinite(d.conducao)) {
     const c = Math.max(0, Math.min(10, Math.round(d.conducao)));
     const prev = state.cond;
     if (setText("condVal", `${c}/10`)) bump("condVal");
+    $("condRingVal").textContent = c;
     $("condTrend").textContent = prev == null || prev === c ? "" : c > prev ? `\u25B2 +${c - prev}` : `\u25BC ${c - prev}`;
     $("condTrend").className = `trend ${prev != null && c > prev ? "up" : "down"}`;
     $("condDica").textContent = d.conducao_dica || "";
     $("condDica").title = d.conducao_dica || "";
     $("condVal").closest(".kpi").classList.toggle("alert", c < 6);
+    setRing("condRing", c / 10, c >= 8 ? "var(--ok)" : c >= 6 ? "var(--primary)" : "var(--warn)");
     state.cond = c;
   }
   const novos = [];
@@ -1163,8 +1179,8 @@ function render(d, pedido) {
     $("rotaSolucao").textContent = d.rota.solucao;
     $("rotaSolucao").title = d.rota.motivo || "";
     $("rotaInvest").hidden = !d.rota.investimento;
-    $("rotaInvest").textContent = d.rota.investimento ? `\u{1F4B0} ${d.rota.investimento}` : "";
-    $("mapRota").textContent = `\u{1F9E9} ${d.rota.solucao}`;
+    $("rotaInvest").textContent = d.rota.investimento ? d.rota.investimento : "";
+    $("mapRota").textContent = d.rota.solucao;
     if (mudou) {
       $("rotaNew").hidden = false;
       setTimeout(() => {

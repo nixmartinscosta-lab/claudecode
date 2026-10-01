@@ -14,15 +14,15 @@ const NEW_MS = 12000;
 
 // Mapa: lado direito = diagnóstico (A do ACR), lado esquerdo = decisão (C/R).
 const BRANCHES = {
-  resultado: { t: '🎯 Resultado desejado', side: 'right' },
-  operacao: { t: '🏭 Operação hoje', side: 'right' },
-  dor: { t: '💢 Dor (palavras dele)', side: 'right' },
-  causa: { t: '🔍 Causa-raiz', side: 'right' },
-  impacto: { t: '📉 Impacto', side: 'right' },
-  decisores: { t: '👥 Decisores & execução', side: 'left' },
-  objecoes: { t: '🛡 Objeções → contorno', side: 'left' },
-  rota: { t: '🧩 Rota / combo', side: 'left' },
-  proximos: { t: '✅ Próximos passos', side: 'left' },
+  resultado: { t: 'Resultado desejado', side: 'right' },
+  operacao: { t: 'Operação hoje', side: 'right' },
+  dor: { t: 'Dor, nas palavras dele', side: 'right' },
+  causa: { t: 'Causa-raiz', side: 'right' },
+  impacto: { t: 'Impacto', side: 'right' },
+  decisores: { t: 'Decisores e execução', side: 'left' },
+  objecoes: { t: 'Objeções e contorno', side: 'left' },
+  rota: { t: 'Rota / combo', side: 'left' },
+  proximos: { t: 'Próximos passos', side: 'left' },
 };
 const MAX_LEAVES = 4;
 
@@ -43,6 +43,12 @@ function copy(text, msg = 'Copiado ✔') { navigator.clipboard.writeText(text).t
 function setStatus(text, level = '') { const s = $('status'); s.hidden = !text; s.textContent = text || ''; s.className = `status ${level}`; }
 const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
 const elapsedSec = () => (state.startedAt ? Math.floor((Date.now() - state.startedAt) / 1000) : 0);
+// Anel: fração 0..1 com cor.
+function setRing(id, frac, color) {
+  const c = $(id); const len = 113.1;
+  c.style.strokeDashoffset = String(len * (1 - Math.max(0, Math.min(1, frac))));
+  if (color) c.style.stroke = color;
+}
 function bump(id) { const k = $(id).closest('.kpi'); k.classList.remove('bump'); void k.offsetWidth; k.classList.add('bump'); }
 function setText(id, v) { if ($(id).textContent !== String(v)) { $(id).textContent = v; return true; } return false; }
 
@@ -53,7 +59,7 @@ PORTOES.forEach((t) => $('portoes').append(el('li', '', t)));
 document.querySelectorAll('.tabs').forEach((bar) => bar.addEventListener('click', (e) => {
   const btn = e.target.closest('.tab'); if (!btn) return;
   bar.querySelectorAll('.tab').forEach((b) => { b.classList.toggle('active', b === btn); $(b.dataset.tab).hidden = b !== btn; });
-  $('mapCtl').style.visibility = btn.dataset.tab === 'tMapa' ? 'visible' : 'hidden';
+  
   if (btn.dataset.tab === 'tTimeline') { $('tlCount').hidden = true; $('tlCount').textContent = ''; }
   if (btn.dataset.tab === 'tMapa') requestAnimationFrame(() => { fitIfAuto(); drawLinks(); });
 }));
@@ -64,7 +70,7 @@ chrome.storage.local.get(['setup', 'docs', 'leadDocs']).then(({ setup, docs, lea
   if (setup?.origem) document.querySelector(`input[name="origem"][value="${setup.origem}"]`).checked = true;
   leadDocs = ld || []; renderLeadFiles();
   if (!$('foco').value) $('foco').value = FOCO_PADRAO;
-  $('kbInfo').textContent = docs?.length ? `📚 ${docs.length} arquivo(s) na base` : '⚠ Suba seus .md em ⚙';
+  $('kbInfo').textContent = docs?.length ? `${docs.length} arquivo(s) na base` : 'Suba seus .md nas configurações';
   showContext();
 });
 SETUP_FIELDS.forEach((f) => $(f).addEventListener('input', showContext));
@@ -273,7 +279,7 @@ function updateMapFrom(d) {
   const abertas = (d.objecoes || []).map((o) => o.objecao.toLowerCase());
   (d.objecoes || []).forEach((o) => addLeaf('objecoes', o.objecao, o.contorno));
   (state.map.objecoes || []).forEach((l) => { l.done = !abertas.includes(l.text.toLowerCase()); });
-  if (d.rota?.solucao) addLeaf('rota', d.rota.solucao, d.rota.investimento ? `💰 ${d.rota.investimento}` : '');
+  if (d.rota?.solucao) addLeaf('rota', d.rota.solucao, d.rota.investimento ? d.rota.investimento : '');
   addLeaf('proximos', c.proxima_acao);
   renderMap();
 }
@@ -282,7 +288,8 @@ function updateMapFrom(d) {
 function updateKpis() {
   const n = Object.values(state.crm).filter(Boolean).length;
   if (setText('diagVal', `${n}/${N_CRM}`) && n) bump('diagVal');
-  $('diagFill').style.width = `${(n / N_CRM) * 100}%`;
+  setRing('diagRing', n / N_CRM, n >= 8 ? 'var(--ok)' : 'var(--primary)');
+  $('diagRingVal').textContent = `${Math.round((n / N_CRM) * 100)}%`;
   $('crmBadge').textContent = `${n}/${N_CRM}`;
   const faltam = Object.entries(CRM_CAMPOS).filter(([k]) => !state.crm[k]).map(([, v]) => v.split(' ')[0]);
   $('diagFalta').textContent = faltam.length ? `falta: ${faltam.slice(0, 3).join(', ')}${faltam.length > 3 ? '…' : ''}` : 'completo ✔';
@@ -291,7 +298,7 @@ function updateKpis() {
   const total = Object.values(state.talk).reduce((a, b) => a + b, 0);
   const pct = total ? Math.round((me / total) * 100) : 0;
   $('talkMe').style.width = `${pct}%`; $('talkThem').style.width = `${total ? 100 - pct : 0}%`;
-  $('talkTxt').textContent = total ? `Você ${pct}% · Cliente ${100 - pct}%` : 'Você — · Cliente —';
+  $('talkTxt').textContent = total ? `${pct}% · ${100 - pct}%` : '—';
   const demais = total > 150 && pct > 55;
   $('talkTxt').closest('.kpi').classList.toggle('alert', demais);
   if (demais && !state.talkWarned) { state.talkWarned = true; toast('🎙 Você está falando mais que o cliente — pergunte e escute'); }
@@ -389,13 +396,13 @@ $('btnStart').onclick = async () => {
   $('perguntasBox').hidden = true; $('falta_cobrirBox').hidden = true; $('digaBox').hidden = true;
   ['tempVal', 'condVal'].forEach((id) => { $(id).textContent = '—'; });
   ['tempMotivo', 'condDica', 'tempTrend', 'condTrend', 'etapa'].forEach((id) => { $(id).textContent = ''; });
-  $('tempFill').style.width = '100%'; $('tempMark').style.opacity = 0;
+  ['tempRing', 'condRing', 'diagRing'].forEach((r) => setRing(r, 0)); ['tempRingVal', 'condRingVal'].forEach((r) => { $(r).textContent = '—'; }); $('tempBand').textContent = ''; $('tempBand').className = 'band';
   [...$('movimentos').children, ...$('portoes').children].forEach((li) => { li.className = ''; });
   $('sintese').textContent = 'Aguardando a conversa…';
   renderCrm(); renderMem(); renderMap(); updateKpis(); showContext();
   $('setupBox').hidden = true;
   $('proximo').textContent = 'Ouvindo… abra com contexto, confirme tempo e participantes e combine o objetivo.';
-  $('btnStart').hidden = true; $('btnStop').hidden = false; $('dot').classList.add('on'); $('liveTag').hidden = false;
+  $('btnStart').hidden = true; $('btnStop').hidden = false; $('dot').classList.add('on'); $('livePill').classList.add('on'); $('liveTag').textContent = 'AO VIVO';
   addTimeline(setup.origem === 'avanco' ? 'Reunião de avanço iniciada' : 'Reunião iniciada (lead novo)', 'Abertura', 'baixa');
   // Com dossiê ou notas: briefing imediato, o mapa já começa preenchido.
   if (leadDocs.length || setup.notas) {
@@ -418,7 +425,7 @@ $('btnStop').onclick = async () => {
   await new Promise((r) => setTimeout(r, 600)); // recebe as últimas falas antes de fechar
   state.running = false;
   $('btnStop').disabled = false;
-  $('btnStop').hidden = true; $('btnStart').hidden = false; $('dot').classList.remove('on'); $('liveTag').hidden = true;
+  $('btnStop').hidden = true; $('btnStart').hidden = false; $('dot').classList.remove('on'); $('livePill').classList.remove('on'); $('liveTag').textContent = 'ENCERRADA';
   setStatus('Gerando a ata final…');
   try {
     $('ata').textContent = await state.coach.ata(takeNewLines());
@@ -531,7 +538,7 @@ function render(d, pedido) {
   $('coach').closest('.col').scrollTo({ top: 0, behavior: 'smooth' });
   const urg = d.urgencia || 'baixa';
   $('coach').className = `card hero urg-${urg}`;
-  $('urgTag').textContent = urg === 'alta' ? '🔴 AGIR AGORA' : urg === 'media' ? '🟠 OPORTUNIDADE' : '🟢 AGORA';
+  $('urgTag').textContent = urg === 'alta' ? 'AGIR AGORA' : urg === 'media' ? 'OPORTUNIDADE' : 'AGORA';
   if (setText('proximo', d.proximo_passo || 'Continue ouvindo.')) animate('proximo');
   if (setText('diga', d.diga || '')) animate('digaBox');
   $('digaBox').hidden = !d.diga;
@@ -563,13 +570,16 @@ function render(d, pedido) {
   if (Number.isFinite(d.temperatura)) {
     const t = Math.max(0, Math.min(100, Math.round(d.temperatura)));
     const prev = state.temp;
-    $('tempFill').style.width = `${100 - t}%`;
-    $('tempMark').style.left = `calc(${t}% - 2px)`; $('tempMark').style.opacity = 1;
+    const faixa = t >= 70 ? 'quente' : t >= 40 ? 'morno' : 'frio';
+    setRing('tempRing', t / 100, faixa === 'quente' ? 'var(--danger)' : faixa === 'morno' ? 'var(--warn)' : 'var(--cold)');
+    $('tempBand').textContent = faixa === 'quente' ? 'quente' : faixa === 'morno' ? 'morno' : 'frio';
+    $('tempBand').className = `band ${faixa}`;
     if (setText('tempVal', `${t}°`)) bump('tempVal');
+    $('tempRingVal').textContent = t;
     $('tempMotivo').textContent = d.temperatura_motivo || ''; $('tempMotivo').title = d.temperatura_motivo || '';
     $('tempTrend').textContent = prev == null || prev === t ? '' : t > prev ? `▲ +${t - prev}` : `▼ ${t - prev}`;
     $('tempTrend').className = `trend ${prev != null && t > prev ? 'up' : 'down'}`;
-    $('mapTemp').textContent = `🌡 ${t}°`;
+    $('mapTemp').textContent = `${t}°`;
     state.temp = t;
   }
 
@@ -578,10 +588,12 @@ function render(d, pedido) {
     const c = Math.max(0, Math.min(10, Math.round(d.conducao)));
     const prev = state.cond;
     if (setText('condVal', `${c}/10`)) bump('condVal');
+    $('condRingVal').textContent = c;
     $('condTrend').textContent = prev == null || prev === c ? '' : c > prev ? `▲ +${c - prev}` : `▼ ${c - prev}`;
     $('condTrend').className = `trend ${prev != null && c > prev ? 'up' : 'down'}`;
     $('condDica').textContent = d.conducao_dica || ''; $('condDica').title = d.conducao_dica || '';
     $('condVal').closest('.kpi').classList.toggle('alert', c < 6);
+    setRing('condRing', c / 10, c >= 8 ? 'var(--ok)' : c >= 6 ? 'var(--primary)' : 'var(--warn)');
     state.cond = c;
   }
 
@@ -598,8 +610,8 @@ function render(d, pedido) {
     const mudou = $('rotaSolucao').textContent !== d.rota.solucao;
     $('rotaMini').classList.remove('empty');
     $('rotaSolucao').textContent = d.rota.solucao; $('rotaSolucao').title = d.rota.motivo || '';
-    $('rotaInvest').hidden = !d.rota.investimento; $('rotaInvest').textContent = d.rota.investimento ? `💰 ${d.rota.investimento}` : '';
-    $('mapRota').textContent = `🧩 ${d.rota.solucao}`;
+    $('rotaInvest').hidden = !d.rota.investimento; $('rotaInvest').textContent = d.rota.investimento ? d.rota.investimento : '';
+    $('mapRota').textContent = d.rota.solucao;
     if (mudou) {
       $('rotaNew').hidden = false; setTimeout(() => { $('rotaNew').hidden = true; }, NEW_MS);
       addTimeline(`Rota: ${d.rota.solucao}`, 'Rota', 'media');

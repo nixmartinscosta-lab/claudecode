@@ -4,17 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mentor ao Vivo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
 <!-- ================= TOPO ================= -->
 <header class="top">
-  <div class="brandbox"><span id="dot" class="dot"></span><strong class="brand">Mentor</strong><span class="live" id="liveTag" hidden>AO VIVO</span></div>
+  <div class="brandbox"><span class="logo">M</span><div class="brandtxt"><strong class="brand">Mentor</strong><span class="brandsub">copiloto do closer</span></div></div>
+  <span class="livepill" id="livePill"><span id="dot" class="dot"></span><span id="liveTag">PRONTO</span></span>
   <span id="timer" class="timer mono">00:00</span>
   <div class="who"><span id="clienteTop" class="cliente">Nova reunião</span><span id="modoTop" class="muted small"></span></div>
   <span class="spacer"></span>
   <span class="kbd-hint muted small"><kbd>A</kbd> ajuda <kbd>/</kbd> pergunta <kbd>C</kbd> copia <kbd>M</kbd> mapa</span>
-  <button id="btnSetup" class="ghost">✎ Preparação</button>
+  <button id="btnSetup" class="ghost">Preparação</button>
   <a href="options.html" target="_blank" class="ghost btnlink" title="Configurações">⚙</a>
   <button id="btnStart" class="primary">▶ Começar</button>
   <button id="btnStop" class="danger" hidden>■ Encerrar + Ata</button>
@@ -23,49 +27,51 @@
 
 <!-- ================= INDICADORES ================= -->
 <section class="kpis">
-  <div class="kpi kpi-temp" title="Quão perto o integrador está de comprar agora">
-    <div class="kpi-label">🌡 Temperatura</div>
-    <div class="kpi-row"><span id="tempVal" class="kpi-val">—</span><span id="tempTrend" class="trend"></span></div>
-    <div class="gauge"><div id="tempFill" class="gauge-fill"></div><div id="tempMark" class="gauge-mark"></div></div>
-    <div id="tempMotivo" class="muted small clamp1"></div>
+  <div class="kpi kpi-ring" title="Quão perto o integrador está de comprar agora">
+    <div class="ringbox"><svg class="ring" viewBox="0 0 44 44"><circle class="ring-bg" cx="22" cy="22" r="18"/><circle class="ring-fg" id="tempRing" cx="22" cy="22" r="18"/></svg><span class="ring-val" id="tempRingVal">—</span></div>
+    <div class="kpi-body">
+      <div class="kpi-label">Temperatura</div>
+      <div class="kpi-row"><span id="tempVal" class="kpi-val">—</span><span id="tempBand" class="band"></span><span id="tempTrend" class="trend"></span></div>
+      <div id="tempMotivo" class="kpi-sub clamp1">aguardando a conversa</div>
+    </div>
   </div>
-  <div class="kpi" title="Campos obrigatórios do CRM preenchidos">
-    <div class="kpi-label">📋 Diagnóstico</div>
-    <div class="kpi-row"><span id="diagVal" class="kpi-val">0/10</span></div>
-    <div class="bar"><div id="diagFill" class="bar-fill"></div></div>
-    <div id="diagFalta" class="muted small clamp1"></div>
+  <div class="kpi kpi-ring" title="Campos obrigatórios do CRM preenchidos">
+    <div class="ringbox"><svg class="ring" viewBox="0 0 44 44"><circle class="ring-bg" cx="22" cy="22" r="18"/><circle class="ring-fg" id="diagRing" cx="22" cy="22" r="18"/></svg><span class="ring-val" id="diagRingVal">—</span></div>
+    <div class="kpi-body">
+      <div class="kpi-label">Diagnóstico</div>
+      <div class="kpi-row"><span id="diagVal" class="kpi-val">0/10</span></div>
+      <div id="diagFalta" class="kpi-sub clamp1"></div>
+    </div>
+  </div>
+  <div class="kpi kpi-ring" title="Nota da sua condução segundo o método e seus gaps">
+    <div class="ringbox"><svg class="ring" viewBox="0 0 44 44"><circle class="ring-bg" cx="22" cy="22" r="18"/><circle class="ring-fg" id="condRing" cx="22" cy="22" r="18"/></svg><span class="ring-val" id="condRingVal">—</span></div>
+    <div class="kpi-body">
+      <div class="kpi-label">Condução</div>
+      <div class="kpi-row"><span id="condVal" class="kpi-val">—</span><span id="condTrend" class="trend"></span></div>
+      <div id="condDica" class="kpi-sub clamp1"></div>
+    </div>
   </div>
   <div class="kpi" title="Regra de ouro: o cliente deve falar mais que você">
-    <div class="kpi-label">🎙 Tempo de fala</div>
+    <div class="kpi-label"><span class="ico ico-blue"></span>Tempo de fala</div>
     <div class="talk"><div id="talkMe" class="talk-me"></div><div id="talkThem" class="talk-them"></div></div>
-    <div class="kpi-row small"><span id="talkTxt" class="muted">Você — · Cliente —</span></div>
+    <div class="talk-legend"><span><i class="sw sw-me"></i>Você</span><span id="talkTxt" class="kpi-sub">—</span><span><i class="sw sw-them"></i>Cliente</span></div>
   </div>
-  <div class="kpi">
-    <div class="kpi-label">❓ Suas perguntas</div>
-    <div class="kpi-row"><span id="qVal" class="kpi-val">0</span><span class="muted small">feitas</span></div>
-    <div class="spark" id="qSpark"></div>
+  <div class="kpi kpi-mini">
+    <div class="kpi-label"><span class="ico ico-violet"></span>Suas perguntas</div>
+    <div class="kpi-row"><span id="qVal" class="kpi-val">0</span><div class="spark" id="qSpark"></div></div>
   </div>
-  <div class="kpi">
-    <div class="kpi-label">🛡 Objeções</div>
-    <div class="kpi-row"><span id="objVal" class="kpi-val">0</span><span id="objSub" class="muted small">abertas</span></div>
-  </div>
-  <div class="kpi" title="Nota da sua condução segundo o método e seus gaps">
-    <div class="kpi-label">🏁 Condução</div>
-    <div class="kpi-row"><span id="condVal" class="kpi-val">—</span><span id="condTrend" class="trend"></span></div>
-    <div id="condDica" class="muted small clamp1"></div>
+  <div class="kpi kpi-mini">
+    <div class="kpi-label"><span class="ico ico-amber"></span>Objeções</div>
+    <div class="kpi-row"><span id="objVal" class="kpi-val">0</span><span id="objSub" class="kpi-sub">abertas</span></div>
   </div>
 </section>
 
 <!-- ================= TRILHOS + LINHA DO RACIOCÍNIO ================= -->
-<section class="rails">
+<section class="rails card">
   <div class="rail"><span class="rail-label">Movimento</span><ol id="movimentos" class="steps"></ol></div>
   <div class="rail"><span class="rail-label">Portões</span><ol id="portoes" class="steps gates"></ol></div>
 </section>
-<section class="thread" id="threadBox">
-  <span class="thread-label">🧵 Linha do raciocínio</span>
-  <p id="sintese" class="thread-text">O cliente quer <mark>[resultado?]</mark>, mas hoje está em <mark>[situação?]</mark>. Ele percebe <mark>[dor?]</mark>, porém a causa prioritária é <mark>[causa-raiz?]</mark>…</p>
-  <span id="etapa" class="etapa"></span>
-</section>
+
 
 <main class="layout">
   <!-- ================= ESQUERDA: AÇÃO ================= -->
@@ -73,12 +79,12 @@
     <div id="setupBox" class="card setup">
       <div class="card-h"><h2>Preparação (30 s)</h2><span id="kbInfo" class="muted small"></span></div>
       <div class="origem" role="radiogroup">
-        <label class="seg"><input type="radio" name="origem" value="prevenda" checked><span>🆕 Lead novo<br><small>pré-venda marcou</small></span></label>
-        <label class="seg"><input type="radio" name="origem" value="avanco"><span>🔁 Avanço<br><small>eu marquei p/ continuar</small></span></label>
+        <label class="seg"><input type="radio" name="origem" value="prevenda" checked><span>Lead novo<br><small>pré-venda marcou</small></span></label>
+        <label class="seg"><input type="radio" name="origem" value="avanco"><span>Avanço<br><small>eu marquei p/ continuar</small></span></label>
       </div>
       <div id="dropZone" class="drop">
         <input id="leadFiles" type="file" accept=".txt,.md,.csv,.markdown,.json" multiple hidden>
-        <div class="drop-title">📂 Dossiê do lead</div>
+        <div class="drop-title">Dossiê do lead</div>
         <div class="muted small">Arraste aqui ou <a href="#" id="pickFiles">escolha arquivos</a> (.txt, .md, .csv) — conversas, registros do CRM, WhatsApp, notas…</div>
         <ul id="leadList" class="filelist"></ul>
         <button id="clearLead" class="mini" hidden>limpar dossiê (próximo lead)</button>
@@ -103,40 +109,40 @@
       <div class="card-h"><span class="tag-urg" id="urgTag">AGORA</span><span class="muted small"><span id="coachAge"></span> <span id="nextInfo"></span></span></div>
       <div id="proximo" class="hero-text">Ligue as legendas no Meet e clique em <b>▶ Começar</b>.</div>
       <div id="digaBox" class="say" hidden title="Clique para copiar (C)">
-        <span class="say-label">💬 DIGA</span>
+        <span class="say-label">Diga</span>
         <span id="diga"></span>
         <span class="say-copy">copiar</span>
       </div>
     </div>
 
     <div id="objBox" class="card objcard" hidden>
-      <div class="card-h"><span class="label obj">🛡 OBJEÇÃO NA MESA</span><span class="muted small">clique = copiar contorno</span></div>
+      <div class="card-h"><span class="label obj">Objeção na mesa</span><span class="muted small">clique = copiar contorno</span></div>
       <div id="objList"></div>
     </div>
 
     <div id="alertasBox" class="card warnbox" hidden>
-      <div class="card-h"><span class="label warn">⚠ ATENÇÃO</span></div>
+      <div class="card-h"><span class="label warn">Atenção</span></div>
       <ul id="alertas" class="alerts"></ul>
     </div>
 
     <div id="perguntasBox" class="card" hidden>
-      <div class="card-h"><span class="label">❓ PERGUNTE</span><span class="muted small">clique = copiar</span></div>
+      <div class="card-h"><span class="label">Pergunte</span><span class="muted small">clique = copiar</span></div>
       <ul id="perguntas" class="chips-v"></ul>
     </div>
 
     <div id="falta_cobrirBox" class="card" hidden>
-      <div class="card-h"><span class="label">☐ FALTA COBRIR</span><span class="muted small">clique ao cobrir</span></div>
+      <div class="card-h"><span class="label">Falta cobrir</span><span class="muted small">clique ao cobrir</span></div>
       <ul id="falta_cobrir" class="checklist"></ul>
     </div>
     <div class="card askbar">
       <div class="quick">
-        <button class="chip" data-q="Qual combo/composição faz sentido agora e qual o investimento oficial?">💰 Preço do combo</button>
-        <button class="chip" data-q="Como trato a objeção que o integrador acabou de levantar?">🛡 Tratar objeção</button>
-        <button class="chip" data-q="Já dá pra pedir a microdecisão? Me dê a frase exata.">🎯 Fechar agora</button>
-        <button class="chip" data-q="Faça a síntese de diagnóstico até aqui para eu validar com o cliente.">📋 Síntese ACR</button>
-        <button class="chip" data-q="Qual prova social aprovada uso agora? Frase pronta com snapshot e amostra.">📊 Prova social</button>
-        <button class="chip" data-q="Que pergunta aprofunda a causa-raiz agora?">🔍 Aprofundar causa</button>
-        <button class="chip" data-q="Como quantifico o impacto com o cliente agora?">📉 Quantificar impacto</button>
+        <button class="chip" data-q="Qual combo/composição faz sentido agora e qual o investimento oficial?">Preço do combo</button>
+        <button class="chip" data-q="Como trato a objeção que o integrador acabou de levantar?">Tratar objeção</button>
+        <button class="chip" data-q="Já dá pra pedir a microdecisão? Me dê a frase exata.">Fechar agora</button>
+        <button class="chip" data-q="Faça a síntese de diagnóstico até aqui para eu validar com o cliente.">Síntese ACR</button>
+        <button class="chip" data-q="Qual prova social aprovada uso agora? Frase pronta com snapshot e amostra.">Prova social</button>
+        <button class="chip" data-q="Que pergunta aprofunda a causa-raiz agora?">Aprofundar causa</button>
+        <button class="chip" data-q="Como quantifico o impacto com o cliente agora?">Quantificar impacto</button>
       </div>
       <div class="ask">
         <input id="pedido" placeholder="Pergunte qualquer coisa ao Mentor…  ( / )">
@@ -147,29 +153,34 @@
 
   <!-- ================= CENTRO: MAPA ================= -->
   <section class="col col-center">
-    <div class="card context" id="ctxBox">
-      <div class="ctx-item"><span class="ctx-k">🎯 Objetivo</span><span id="ctxObjetivo" class="ctx-v">—</span></div>
-      <div class="ctx-item"><span class="ctx-k">💼 Foco</span><span id="ctxFoco" class="ctx-v">—</span></div>
-      <div class="ctx-item rota-mini" id="rotaMini"><span class="ctx-k">🧩 Rota</span><span id="rotaSolucao" class="ctx-v">aguardando dor validada</span><span id="rotaInvest" class="ctx-invest" hidden></span><span id="rotaNew" class="new" hidden>NOVO</span></div>
+    <div class="card brief">
+      <div class="thread" id="threadBox">
+  <div class="thread-h"><span class="thread-label">Linha do raciocínio</span><span class="spacer"></span><span id="etapa" class="etapa"></span></div>
+  <p id="sintese" class="thread-text">O cliente quer <mark>[resultado?]</mark>, mas hoje está em <mark>[situação?]</mark>. Ele percebe <mark>[dor?]</mark>, porém a causa prioritária é <mark>[causa-raiz?]</mark>…</p>
+</div>
+    <div class="context" id="ctxBox">
+      <div class="ctx-item"><span class="ctx-k">Objetivo</span><span id="ctxObjetivo" class="ctx-v">—</span></div>
+      <div class="ctx-item"><span class="ctx-k">Foco</span><span id="ctxFoco" class="ctx-v">—</span></div>
+      <div class="ctx-item rota-mini" id="rotaMini"><span class="ctx-k">Rota</span><span id="rotaSolucao" class="ctx-v">aguardando dor validada</span><span id="rotaInvest" class="ctx-invest" hidden></span><span id="rotaNew" class="new" hidden>NOVO</span></div>
     </div>
 
+    </div>
     <div class="card board">
       <div class="tabs">
-        <button class="tab active" data-tab="tMapa">🧠 Mapa</button>
-        <button class="tab" data-tab="tCrm">📋 CRM <span id="crmBadge" class="badge">0/10</span></button>
-        <button class="tab" data-tab="tMem">⭐ Memória <span id="memCount" class="badge" hidden></span></button>
-        <button class="tab" data-tab="tTimeline">🕒 Linha <span id="tlCount" class="badge" hidden></span></button>
-        <span class="spacer"></span>
-        <div class="mapctl" id="mapCtl">
+        <button class="tab active" data-tab="tMapa">Mapa mental</button>
+        <button class="tab" data-tab="tCrm">Ficha CRM <span id="crmBadge" class="badge">0/10</span></button>
+        <button class="tab" data-tab="tMem">Memória <span id="memCount" class="badge" hidden></span></button>
+        <button class="tab" data-tab="tTimeline">Linha do tempo <span id="tlCount" class="badge" hidden></span></button>
+      </div>
+
+      <div id="tMapa" class="tabpane">
+        <div id="mapViewport" class="map-viewport">
+          <div class="mapctl" id="mapCtl">
           <button id="zoomOut" class="mini" title="Diminuir">−</button>
           <button id="zoomFit" class="mini" title="Ajustar">Ajustar</button>
           <button id="zoomIn" class="mini" title="Aumentar">+</button>
           <button id="mapFull" class="mini" title="Tela cheia (M)">⤢</button>
         </div>
-      </div>
-
-      <div id="tMapa" class="tabpane">
-        <div id="mapViewport" class="map-viewport">
           <div id="mapStage" class="map-stage">
             <svg id="mapSvg" class="map-svg"></svg>
             <div class="map-side map-left" id="mapLeft"></div>
@@ -182,7 +193,7 @@
           </div>
         </div>
         <div class="map-legend muted small">
-          Clique no ramo = recolher · clique no item = copiar · duplo clique = “Mentor, aprofunde” · arraste para mover · roda = zoom
+          Ramo: recolher · item: copiar · duplo clique: aprofundar · arraste e use a roda para navegar
         </div>
       </div>
       <div id="tCrm" class="tabpane" hidden>
@@ -204,7 +215,7 @@
   <aside class="col col-right" id="colRight">
     <div class="card feed">
       <div class="card-h">
-        <span class="label">💬 CONVERSA AO VIVO</span>
+        <span class="label">Conversa ao vivo</span>
         <button id="btnCollapse" class="mini" title="Recolher">⇥</button>
       </div>
       <div id="speakers" class="speakers"></div>
