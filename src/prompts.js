@@ -196,3 +196,37 @@ Microdecisão, responsável, canal e data.
 Arquivos da base usados.
 
 Não use JSON aqui.`;
+
+// ================= Estúdio (fora da reunião): modos da doutrina =================
+export const MODOS_ESTUDIO = {
+  preparar: {
+    nome: 'Preparar reunião',
+    desc: 'Contexto, hipóteses, riscos, perguntas ACR, objeções e avanço desejado.',
+    material: 'Cole o que a pré-venda registrou, conversas e histórico do lead.',
+    pedido: 'MODO PREPARAR. Entregue em Markdown com "## " nas seções: Contexto; Hipóteses (dor e causa, com [INFERÊNCIA]); Riscos; Perguntas ACR (Analisar, Conectar, Reativar); Objeções prováveis e contorno; Avanço desejado (microdecisão, responsável, canal e data); Fontes consultadas.',
+  },
+  analisar: {
+    nome: 'Analisar reunião',
+    desc: 'Análise completa em 14 seções, com plano de 48 horas, CRM e follow-up.',
+    material: 'Cole a transcrição, as anotações do Gemini/Meet ou um resumo da reunião.',
+    pedido: 'MODO ANALISAR REUNIÃO. Siga o formato de análise completa da doutrina, com "## " nas 14 seções. Na seção 11, inclua a primeira mensagem pronta sob "### Mensagem de follow-up pronta".',
+  },
+  followup: {
+    nome: 'Follow-up',
+    desc: 'Bloqueio, objetivo de cada toque, canal, data, mensagens e critérios.',
+    material: 'Cole o último contato, o resumo da reunião e onde a negociação parou.',
+    pedido: 'MODO FOLLOW-UP. Entregue em Markdown com "## " nas seções: Bloqueio; Sequência de toques (para cada toque: objetivo, canal, data e a mensagem pronta, seguindo a cadência da fonte 05 e a voz da doutrina); Critério de encerramento; Critério de reciclagem; Fontes consultadas. Coloque a primeira mensagem também sob "### Mensagem de follow-up pronta".',
+  },
+  funil: {
+    nome: 'Revisar funil',
+    desc: 'Cobertura, oportunidades, gap, priorização, bloqueios e padrões.',
+    material: 'Cole ou envie o funil (CSV/planilha exportada) com etapa, valor e próximo passo, e informe a meta.',
+    pedido: 'MODO REVISAR FUNIL. Entregue em Markdown com "## " nas seções: Leitura executiva; Cobertura (oportunidades x ticket médio ÷ gap, alvo 3x a 4x, mostrando a conta e marcando [VALIDAR] no que faltar); Oportunidades priorizadas (tabela: oportunidade, estágio da dor, degrau, bloqueio, ação, responsável, data); Padrões encontrados; Plano da semana; Fontes consultadas.',
+  },
+  auditar: {
+    nome: 'Auditar execução',
+    desc: 'Aderência ao playbook, impacto da abordagem, pontos de treino e ajustes.',
+    material: 'Cole a transcrição de uma reunião ou de uma revisão com a gestão.',
+    pedido: 'MODO AUDITAR EXECUÇÃO. Entregue em Markdown com "## " nas seções: Aderência ao playbook (por movimento ACR, com evidência literal); Impacto da abordagem; Pontos de treino (prioridade 1 a 3, cada um com o que fazer diferente e uma frase de exemplo); Próximos ajustes (ação, responsável, data); Fontes consultadas.',
+  },
+};

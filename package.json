@@ -5,7 +5,7 @@
   "description": "Extensão Chrome: IA escuta a reunião em tempo real e te guia estrategicamente.",
   "type": "module",
   "scripts": {
-    "build": "esbuild src/dashboard.js --bundle --format=esm --target=chrome120 --outfile=extension/dashboard.bundle.js",
+    "build": "esbuild src/dashboard.js src/estudio.js --bundle --format=esm --target=chrome120 --outdir=extension --entry-names=[name].bundle",
     "watch": "npm run build -- --watch"
   },
   "devDependencies": {

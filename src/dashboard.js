@@ -112,6 +112,11 @@ function renderLeadFiles() {
   $('clearLead').hidden = !leadDocs.length;
 }
 function saveLead() { chrome.storage.local.set({ leadDocs }); renderLeadFiles(); }
+// Dossiê atualizado em outra página (ex.: Estúdio): reflete aqui.
+chrome.storage.onChanged.addListener((ch) => {
+  if (ch.leadDocs && !state.running) { leadDocs = ch.leadDocs.newValue || []; renderLeadFiles(); }
+  if (ch.setup?.newValue?.comQuem && !$('comQuem').value.trim() && !state.running) { $('comQuem').value = ch.setup.newValue.comQuem; showContext(); renderHistory(); }
+});
 async function addLeadFiles(files) {
   if (!leadDocs.length) chrome.storage.local.set({ leadOwner: $('comQuem').value.trim() });
   for (const f of files) {

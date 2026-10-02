@@ -50,6 +50,8 @@ O foco padrão é **vender combos com serviço (Business, Growth, Scale) e compo
 
 - **Doutrina Mentor 2.0** (`src/doutrina.js`): hierarquia de fontes 01 a 08, ACR, 4 degraus da decisão, estágio da dor 0 a 3, avanço × continuação, marcadores de evidência ([INFERÊNCIA], [VALIDAR], [DADO NÃO INFORMADO], [CONTRADIÇÃO DE FONTE]), voz sem travessão. O briefing segue o modo PREPARAR e a ata segue a análise completa em 14 seções.
 
+- **Estúdio do Mentor** (botão Estúdio no painel): os modos da doutrina fora da reunião. Preparar reunião, Analisar reunião (14 seções), Follow-up, Revisar funil (cobertura) e Auditar execução. Cole ou arraste transcrições, anotações do Gemini, conversas ou o funil em CSV; copie, baixe ou envie o resultado ao dossiê do lead.
+
 ## Instalar (5 min, uma vez)
 
 1. Baixe esta pasta (Code → Download ZIP) e descompacte.

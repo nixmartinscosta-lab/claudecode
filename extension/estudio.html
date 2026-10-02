@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estúdio do Mentor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="dashboard.css">
+<link rel="stylesheet" href="estudio.css">
+</head>
+<body class="estudio">
+<header class="top">
+  <div class="brandbox"><span class="logo">M</span><div class="brandtxt"><strong class="brand">Estúdio do Mentor</strong><span class="brandsub">antes e depois da reunião</span></div></div>
+  <span class="spacer"></span>
+  <a href="dashboard.html" class="btnlink">Painel ao vivo</a>
+  <a href="options.html" target="_blank" class="btnlink" title="Configurações">⚙</a>
+</header>
+<div id="status" class="status" hidden></div>
+
+<main class="es-layout">
+  <section class="es-col">
+    <div class="card">
+      <div class="card-h"><span class="label">1. Modo</span></div>
+      <div id="modos" class="modos" role="radiogroup" aria-label="Modo de trabalho"></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><span class="label">2. Material</span><span id="kbInfo" class="muted small"></span></div>
+      <label for="lead">Lead / integrador (opcional)<input id="lead" placeholder="Solar Sul, João (sócio)"></label>
+      <label for="material"><span id="materialHint">Cole o material</span>
+        <textarea id="material" rows="10" placeholder="Cole aqui a transcrição, o resumo, a conversa ou o funil…"></textarea>
+      </label>
+      <div id="dropZone" class="drop">
+        <input id="files" type="file" accept=".txt,.md,.csv,.markdown,.json" multiple hidden>
+        <div class="drop-title">Arquivos</div>
+        <div class="muted small">Arraste aqui ou <a href="#" id="pickFiles">escolha arquivos</a> (.txt, .md, .csv)</div>
+        <ul id="fileList" class="filelist"></ul>
+      </div>
+      <div class="es-actions">
+        <button id="btnGerar" class="primary">Gerar análise</button>
+        <span id="custo" class="muted small"></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="es-col es-out">
+    <div class="card es-result">
+      <div class="card-h">
+        <span class="label">Resultado</span>
+        <span class="spacer"></span>
+        <button id="btnFollow" class="mini primary" hidden>Copiar follow-up</button>
+        <button id="btnCopy" class="mini" disabled>Copiar</button>
+        <button id="btnBaixar" class="mini" disabled>Baixar .md</button>
+        <button id="btnDossie" class="mini" disabled title="Usar este resultado como contexto na próxima reunião com o lead">Enviar ao dossiê</button>
+      </div>
+      <div id="out" class="ata-body es-body">
+        <p class="qempty">Escolha um modo, cole o material e clique em <b>Gerar análise</b>. O Mentor segue a sua doutrina e os arquivos da base.</p>
+      </div>
+    </div>
+  </section>
+</main>
+<div id="toast" class="toast" hidden></div>
+<script type="module" src="estudio.bundle.js"></script>
+</body>
+</html>
