@@ -1,6 +1,7 @@
 import { Coach } from './coach.js';
 import { DemoCoach, DEMO_SETUP, DEMO_SCRIPT } from './demo.js';
 import { acharPolitica, lerPrecos } from './precos.js';
+import { detectar } from './sinais.js';
 import { CRM_CAMPOS, DIAG_CORE, MOVIMENTOS, PORTOES, DOR_ESTAGIOS, PEDIDO_BRIEFING } from './prompts.js';
 
 const $ = (id) => document.getElementById(id);
@@ -35,7 +36,7 @@ const freshState = () => ({
   questionTimer: null, sinceAnalysis: 0, intervalSec: 25, lastAt: 0,
   crm: {}, crmLocked: new Set(), covered: new Set(), pendingNotes: [],
   memoria: [], pinned: new Set(), map: {}, collapsed: new Set(), expanded: new Set(), openObj: [], objTotal: 0,
-  talk: {}, qTimes: [], talkWarned: false, temp: null, cond: null, drawn: new Set(),
+  talk: {}, qTimes: [], talkWarned: false, temp: null, cond: null, sinaisUlt: {}, clientWords: 0, digaHist: [], turnTimer: null, drawn: new Set(),
   view: { x: 0, y: 0, s: 1 }, userView: false,
 });
 const state = { ...freshState(), meetTabId: Number(new URLSearchParams(location.search).get('tab')) || null };
@@ -557,7 +558,7 @@ function beginSession(settings, setup, coach, source) {
   [...$('movimentos').children, ...$('portoes').children, ...$('dorSteps').children].forEach((li) => { li.className = ''; });
   $('avancoPill').textContent = ''; $('avancoPill').className = 'avpill'; $('fontesHero').textContent = '';
   $('sintese').textContent = 'Aguardando a conversa…';
-  $('ansBox').hidden = true;
+  $('ansBox').hidden = true; $('sinalBox').hidden = true; $('digaHist').hidden = true; $('digaHist').innerHTML = '';
   renderCrm(); renderMem(); renderMap(); updateKpis(); showContext();
   $('setupBox').hidden = true;
   $('proximo').textContent = 'Ouvindo… abra com contexto, confirme tempo e participantes e combine o objetivo.';
@@ -642,7 +643,16 @@ function onTranscript({ speaker, text, isFinal }) {
   $('transcript').scrollTop = $('transcript').scrollHeight;
   updateKpis();
   clearTimeout(state.snapT); state.snapT = setTimeout(saveSnapshot, 3000);
-  if (!isMe && perguntas) { clearTimeout(state.questionTimer); state.questionTimer = setTimeout(() => maybeAnalyze(true), 1200); }
+  if (!isMe) {
+    // Sinais instantâneos (sem esperar a IA).
+    const achados = detectar(text, { crm: state.crm }, state.sinaisUlt);
+    if (achados.length) showSinal(achados[0]);
+    // Fim de um trecho relevante do cliente: analisa já, sem esperar o intervalo.
+    state.clientWords += text.split(/\s+/).filter(Boolean).length;
+    clearTimeout(state.turnTimer);
+    if (perguntas || achados.some((a) => a.nivel === 'alta')) { clearTimeout(state.questionTimer); state.questionTimer = setTimeout(() => maybeAnalyze(true), 1000); }
+    else if (state.clientWords >= 25) state.turnTimer = setTimeout(() => maybeAnalyze(true), 1500);
+  }
 }
 
 function takeNewLines() {
@@ -660,7 +670,7 @@ async function maybeAnalyze(force = false, pedido = '') {
   const from = state.sentUpTo;
   const novas = takeNewLines();
   const notas = state.pendingNotes.splice(0);
-  state.sinceAnalysis = 0;
+  state.sinceAnalysis = 0; state.clientWords = 0; clearTimeout(state.turnTimer);
   $('btnAjuda').disabled = true; $('coach').classList.add('thinking');
   try {
     const res = await state.coach.analyze(novas, pedido, notas);
@@ -716,6 +726,12 @@ function pedidoLabel(p) {
 }
 function render(d, pedido) {
   setStatus('');
+  // A análise da IA já incorpora o sinal: ele sai (após no mínimo 6 s de leitura).
+  if (state.sinal && !$('sinalBox').hidden) {
+    const resta = 6000 - (Date.now() - state.sinal.at);
+    if (resta <= 0) $('sinalBox').hidden = true;
+    else { const at = state.sinal.at; setTimeout(() => { if (state.sinal?.at === at) $('sinalBox').hidden = true; }, resta); }
+  }
   if (pedido && d.resposta) {
     $('ansQ').textContent = pedidoLabel(pedido);
     hl($('ansA'), d.resposta);
@@ -726,7 +742,11 @@ function render(d, pedido) {
   $('coach').className = `card hero urg-${urg}`;
   $('urgTag').textContent = urg === 'alta' ? 'AGIR AGORA' : urg === 'media' ? 'OPORTUNIDADE' : 'AGORA';
   if (setRich('proximo', d.proximo_passo || 'Continue ouvindo.')) animate('proximo');
-  if (setRich('diga', d.diga || '')) animate('digaBox');
+  const digaAnterior = $('diga').dataset.raw;
+  if (setRich('diga', d.diga || '')) {
+    animate('digaBox');
+    if (digaAnterior) { state.digaHist = [{ t: fmt(elapsedSec()), txt: digaAnterior }, ...(state.digaHist || [])].slice(0, 3); renderDigaHist(); }
+  }
   $('digaBox').hidden = !d.diga;
 
   // Objeções
@@ -1049,6 +1069,41 @@ async function resumeSession(snap) {
   saveSnapshot();
 }
 offerResume();
+
+// ================= sinal instantâneo =================
+function showSinal(sg) {
+  state.sinal = { ...sg, at: Date.now() };
+  $('sinalBox').className = `card sinal sinal-${sg.nivel}`;
+  $('sinalTitulo').textContent = sg.titulo;
+  $('sinalFala').textContent = `“${sg.fala.length > 120 ? `${sg.fala.slice(0, 117)}…` : sg.fala}”`;
+  hl($('sinalDica'), sg.dica);
+  hl($('sinalDiga'), sg.diga);
+  $('sinalPrecos').hidden = sg.acao !== 'precos';
+  $('sinalBox').hidden = false;
+  animate('sinalTitulo');
+  $('coach').closest('.col').scrollTo({ top: 0, behavior: 'smooth' });
+  addTimeline(`Sinal: ${sg.titulo}`, 'Sinal', sg.nivel === 'alta' ? 'alta' : 'media');
+}
+$('sinalClose').onclick = () => { $('sinalBox').hidden = true; };
+$('sinalDiga').onclick = () => copy(state.sinal?.diga || '', 'Frase copiada ✔');
+$('sinalPrecos').onclick = () => document.querySelector('[data-tab="tPrecos"]').click();
+setInterval(() => {
+  if ($('sinalBox').hidden || !state.sinal) return;
+  const s = Math.floor((Date.now() - state.sinal.at) / 1000);
+  $('sinalAge').textContent = `há ${s}s`;
+  if (s > 45) $('sinalBox').hidden = true; // sai sozinho depois de 45 s
+}, 1000);
+
+function renderDigaHist() {
+  const ul = $('digaHist'); ul.innerHTML = '';
+  (state.digaHist || []).forEach((h) => {
+    const li = el('li'); li.title = 'Clique para copiar';
+    li.append(el('span', 'dh-t', h.t), hl(el('span', 'dh-x'), h.txt));
+    li.onclick = () => copy(h.txt, 'Frase copiada ✔');
+    ul.append(li);
+  });
+  ul.hidden = !(state.digaHist || []).length;
+}
 
 // ================= modo foco =================
 function toggleFoco() {

@@ -121,6 +121,15 @@
       </label>
     </div>
 
+    <div id="sinalBox" class="card sinal" hidden aria-live="assertive">
+      <div class="card-h"><span class="label">Sinal agora</span><span id="sinalAge" class="muted small"></span><button id="sinalClose" class="mini" title="Fechar">✕</button></div>
+      <div id="sinalTitulo" class="sinal-t"></div>
+      <div id="sinalFala" class="sinal-fala"></div>
+      <div id="sinalDica" class="sinal-dica"></div>
+      <div id="sinalDiga" class="say sinal-say" title="Clique para copiar"></div>
+      <button id="sinalPrecos" class="mini" hidden>Ver preços (P)</button>
+    </div>
+
     <div id="coach" class="card hero urg-baixa">
       <div class="card-h"><span class="tag-urg" id="urgTag">AGORA</span><span class="muted small"><span id="coachAge"></span> <span id="nextInfo"></span></span></div>
       <div id="proximo" class="hero-text">Ligue as legendas no Meet e clique em <b>▶ Começar</b>. Primeira vez? Clique em <b>Ver demonstração</b>.</div>
@@ -130,6 +139,7 @@
         <span id="diga"></span>
         <span class="say-copy">copiar</span>
       </div>
+      <ul id="digaHist" class="diga-hist" hidden></ul>
     </div>
 
     <div id="ansBox" class="card anscard" hidden>

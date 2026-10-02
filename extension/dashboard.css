@@ -703,3 +703,27 @@ body.foco .alerts li { font-size: 19px; }
 .fontes { margin-top: 6px; font-family: var(--font-data); font-size: 12px; color: var(--muted); }
 .fontes:empty { display: none; }
 @media (max-width: 1560px) { .kbd-hint { display: none; } }
+
+/* ---------------- sinal instantâneo ---------------- */
+.sinal { border: 2px solid var(--warn-ink); background: var(--warn-soft); animation: enter .35s cubic-bezier(.2,.8,.2,1); }
+.sinal.sinal-alta { border-color: var(--danger-text); background: var(--danger-soft); }
+.sinal .card-h .label { background: var(--danger-text); color: #fff; border: 0; }
+.sinal.sinal-media .card-h .label { background: var(--warn-ink); }
+.sinal .card-h { gap: 8px; } .sinal .card-h .muted { margin-left: auto; }
+.sinal-t { font-family: var(--font-display); font-size: 21px; font-weight: 800; color: var(--ink); line-height: 1.2; }
+.sinal-t.enter { animation: enter .4s; }
+.sinal-fala { margin-top: 3px; font-size: 14px; font-style: italic; color: var(--ink-2); }
+.sinal-dica { margin-top: 6px; font-size: 15px; font-weight: 600; color: var(--ink); }
+.sinal-say { margin-top: 8px; background: #fff; border-color: var(--line); font-size: 17px; color: var(--ink); }
+.sinal-say::before { content: "DIGA  "; font-size: 11px; font-weight: 800; letter-spacing: .1em; color: var(--primary); }
+#sinalPrecos { margin-top: 8px; }
+/* ---------------- histórico do DIGA ---------------- */
+.diga-hist { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.diga-hist li { display: flex; gap: 8px; padding: 6px 9px; border-radius: 8px; background: var(--panel-2); font-size: 13.5px; color: var(--ink-2); cursor: pointer; border: 1px solid transparent; }
+.diga-hist li:hover { border-color: var(--line-2); }
+.dh-t { font-family: var(--font-data); font-size: 11.5px; color: var(--muted); flex: none; padding-top: 2px; }
+/* ---------------- barra "analisando" ---------------- */
+.hero.thinking::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: linear-gradient(90deg, transparent, var(--primary), transparent); background-size: 50% 100%; background-repeat: no-repeat; animation: scan 1.1s linear infinite; }
+@keyframes scan { from { background-position: -50% 0; } to { background-position: 150% 0; } }
+body.foco #sinalBox { font-size: 1.2em; }
+body.foco .sinal-t { font-size: 30px; } body.foco .sinal-say { font-size: 24px; } body.foco .sinal-dica { font-size: 19px; }

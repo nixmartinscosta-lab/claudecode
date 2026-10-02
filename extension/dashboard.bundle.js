@@ -617,6 +617,56 @@ function lerPrecos(doc) {
   return { grupos: validos, condicoes };
 }
 
+// src/sinais.js
+var validou = (crm2) => !!(crm2.causa_raiz && crm2.impacto);
+var SINAIS = [
+  {
+    id: "preco",
+    re: /quanto (custa|fica|é|seria|sai)|\bpre[cç]o\b|\bvalor(es)?\b|investimento|t[áa] caro|muito caro|or[cç]amento|cabe no (caixa|bolso)|desconto/i,
+    gerar: (ctx) => validou(ctx.crm) ? { titulo: "Travou em pre\xE7o", nivel: "alta", dica: "Ordem da doutrina: quanto cabe no caixa, depois descer de plano, s\xF3 depois desconto.", diga: "Quanto cabe no caixa por m\xEAs hoje, pra eu te mostrar o caminho certo?", acao: "precos" } : { titulo: "Pediu pre\xE7o cedo", nivel: "alta", dica: "Causa e impacto ainda n\xE3o est\xE3o validados. Valor agora vira compara\xE7\xE3o de pre\xE7o.", diga: "J\xE1 chego no valor. Antes, me ajuda a dimensionar: quanto isso custa pra voc\xEAs hoje por m\xEAs?", acao: "precos" }
+  },
+  {
+    id: "socio",
+    re: /\b(s[óo]ci[oa]|meu marido|minha esposa|diretoria|financeiro|meu chefe|aprovar com)\b/i,
+    gerar: () => ({ titulo: "Decisor oculto", nivel: "alta", dica: "Risco obrigat\xF3rio. Inclua o decisor e marque a conversa de decis\xE3o antes de encerrar.", diga: "Al\xE9m de voc\xEA, quem mais precisa estar confort\xE1vel com essa decis\xE3o? Vamos marcar com essa pessoa junto ainda esta semana?" })
+  },
+  {
+    id: "continuacao",
+    re: /vou pensar|te aviso|a gente se fala|manda (a|uma) proposta|me manda (a proposta|por e-?mail|no whats)|vou ver (isso|aqui|com)|vou analisar|vou testar|depois eu (vejo|te falo)/i,
+    gerar: () => ({ titulo: "Continua\xE7\xE3o, n\xE3o avan\xE7o", nivel: "alta", dica: "Sem checkpoint isso n\xE3o \xE9 avan\xE7o. Pe\xE7a microdecis\xE3o, respons\xE1vel e data.", diga: "Combinado. Pra n\xE3o ficar solto: o que precisa ficar claro pra voc\xEA decidir, e quando a gente conversa de novo? Quinta \xE0s 15h funciona?" })
+  },
+  {
+    id: "sistema",
+    re: /j[áa] (tenho|tem|uso|usa|temos|usamos|trabalho com|trabalha com|trabalhamos com) (um |uma |o |a )?(sistema|crm|ferramenta|plataforma|software|outro)/i,
+    gerar: () => ({ titulo: '"J\xE1 tenho sistema"', nivel: "media", dica: "Investigue uso, ado\xE7\xE3o, integra\xE7\xE3o e o problema n\xE3o resolvido. N\xE3o ataque o concorrente.", diga: "Legal. E o que ele ainda n\xE3o resolve pra voc\xEAs hoje?" })
+  },
+  {
+    id: "tempo",
+    re: /n[ãa]o tenho tempo|sem tempo|muita correria|n[ãa]o d[áa] pra implantar|n[ãa]o tenho gente/i,
+    gerar: () => ({ titulo: "Capacidade de execu\xE7\xE3o", nivel: "media", dica: "Descubra quem assume, o que priorizar e se o momento \xE9 realista. N\xE3o prometa implanta\xE7\xE3o sem esfor\xE7o.", diga: "Faz sentido. Se a gente seguir, quem do seu time poderia tocar isso com voc\xEA?" })
+  },
+  {
+    id: "desejo",
+    re: /monitoramento|relat[óo]rio|rentabilizar (a |minha )?base|acompanhar as usinas/i,
+    gerar: () => ({ titulo: "Pode ser desejo, n\xE3o dor", nivel: "media", dica: "Desejo pode esperar. Puxe para o resultado e para a via comercial.", diga: "E isso ajuda em qu\xEA no seu resultado: vender mais, reter cliente ou ganhar indica\xE7\xE3o?" })
+  },
+  {
+    id: "compra",
+    re: /como (funciona|seria) (a |o )?(implanta|contrat|come[çc])|quando (come[çc]a|daria pra come[çc]ar|consigo come[çc]ar)|qual o pr[óo]ximo passo|como a gente faz pra/i,
+    gerar: () => ({ titulo: "Sinal de compra", nivel: "alta", dica: "Pe\xE7a a microdecis\xE3o agora, com respons\xE1vel e data.", diga: "\xD3timo. Ent\xE3o vamos definir o pr\xF3ximo passo: quem precisa aprovar e at\xE9 quando a gente fecha essa defini\xE7\xE3o?" })
+  }
+];
+function detectar(texto, ctx, ultimos, agora = Date.now(), janelaMs = 6e4) {
+  const achados = [];
+  for (const s of SINAIS) {
+    if (!s.re.test(texto)) continue;
+    if (ultimos[s.id] && agora - ultimos[s.id] < janelaMs) continue;
+    ultimos[s.id] = agora;
+    achados.push({ id: s.id, ...s.gerar(ctx), fala: texto });
+  }
+  return achados;
+}
+
 // src/dashboard.js
 var $ = (id) => document.getElementById(id);
 var SETUP_FIELDS = ["modo", "comQuem", "objetivo", "foco", "notas"];
@@ -678,6 +728,10 @@ var freshState = () => ({
   talkWarned: false,
   temp: null,
   cond: null,
+  sinaisUlt: {},
+  clientWords: 0,
+  digaHist: [],
+  turnTimer: null,
   drawn: /* @__PURE__ */ new Set(),
   view: { x: 0, y: 0, s: 1 },
   userView: false
@@ -1437,6 +1491,9 @@ function beginSession(settings, setup, coach, source) {
   $("fontesHero").textContent = "";
   $("sintese").textContent = "Aguardando a conversa\u2026";
   $("ansBox").hidden = true;
+  $("sinalBox").hidden = true;
+  $("digaHist").hidden = true;
+  $("digaHist").innerHTML = "";
   renderCrm();
   renderMem();
   renderMap();
@@ -1540,9 +1597,15 @@ function onTranscript({ speaker, text, isFinal }) {
   updateKpis();
   clearTimeout(state.snapT);
   state.snapT = setTimeout(saveSnapshot, 3e3);
-  if (!isMe && perguntas) {
-    clearTimeout(state.questionTimer);
-    state.questionTimer = setTimeout(() => maybeAnalyze(true), 1200);
+  if (!isMe) {
+    const achados = detectar(text, { crm: state.crm }, state.sinaisUlt);
+    if (achados.length) showSinal(achados[0]);
+    state.clientWords += text.split(/\s+/).filter(Boolean).length;
+    clearTimeout(state.turnTimer);
+    if (perguntas || achados.some((a) => a.nivel === "alta")) {
+      clearTimeout(state.questionTimer);
+      state.questionTimer = setTimeout(() => maybeAnalyze(true), 1e3);
+    } else if (state.clientWords >= 25) state.turnTimer = setTimeout(() => maybeAnalyze(true), 1500);
   }
 }
 function takeNewLines() {
@@ -1565,6 +1628,8 @@ async function maybeAnalyze(force = false, pedido = "") {
   const novas = takeNewLines();
   const notas = state.pendingNotes.splice(0);
   state.sinceAnalysis = 0;
+  state.clientWords = 0;
+  clearTimeout(state.turnTimer);
   $("btnAjuda").disabled = true;
   $("coach").classList.add("thinking");
   try {
@@ -1657,6 +1722,16 @@ function pedidoLabel(p) {
 }
 function render(d, pedido) {
   setStatus("");
+  if (state.sinal && !$("sinalBox").hidden) {
+    const resta = 6e3 - (Date.now() - state.sinal.at);
+    if (resta <= 0) $("sinalBox").hidden = true;
+    else {
+      const at = state.sinal.at;
+      setTimeout(() => {
+        if (state.sinal?.at === at) $("sinalBox").hidden = true;
+      }, resta);
+    }
+  }
   if (pedido && d.resposta) {
     $("ansQ").textContent = pedidoLabel(pedido);
     hl($("ansA"), d.resposta);
@@ -1668,7 +1743,14 @@ function render(d, pedido) {
   $("coach").className = `card hero urg-${urg}`;
   $("urgTag").textContent = urg === "alta" ? "AGIR AGORA" : urg === "media" ? "OPORTUNIDADE" : "AGORA";
   if (setRich("proximo", d.proximo_passo || "Continue ouvindo.")) animate("proximo");
-  if (setRich("diga", d.diga || "")) animate("digaBox");
+  const digaAnterior = $("diga").dataset.raw;
+  if (setRich("diga", d.diga || "")) {
+    animate("digaBox");
+    if (digaAnterior) {
+      state.digaHist = [{ t: fmt(elapsedSec()), txt: digaAnterior }, ...state.digaHist || []].slice(0, 3);
+      renderDigaHist();
+    }
+  }
   $("digaBox").hidden = !d.diga;
   const obj2 = d.objecoes || [];
   $("objBox").hidden = !obj2.length;
@@ -2121,6 +2203,42 @@ async function resumeSession(snap) {
   saveSnapshot();
 }
 offerResume();
+function showSinal(sg) {
+  state.sinal = { ...sg, at: Date.now() };
+  $("sinalBox").className = `card sinal sinal-${sg.nivel}`;
+  $("sinalTitulo").textContent = sg.titulo;
+  $("sinalFala").textContent = `\u201C${sg.fala.length > 120 ? `${sg.fala.slice(0, 117)}\u2026` : sg.fala}\u201D`;
+  hl($("sinalDica"), sg.dica);
+  hl($("sinalDiga"), sg.diga);
+  $("sinalPrecos").hidden = sg.acao !== "precos";
+  $("sinalBox").hidden = false;
+  animate("sinalTitulo");
+  $("coach").closest(".col").scrollTo({ top: 0, behavior: "smooth" });
+  addTimeline(`Sinal: ${sg.titulo}`, "Sinal", sg.nivel === "alta" ? "alta" : "media");
+}
+$("sinalClose").onclick = () => {
+  $("sinalBox").hidden = true;
+};
+$("sinalDiga").onclick = () => copy(state.sinal?.diga || "", "Frase copiada \u2714");
+$("sinalPrecos").onclick = () => document.querySelector('[data-tab="tPrecos"]').click();
+setInterval(() => {
+  if ($("sinalBox").hidden || !state.sinal) return;
+  const s = Math.floor((Date.now() - state.sinal.at) / 1e3);
+  $("sinalAge").textContent = `h\xE1 ${s}s`;
+  if (s > 45) $("sinalBox").hidden = true;
+}, 1e3);
+function renderDigaHist() {
+  const ul = $("digaHist");
+  ul.innerHTML = "";
+  (state.digaHist || []).forEach((h) => {
+    const li = el("li");
+    li.title = "Clique para copiar";
+    li.append(el("span", "dh-t", h.t), hl(el("span", "dh-x"), h.txt));
+    li.onclick = () => copy(h.txt, "Frase copiada \u2714");
+    ul.append(li);
+  });
+  ul.hidden = !(state.digaHist || []).length;
+}
 function toggleFoco() {
   const on = document.body.classList.toggle("foco");
   $("btnFoco").classList.toggle("on", on);

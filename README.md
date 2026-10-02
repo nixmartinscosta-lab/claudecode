@@ -52,6 +52,9 @@ O foco padrão é **vender combos com serviço (Business, Growth, Scale) e compo
 
 - **Estúdio do Mentor** (botão Estúdio no painel): os modos da doutrina fora da reunião. Preparar reunião, Analisar reunião (14 seções), Follow-up, Revisar funil (cobertura) e Auditar execução. Cole ou arraste transcrições, anotações do Gemini, conversas ou o funil em CSV; copie, baixe ou envie o resultado ao dossiê do lead.
 
+- **Sinal agora** (instantâneo, sem esperar a IA): pedido de preço, "vou pensar"/"manda a proposta" (continuação), sócio (decisor oculto), "já tenho sistema", "sem tempo", desejo (monitoramento/relatório) e sinal de compra viram um cartão com o que fazer e a frase pronta, seguindo a doutrina.
+- **Análise no fim do turno do cliente** (além do intervalo), **últimas frases do DIGA guardadas** e barra "analisando".
+
 ## Instalar (5 min, uma vez)
 
 1. Baixe esta pasta (Code → Download ZIP) e descompacte.
