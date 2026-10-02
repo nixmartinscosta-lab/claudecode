@@ -114,6 +114,11 @@ var MODOS = {
   followup: "Follow-up / reativa\xE7\xE3o: retomar contexto + causa-raiz + impacto e conseguir microdecis\xE3o com respons\xE1vel e data.",
   livre: ""
 };
+function correcoesOficiais(txt) {
+  const t = (txt || "").trim();
+  return t ? `CORRE\xC7\xD5ES OFICIAIS (prioridade m\xE1xima \u2014 valem acima de qualquer documento da base):
+${t}` : "";
+}
 function baseDeConhecimento(docs) {
   if (!docs?.length) return "";
   return [
@@ -185,7 +190,7 @@ var Coach = class {
     this.leadDocs = leadDocs2;
     this.settings = settings;
     this.setup = setup;
-    this.system = [SYSTEM_PROMPT, baseDeConhecimento(docs)].filter(Boolean).join("\n\n");
+    this.system = [SYSTEM_PROMPT, correcoesOficiais(settings.correcoes), baseDeConhecimento(docs)].filter(Boolean).join("\n\n");
     this.contents = [];
     this.busy = false;
     this.semThinking = false;
@@ -544,7 +549,8 @@ var DEFAULTS = {
   intervalSec: 25,
   useMic: true,
   dgModel: "nova-2",
-  dgLanguage: "pt-BR"
+  dgLanguage: "pt-BR",
+  correcoes: "Start: valor-base R$ 1.350/m\xEAs (12x: R$ 1.080; 12 \xE0 vista: R$ 945). Qualquer men\xE7\xE3o a R$ 1.200 para o Start est\xE1 desatualizada."
 };
 var FOCO_PADRAO = "Combos com servi\xE7o (Business, Growth, Scale) ou composi\xE7\xF5es com P\xF3s-venda / Acelera\xE7\xE3o, se a causa-raiz justificar";
 var MODO_NOME = { diagnostico: "Diagn\xF3stico Comercial", ecossistema: "Reuni\xE3o do Ecossistema", followup: "Follow-up", livre: "Livre" };
@@ -1995,6 +2001,13 @@ async function resumeSession(snap) {
   saveSnapshot();
 }
 offerResume();
+function toggleFoco() {
+  const on = document.body.classList.toggle("foco");
+  $("btnFoco").classList.toggle("on", on);
+  $("btnFoco").textContent = on ? "Sair do foco" : "Foco";
+  if (on) $("coach").closest(".col").scrollTo({ top: 0 });
+}
+$("btnFoco").onclick = toggleFoco;
 $("digaBox").onclick = () => copy($("diga").textContent, "Frase copiada \u2714");
 document.addEventListener("keydown", (e) => {
   if (e.target.closest('input, textarea, select, [contenteditable="plaintext-only"]')) return;
@@ -2007,6 +2020,8 @@ document.addEventListener("keydown", (e) => {
   else if (k === "c" && $("diga").textContent) copy($("diga").textContent, "Frase copiada \u2714");
   else if (k === "m") toggleMapFull();
   else if (k === "p") document.querySelector('[data-tab="tPrecos"]').click();
+  else if (k === "f") toggleFoco();
+  else if (e.key === "Escape" && document.body.classList.contains("foco")) toggleFoco();
   else if (/^[1-9]$/.test(e.key) && quickChips[Number(e.key) - 1]) quickChips[Number(e.key) - 1].click();
   else if (e.key === "Escape" && document.body.classList.contains("map-full")) toggleMapFull();
 });

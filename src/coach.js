@@ -3,7 +3,7 @@
 // começo (instrução + base de conhecimento + histórico) se repete, o Gemini
 // reaproveita via cache implícito — mais rápido e mais barato.
 
-import { SYSTEM_PROMPT, COACH_SCHEMA, contextoInicial, baseDeConhecimento, PEDIDO_ATA } from './prompts.js';
+import { SYSTEM_PROMPT, COACH_SCHEMA, contextoInicial, baseDeConhecimento, correcoesOficiais, PEDIDO_ATA } from './prompts.js';
 
 const API = 'https://generativelanguage.googleapis.com/v1beta/models';
 
@@ -24,7 +24,7 @@ export class Coach {
     this.leadDocs = leadDocs;
     this.settings = settings;
     this.setup = setup;
-    this.system = [SYSTEM_PROMPT, baseDeConhecimento(docs)].filter(Boolean).join('\n\n');
+    this.system = [SYSTEM_PROMPT, correcoesOficiais(settings.correcoes), baseDeConhecimento(docs)].filter(Boolean).join('\n\n');
     this.contents = [];
     this.busy = false;
     this.semThinking = false; // vira true se o modelo não aceitar thinkingConfig

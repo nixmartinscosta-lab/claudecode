@@ -1,6 +1,7 @@
 const DEFAULTS = {
   geminiKey: '', deepgramKey: '', source: 'meet', model: 'gemini-3.5-flash', thinking: 'low',
   intervalSec: 25, useMic: true, dgModel: 'nova-2', dgLanguage: 'pt-BR',
+  correcoes: 'Start: valor-base R$ 1.350/mês (12x: R$ 1.080; 12 à vista: R$ 945). Qualquer menção a R$ 1.200 para o Start está desatualizada.',
 };
 const $ = (id) => document.getElementById(id);
 let docs = [];

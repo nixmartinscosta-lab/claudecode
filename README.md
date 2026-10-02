@@ -45,6 +45,9 @@ O foco padrão é **vender combos com serviço (Business, Growth, Scale) e compo
 
 - **Quanto o plano se paga** (na aba Preços): plano + condição + ticket médio + margem → quantas vendas a mais por mês pagam o investimento, com frase pronta em forma de pergunta. O ticket é preenchido com o que o cliente falou.
 
+- **Correções oficiais** (Configurações): regras com prioridade sobre os arquivos da base (já vem com Start = R$ 1.350).
+- **Modo Foco** (botão ou tecla `F`): só AGORA, DIGA, objeção e resposta, em letra grande. `Esc` sai.
+
 ## Instalar (5 min, uma vez)
 
 1. Baixe esta pasta (Code → Download ZIP) e descompacte.

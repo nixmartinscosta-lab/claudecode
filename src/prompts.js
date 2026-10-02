@@ -119,6 +119,13 @@ export const MODOS = {
   livre: '',
 };
 
+export const CORRECOES_PADRAO = 'Start: valor-base R$ 1.350/mês (12x: R$ 1.080; 12 à vista: R$ 945). Qualquer menção a R$ 1.200 para o Start está desatualizada.';
+
+export function correcoesOficiais(txt) {
+  const t = (txt || '').trim();
+  return t ? `CORREÇÕES OFICIAIS (prioridade máxima — valem acima de qualquer documento da base):\n${t}` : '';
+}
+
 export function baseDeConhecimento(docs) {
   if (!docs?.length) return '';
   return [

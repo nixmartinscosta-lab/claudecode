@@ -669,3 +669,17 @@ body.right-collapsed .layout { grid-template-columns: 380px minmax(0, 1fr); }
 #tPrecos .precos { min-height: auto; }
 #tPrecos .ptable-wrap { overflow-x: auto; overflow-y: visible; }
 #tPrecos .ptable th { top: -1px; }
+
+/* ---------------- modo foco: só o essencial, em letra grande ---------------- */
+body.foco .kpis, body.foco .rails, body.foco .col-center, body.foco .col-right, body.foco .expand-right,
+body.foco #setupBox, body.foco #resumeBox, body.foco #perguntasBox, body.foco #falta_cobrirBox, body.foco .kbd-hint { display: none !important; }
+body.foco .layout { grid-template-columns: minmax(0, 860px); justify-content: center; }
+body.foco .hero { padding: 22px 26px 22px 34px; }
+body.foco .hero::before { width: 10px; }
+body.foco .hero-text { font-size: 34px; line-height: 1.25; }
+body.foco .say { font-size: 27px; padding: 16px 20px; }
+body.foco .say-label, body.foco .tag-urg { font-size: 14px; }
+body.foco .obj-q { font-size: 22px; } body.foco .obj-a { font-size: 24px; }
+body.foco .ans-a { font-size: 23px; }
+body.foco .alerts li { font-size: 19px; }
+#btnFoco.on { background: var(--ink); color: #fff; border-color: var(--ink); }

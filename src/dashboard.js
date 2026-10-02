@@ -8,6 +8,7 @@ const SETUP_FIELDS = ['modo', 'comQuem', 'objetivo', 'foco', 'notas'];
 const DEFAULTS = {
   geminiKey: '', deepgramKey: '', source: 'meet', model: 'gemini-3.5-flash', thinking: 'low',
   intervalSec: 25, useMic: true, dgModel: 'nova-2', dgLanguage: 'pt-BR',
+  correcoes: 'Start: valor-base R$ 1.350/mês (12x: R$ 1.080; 12 à vista: R$ 945). Qualquer menção a R$ 1.200 para o Start está desatualizada.',
 };
 const FOCO_PADRAO = 'Combos com serviço (Business, Growth, Scale) ou composições com Pós-venda / Aceleração, se a causa-raiz justificar';
 const MODO_NOME = { diagnostico: 'Diagnóstico Comercial', ecossistema: 'Reunião do Ecossistema', followup: 'Follow-up', livre: 'Livre' };
@@ -1028,6 +1029,15 @@ async function resumeSession(snap) {
 }
 offerResume();
 
+// ================= modo foco =================
+function toggleFoco() {
+  const on = document.body.classList.toggle('foco');
+  $('btnFoco').classList.toggle('on', on);
+  $('btnFoco').textContent = on ? 'Sair do foco' : 'Foco';
+  if (on) $('coach').closest('.col').scrollTo({ top: 0 });
+}
+$('btnFoco').onclick = toggleFoco;
+
 // ================= atalhos =================
 $('digaBox').onclick = () => copy($('diga').textContent, 'Frase copiada ✔');
 document.addEventListener('keydown', (e) => {
@@ -1039,6 +1049,8 @@ document.addEventListener('keydown', (e) => {
   else if (k === 'c' && $('diga').textContent) copy($('diga').textContent, 'Frase copiada ✔');
   else if (k === 'm') toggleMapFull();
   else if (k === 'p') document.querySelector('[data-tab="tPrecos"]').click();
+  else if (k === 'f') toggleFoco();
+  else if (e.key === 'Escape' && document.body.classList.contains('foco')) toggleFoco();
   else if (/^[1-9]$/.test(e.key) && quickChips[Number(e.key) - 1]) quickChips[Number(e.key) - 1].click();
   else if (e.key === 'Escape' && document.body.classList.contains('map-full')) toggleMapFull();
 });
