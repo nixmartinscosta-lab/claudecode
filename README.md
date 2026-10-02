@@ -43,6 +43,8 @@ O foco padrão é **vender combos com serviço (Business, Growth, Scale) e compo
 - **Preços** (aba ou tecla `P`): tabela da régua de descontos da sua política (base, 4x, 6x, 12x, à vista), com a rota recomendada destacada; clique copia o valor.
 - **Retomar reunião**: se a janela do painel fechar no meio, ao abrir de novo aparece **Retomar** com transcrição, mapa, ficha e memória do Mentor.
 
+- **Quanto o plano se paga** (na aba Preços): plano + condição + ticket médio + margem → quantas vendas a mais por mês pagam o investimento, com frase pronta em forma de pergunta. O ticket é preenchido com o que o cliente falou.
+
 ## Instalar (5 min, uma vez)
 
 1. Baixe esta pasta (Code → Download ZIP) e descompacte.

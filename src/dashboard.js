@@ -892,7 +892,7 @@ async function loadPrecos() {
   precos = lerPrecos(acharPolitica(docs));
   renderPrecos();
 }
-function renderPrecos() {
+let renderPrecos = function () {
   const box = $('precosBox'); box.innerHTML = '';
   if (!precos.grupos.length) { box.append(el('p', 'qempty', 'Não encontrei a tabela de preços na base. Suba a política de preços (.md) nas Configurações.')); return; }
   const rota = (state.lastData?.rota?.solucao || '').toLowerCase();
@@ -925,9 +925,54 @@ function renderPrecos() {
   }
   t.append(tb); wrap.append(t); box.append(wrap);
   box.append(el('p', 'pnote', 'Valores mensais (R$) da régua de descontos da sua política. Não acumule descontos. Clique num valor para copiar.'));
-}
+};
 loadPrecos();
 chrome.storage.onChanged.addListener((ch) => { if (ch.docs) loadPrecos(); });
+
+// ---- calculadora: quantas vendas a mais pagam o plano ----
+const brl = (n) => n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+function toNum(txt) {
+  if (!txt) return NaN;
+  const t = String(txt).toLowerCase();
+  const m = t.match(/(\d+(?:[.,]\d+)*)\s*(mil|k)?/); if (!m) return NaN;
+  let n = m[1];
+  n = /,\d{1,2}$/.test(n) ? n.replace(/\./g, '').replace(',', '.') : n.replace(/[.,](?=\d{3}\b)/g, '').replace(',', '.');
+  return parseFloat(n) * (m[2] ? 1000 : 1);
+}
+function fillCalcOptions() {
+  const sp = $('cPlano'); const sc = $('cCond');
+  const atual = sp.value;
+  sp.innerHTML = ''; sc.innerHTML = '';
+  precos.grupos.forEach((g) => { const og = document.createElement('optgroup'); og.label = g.nome; g.itens.forEach((i) => og.append(new Option(i.nome, i.nome))); sp.append(og); });
+  precos.condicoes.forEach((c) => sc.append(new Option(c, c)));
+  if (precos.condicoes.includes('12 meses em 12x')) sc.value = '12 meses em 12x';
+  const rec = document.querySelector('.ptable tr.prec .pname')?.firstChild?.textContent;
+  sp.value = rec || atual || (precos.grupos.flatMap((g) => g.itens).find((i) => /growth/i.test(i.nome))?.nome) || sp.value;
+}
+// Puxa o ticket médio que o cliente falou (memória/ficha), se o campo estiver vazio.
+function autoTicket() {
+  if ($('cTicket').value.trim()) return;
+  const fontes = [...state.memoria.map((m) => m.text), ...Object.values(state.crm)];
+  for (const f of fontes) { const m = f.match(/ticket[^\d]*?(R\$\s*)?(\d[\d.,]*\s*(mil|k)?)/i); if (m) { $('cTicket').value = m[2].trim(); break; } }
+}
+function calc() {
+  const out = $('calcOut'); out.innerHTML = '';
+  const item = precos.grupos.flatMap((g) => g.itens).find((i) => i.nome === $('cPlano').value);
+  const valor = toNum(item?.cond[$('cCond').value]);
+  const ticket = toNum($('cTicket').value); const margem = toNum($('cMargem').value) / 100;
+  if (!item || !valor) { out.append(el('p', 'qempty', 'Escolha um plano e a condição.')); return; }
+  if (!ticket || !margem) { out.append(el('p', 'qempty', `${item.nome} (${$('cCond').value}): ${brl(valor)}/mês. Informe o ticket médio e a margem para ver quantas vendas pagam o plano.`)); return; }
+  const lucro = ticket * margem; const vendas = Math.max(1, Math.ceil(valor / lucro));
+  const big = el('div', 'calc-big');
+  big.append(el('span', 'calc-n', String(vendas)), el('span', 'calc-l', vendas === 1 ? 'venda a mais por mês paga o plano' : 'vendas a mais por mês pagam o plano'));
+  const det = hl(el('p', 'calc-det'), `Cada venda deixa ${brl(lucro)} (ticket ${brl(ticket)} × margem ${Math.round(margem * 100)}%). ${item.nome}, ${$('cCond').value}: ${brl(valor)}/mês.`);
+  const frase = `Com o seu ticket, ${vendas === 1 ? '1 venda a mais por mês' : `${vendas} vendas a mais por mês`} já cobrem o investimento. Quantas vendas vocês deixaram passar no último mês?`;
+  const say = hl(el('div', 'calc-say'), frase); say.title = 'Clique para copiar'; say.onclick = () => copy(frase, 'Frase copiada ✔');
+  out.append(big, det, say);
+}
+['cPlano', 'cCond', 'cTicket', 'cMargem'].forEach((id) => $(id).addEventListener('input', calc));
+const _renderPrecos = renderPrecos;
+renderPrecos = function () { _renderPrecos(); fillCalcOptions(); autoTicket(); calc(); };
 
 // ================= retomar reunião =================
 function saveSnapshot() {

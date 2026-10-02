@@ -229,6 +229,16 @@
         <ul id="memoria" class="mem"></ul>
       </div>
       <div id="tPrecos" class="tabpane" hidden>
+        <section class="calc" id="calcBox" aria-label="Quanto o plano se paga">
+          <div class="calc-h"><span class="label">Quanto o plano se paga</span><span class="muted small">use os números do cliente</span></div>
+          <div class="calc-grid">
+            <label for="cPlano">Plano<select id="cPlano"></select></label>
+            <label for="cCond">Condição<select id="cCond"></select></label>
+            <label for="cTicket">Ticket médio (R$)<input id="cTicket" inputmode="decimal" placeholder="25.000"></label>
+            <label for="cMargem" title="Margem de lucro do integrador por venda">Margem (%)<input id="cMargem" inputmode="decimal" value="20"></label>
+          </div>
+          <div id="calcOut" class="calc-out" aria-live="polite"></div>
+        </section>
         <div id="precosBox" class="precos"></div>
       </div>
       <div id="tTimeline" class="tabpane" hidden>

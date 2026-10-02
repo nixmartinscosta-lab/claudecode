@@ -7,7 +7,7 @@ Quem \xE9 quem na transcri\xE7\xE3o:
 - A transcri\xE7\xE3o \xE9 autom\xE1tica (legendas): pode ter palavras erradas, nomes trocados e frases cortadas. Interprete pelo sentido.
 
 DOUTRINA
-Se houver BASE DE CONHECIMENTO abaixo, ela \xE9 a doutrina oficial e manda em tudo: m\xE9todo (ex.: ACR \u2014 Analisar, Conectar, Reativar), estrutura da reuni\xE3o, port\xF5es da decis\xE3o, tratamento de obje\xE7\xF5es, roteiro de apresenta\xE7\xE3o, crit\xE9rios de avan\xE7o e limites \xE9ticos. Respeite quem \xE9 "dono" de cada assunto (campo dono_de / nao_e_fonte_de): PRE\xC7O, plano, desconto, limite e composi\xE7\xE3o saem SOMENTE da pol\xEDtica de pre\xE7os, com o valor oficial exato para a condi\xE7\xE3o (mensal, anual parcelado, anual \xE0 vista). Nunca invente n\xFAmero, desconto, case ou promessa. PROVA SOCIAL s\xF3 com as formula\xE7\xF5es do arquivo de prova social aprovada, citando data do snapshot, tamanho da amostra e o limite metodol\xF3gico \u2014 e s\xF3 depois de a dor estar validada. Follow-up, canais e prazos seguem o arquivo de cad\xEAncia. Se a informa\xE7\xE3o n\xE3o estiver na base, diga "confirmar internamente".
+Se houver BASE DE CONHECIMENTO abaixo, ela \xE9 a doutrina oficial e manda em tudo: m\xE9todo (ex.: ACR \u2014 Analisar, Conectar, Reativar), estrutura da reuni\xE3o, port\xF5es da decis\xE3o, tratamento de obje\xE7\xF5es, roteiro de apresenta\xE7\xE3o, crit\xE9rios de avan\xE7o e limites \xE9ticos. Respeite quem \xE9 "dono" de cada assunto (campo dono_de / nao_e_fonte_de): PRE\xC7O, plano, desconto, limite e composi\xE7\xE3o saem SOMENTE da pol\xEDtica de pre\xE7os, com o valor oficial exato para a condi\xE7\xE3o (mensal, anual parcelado, anual \xE0 vista). Nunca invente n\xFAmero, desconto, case ou promessa. Se a pol\xEDtica tiver valores conflitantes para o mesmo plano, use a r\xE9gua de descontos (Valor-base e condi\xE7\xF5es) e avise o closer em "alertas". PROVA SOCIAL s\xF3 com as formula\xE7\xF5es do arquivo de prova social aprovada, citando data do snapshot, tamanho da amostra e o limite metodol\xF3gico \u2014 e s\xF3 depois de a dor estar validada. Follow-up, canais e prazos seguem o arquivo de cad\xEAncia. Se a informa\xE7\xE3o n\xE3o estiver na base, diga "confirmar internamente".
 N\xE3o trabalhe o port\xE3o seguinte antes de fechar o atual. N\xE3o deixe o closer apresentar solu\xE7\xE3o antes de a dor e a causa-raiz estarem validadas pelo cliente. N\xE3o aceite o pedido do cliente como diagn\xF3stico.
 
 COMO RESPONDER (o closer tem TDAH e l\xEA de relance, no meio da fala):
@@ -1773,7 +1773,7 @@ async function loadPrecos() {
   precos = lerPrecos(acharPolitica(docs));
   renderPrecos();
 }
-function renderPrecos() {
+var renderPrecos = function() {
   const box = $("precosBox");
   box.innerHTML = "";
   if (!precos.grupos.length) {
@@ -1822,11 +1822,83 @@ function renderPrecos() {
   wrap.append(t);
   box.append(wrap);
   box.append(el("p", "pnote", "Valores mensais (R$) da r\xE9gua de descontos da sua pol\xEDtica. N\xE3o acumule descontos. Clique num valor para copiar."));
-}
+};
 loadPrecos();
 chrome.storage.onChanged.addListener((ch) => {
   if (ch.docs) loadPrecos();
 });
+var brl = (n) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+function toNum(txt) {
+  if (!txt) return NaN;
+  const t = String(txt).toLowerCase();
+  const m = t.match(/(\d+(?:[.,]\d+)*)\s*(mil|k)?/);
+  if (!m) return NaN;
+  let n = m[1];
+  n = /,\d{1,2}$/.test(n) ? n.replace(/\./g, "").replace(",", ".") : n.replace(/[.,](?=\d{3}\b)/g, "").replace(",", ".");
+  return parseFloat(n) * (m[2] ? 1e3 : 1);
+}
+function fillCalcOptions() {
+  const sp = $("cPlano");
+  const sc = $("cCond");
+  const atual = sp.value;
+  sp.innerHTML = "";
+  sc.innerHTML = "";
+  precos.grupos.forEach((g) => {
+    const og = document.createElement("optgroup");
+    og.label = g.nome;
+    g.itens.forEach((i) => og.append(new Option(i.nome, i.nome)));
+    sp.append(og);
+  });
+  precos.condicoes.forEach((c) => sc.append(new Option(c, c)));
+  if (precos.condicoes.includes("12 meses em 12x")) sc.value = "12 meses em 12x";
+  const rec = document.querySelector(".ptable tr.prec .pname")?.firstChild?.textContent;
+  sp.value = rec || atual || precos.grupos.flatMap((g) => g.itens).find((i) => /growth/i.test(i.nome))?.nome || sp.value;
+}
+function autoTicket() {
+  if ($("cTicket").value.trim()) return;
+  const fontes = [...state.memoria.map((m) => m.text), ...Object.values(state.crm)];
+  for (const f of fontes) {
+    const m = f.match(/ticket[^\d]*?(R\$\s*)?(\d[\d.,]*\s*(mil|k)?)/i);
+    if (m) {
+      $("cTicket").value = m[2].trim();
+      break;
+    }
+  }
+}
+function calc() {
+  const out = $("calcOut");
+  out.innerHTML = "";
+  const item = precos.grupos.flatMap((g) => g.itens).find((i) => i.nome === $("cPlano").value);
+  const valor = toNum(item?.cond[$("cCond").value]);
+  const ticket = toNum($("cTicket").value);
+  const margem = toNum($("cMargem").value) / 100;
+  if (!item || !valor) {
+    out.append(el("p", "qempty", "Escolha um plano e a condi\xE7\xE3o."));
+    return;
+  }
+  if (!ticket || !margem) {
+    out.append(el("p", "qempty", `${item.nome} (${$("cCond").value}): ${brl(valor)}/m\xEAs. Informe o ticket m\xE9dio e a margem para ver quantas vendas pagam o plano.`));
+    return;
+  }
+  const lucro = ticket * margem;
+  const vendas = Math.max(1, Math.ceil(valor / lucro));
+  const big = el("div", "calc-big");
+  big.append(el("span", "calc-n", String(vendas)), el("span", "calc-l", vendas === 1 ? "venda a mais por m\xEAs paga o plano" : "vendas a mais por m\xEAs pagam o plano"));
+  const det = hl(el("p", "calc-det"), `Cada venda deixa ${brl(lucro)} (ticket ${brl(ticket)} \xD7 margem ${Math.round(margem * 100)}%). ${item.nome}, ${$("cCond").value}: ${brl(valor)}/m\xEAs.`);
+  const frase = `Com o seu ticket, ${vendas === 1 ? "1 venda a mais por m\xEAs" : `${vendas} vendas a mais por m\xEAs`} j\xE1 cobrem o investimento. Quantas vendas voc\xEAs deixaram passar no \xFAltimo m\xEAs?`;
+  const say = hl(el("div", "calc-say"), frase);
+  say.title = "Clique para copiar";
+  say.onclick = () => copy(frase, "Frase copiada \u2714");
+  out.append(big, det, say);
+}
+["cPlano", "cCond", "cTicket", "cMargem"].forEach((id) => $(id).addEventListener("input", calc));
+var _renderPrecos = renderPrecos;
+renderPrecos = function() {
+  _renderPrecos();
+  fillCalcOptions();
+  autoTicket();
+  calc();
+};
 function saveSnapshot() {
   if (!state.running || state.source === "demo") return;
   chrome.storage.local.set({ sessao: {
