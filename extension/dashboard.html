@@ -14,7 +14,7 @@
 <header class="top">
   <div class="brandbox"><span class="logo">M</span><div class="brandtxt"><strong class="brand">Mentor</strong><span class="brandsub">copiloto do closer</span></div></div>
   <span class="livepill" id="livePill"><span id="dot" class="dot"></span><span id="liveTag">PRONTO</span></span>
-  <span id="timer" class="timer mono">00:00</span>
+  <span class="timebox" title="Tempo da reunião / tempo planejado"><span id="timer" class="timer mono">00:00</span><span id="timePlan" class="timeplan mono"></span><span class="timebar"><i id="timeFill"></i></span></span>
   <span id="sigPill" class="sigpill" hidden title="Se o Mentor está recebendo a conversa"><i></i><span id="sigTxt">Ouvindo</span></span>
   <div class="who"><span id="clienteTop" class="cliente">Nova reunião</span><span id="modoTop" class="muted small"></span></div>
   <span class="spacer"></span>
@@ -152,6 +152,11 @@
     <div id="objBox" class="card objcard" hidden>
       <div class="card-h"><span class="label obj">Objeção na mesa</span><span class="muted small">clique = copiar contorno</span></div>
       <div id="objList"></div>
+    </div>
+
+    <div id="perguntouBox" class="card perguntou" hidden>
+      <div class="card-h"><span class="label">Ele perguntou</span><span class="muted small">clique = como responder</span></div>
+      <ul id="perguntou" class="chips-v"></ul>
     </div>
 
     <div id="alertasBox" class="card warnbox" hidden>

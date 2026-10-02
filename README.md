@@ -58,6 +58,9 @@ O foco padrão é **vender combos com serviço (Business, Growth, Scale) e compo
 - **Checklist ACR ao vivo** (centro): itens de Analisar, Conectar e Reativar ficam verdes conforme aparecem; clicar num item que falta pede ao Mentor como cobri-lo agora.
 - **Alerta de monólogo**: se você fala muito sem perguntar, o painel avisa e sugere uma pergunta.
 
+- **Relógio com orçamento de tempo**: Diagnóstico 90 min, Ecossistema 60, Follow-up 30. Aos 75% avisa para reservar o fechamento; aos 90%, sem avanço real, avisa para fechar com microdecisão, responsável e data.
+- **Ele perguntou**: perguntas do cliente listadas com horário; clique pede ao Mentor como responder.
+
 ## Instalar (5 min, uma vez)
 
 1. Baixe esta pasta (Code → Download ZIP) e descompacte.

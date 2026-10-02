@@ -741,3 +741,17 @@ body.foco .sinal-t { font-size: 30px; } body.foco .sinal-say { font-size: 24px; 
 .acr-g { gap: 3px; }
 .acr-i { padding: 1px 7px; font-size: 12px; }
 .acr-m { width: 20px; height: 20px; font-size: 12px; }
+
+/* ---------------- relógio com orçamento ---------------- */
+.timebox { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 10px; background: var(--panel); border: 1px solid var(--line); flex: none; position: relative; }
+.timebox .timer { border: 0; padding: 0; background: none; }
+.timeplan { font-size: 13px; color: var(--muted); }
+.timeplan:empty { display: none; }
+.timebar { position: absolute; left: 8px; right: 8px; bottom: 3px; height: 3px; border-radius: 99px; background: var(--panel-3); overflow: hidden; }
+.timebar i { display: block; height: 100%; width: 0; background: var(--ok); transition: width 1s linear; }
+.timebar i.t-warn { background: var(--warn); } .timebar i.t-bad { background: var(--danger-text); }
+/* ---------------- perguntas do cliente ---------------- */
+.perguntou { border: 1.5px solid #c9d6f2; }
+.perguntou .card-h .label { background: var(--primary); color: #fff; }
+.perguntou li { display: flex; gap: 8px; align-items: baseline; }
+.perguntou li.q-new { border-color: var(--primary); background: var(--primary-soft); }

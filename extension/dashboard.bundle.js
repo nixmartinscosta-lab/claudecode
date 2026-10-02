@@ -726,6 +726,8 @@ var freshState = () => ({
   talk: {},
   qTimes: [],
   talkWarned: false,
+  clienteQs: [],
+  tempoAvisos: {},
   temp: null,
   cond: null,
   sinaisUlt: {},
@@ -1491,6 +1493,9 @@ function beginSession(settings, setup, coach, source) {
   $("avancoPill").className = "avpill";
   $("fontesHero").textContent = "";
   $("sintese").textContent = "Aguardando a conversa\u2026";
+  $("perguntouBox").hidden = true;
+  $("perguntou").innerHTML = "";
+  $("timeFill").style.width = "0";
   $("ansBox").hidden = true;
   $("sinalBox").hidden = true;
   $("digaHist").hidden = true;
@@ -1513,8 +1518,11 @@ function beginSession(settings, setup, coach, source) {
     $("proximo").textContent = "Lendo o dossi\xEA do lead e montando o briefing\u2026";
     maybeAnalyze(true, PEDIDO_BRIEFING);
   }
+  state.planMin = { diagnostico: 90, ecossistema: 60, followup: 30 }[setup.modo] || 60;
+  $("timePlan").textContent = `/ ${state.planMin}:00`;
   state.tick = setInterval(() => {
     $("timer").textContent = fmt(elapsedSec());
+    checkTempo();
     if (++state.sinceAnalysis >= state.intervalSec) {
       state.sinceAnalysis = 0;
       maybeAnalyze();
@@ -1613,6 +1621,7 @@ function onTranscript({ speaker, text, isFinal }) {
     }
   } else {
     state.meRun = 0;
+    if (perguntas) addClienteQ(speaker, text);
     const achados = detectar(text, { crm: state.crm }, state.sinaisUlt);
     if (achados.length) showSinal(achados[0]);
     state.clientWords += text.split(/\s+/).filter(Boolean).length;
@@ -2262,6 +2271,56 @@ function renderACR() {
   }
 }
 renderACR();
+function checkTempo() {
+  if (!state.planMin) return;
+  const frac = elapsedSec() / (state.planMin * 60);
+  $("timeFill").style.width = `${Math.min(100, frac * 100)}%`;
+  $("timeFill").className = frac >= 0.9 ? "t-bad" : frac >= 0.75 ? "t-warn" : "";
+  const avancou = state.lastData?.avanco === "Avan\xE7o";
+  if (frac >= 0.75 && !state.tempoAvisos.t75 && !avancou) {
+    state.tempoAvisos.t75 = true;
+    showSinal({
+      id: "t75",
+      nivel: "media",
+      titulo: "Reserve o fechamento",
+      fala: `${Math.round(frac * 100)}% do tempo planejado (${state.planMin} min)`,
+      dica: "Conecte a s\xEDntese, confirme decisor e prepare a microdecis\xE3o. N\xE3o abra assunto novo.",
+      diga: "Pra gente aproveitar bem o tempo: deixa eu resumir o que entendi e ver se faz sentido pra voc\xEA."
+    });
+  }
+  if (frac >= 0.9 && !state.tempoAvisos.t90 && !avancou) {
+    state.tempoAvisos.t90 = true;
+    showSinal({
+      id: "t90",
+      nivel: "alta",
+      titulo: "Feche agora",
+      fala: `${Math.round(frac * 100)}% do tempo planejado`,
+      dica: "Sem microdecis\xE3o, respons\xE1vel e data, a reuni\xE3o vira continua\xE7\xE3o.",
+      diga: "Antes de encerrar: qual \xE9 o pr\xF3ximo passo, quem participa e qual dia e hor\xE1rio a gente fecha isso?"
+    });
+  }
+}
+function addClienteQ(speaker, text) {
+  const qs = text.split(/(?<=\?)/).map((x) => x.trim()).filter((x) => x.endsWith("?") && x.split(/\s+/).length >= 3);
+  qs.forEach((q) => {
+    if (state.clienteQs.some((c) => c.q === q)) return;
+    state.clienteQs.unshift({ q, speaker, t: fmt(elapsedSec()) });
+  });
+  state.clienteQs = state.clienteQs.slice(0, 4);
+  renderClienteQs();
+}
+function renderClienteQs() {
+  const ul = $("perguntou");
+  ul.innerHTML = "";
+  state.clienteQs.forEach((c, i) => {
+    const li = el("li", i === 0 ? "q-new" : "");
+    li.append(el("span", "dh-t", c.t), hl(el("span"), c.q));
+    li.title = "Clique: o Mentor diz como responder";
+    li.onclick = () => maybeAnalyze(true, `${c.speaker} perguntou: "${c.q}". Como respondo agora, seguindo a doutrina e o degrau atual? Frase pronta.`);
+    ul.append(li);
+  });
+  $("perguntouBox").hidden = !state.clienteQs.length;
+}
 function showSinal(sg) {
   state.sinal = { ...sg, at: Date.now() };
   $("sinalBox").className = `card sinal sinal-${sg.nivel}`;

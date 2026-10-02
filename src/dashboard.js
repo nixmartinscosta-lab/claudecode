@@ -36,7 +36,7 @@ const freshState = () => ({
   questionTimer: null, sinceAnalysis: 0, intervalSec: 25, lastAt: 0,
   crm: {}, crmLocked: new Set(), covered: new Set(), pendingNotes: [],
   memoria: [], pinned: new Set(), map: {}, collapsed: new Set(), expanded: new Set(), openObj: [], objTotal: 0,
-  talk: {}, qTimes: [], talkWarned: false, temp: null, cond: null, sinaisUlt: {}, clientWords: 0, digaHist: [], turnTimer: null, drawn: new Set(),
+  talk: {}, qTimes: [], talkWarned: false, clienteQs: [], tempoAvisos: {}, temp: null, cond: null, sinaisUlt: {}, clientWords: 0, digaHist: [], turnTimer: null, drawn: new Set(),
   view: { x: 0, y: 0, s: 1 }, userView: false,
 });
 const state = { ...freshState(), meetTabId: Number(new URLSearchParams(location.search).get('tab')) || null };
@@ -559,6 +559,7 @@ function beginSession(settings, setup, coach, source) {
   [...$('movimentos').children, ...$('portoes').children, ...$('dorSteps').children].forEach((li) => { li.className = ''; });
   $('avancoPill').textContent = ''; $('avancoPill').className = 'avpill'; $('fontesHero').textContent = '';
   $('sintese').textContent = 'Aguardando a conversa…';
+  $('perguntouBox').hidden = true; $('perguntou').innerHTML = ''; $('timeFill').style.width = '0';
   $('ansBox').hidden = true; $('sinalBox').hidden = true; $('digaHist').hidden = true; $('digaHist').innerHTML = '';
   renderCrm(); renderMem(); renderMap(); updateKpis(); showContext();
   $('setupBox').hidden = true;
@@ -571,8 +572,11 @@ function beginSession(settings, setup, coach, source) {
     maybeAnalyze(true, PEDIDO_BRIEFING);
   }
 
+  state.planMin = { diagnostico: 90, ecossistema: 60, followup: 30 }[setup.modo] || 60;
+  $('timePlan').textContent = `/ ${state.planMin}:00`;
   state.tick = setInterval(() => {
     $('timer').textContent = fmt(elapsedSec());
+    checkTempo();
     if (++state.sinceAnalysis >= state.intervalSec) { state.sinceAnalysis = 0; maybeAnalyze(); }
   }, 1000);
 }
@@ -653,6 +657,7 @@ function onTranscript({ speaker, text, isFinal }) {
     }
   } else {
     state.meRun = 0;
+    if (perguntas) addClienteQ(speaker, text);
     // Sinais instantâneos (sem esperar a IA).
     const achados = detectar(text, { crm: state.crm }, state.sinaisUlt);
     if (achados.length) showSinal(achados[0]);
@@ -1108,6 +1113,47 @@ function renderACR() {
   }
 }
 renderACR();
+
+// ================= orçamento de tempo da reunião =================
+function checkTempo() {
+  if (!state.planMin) return;
+  const frac = elapsedSec() / (state.planMin * 60);
+  $('timeFill').style.width = `${Math.min(100, frac * 100)}%`;
+  $('timeFill').className = frac >= 0.9 ? 't-bad' : frac >= 0.75 ? 't-warn' : '';
+  const avancou = state.lastData?.avanco === 'Avanço';
+  if (frac >= 0.75 && !state.tempoAvisos.t75 && !avancou) {
+    state.tempoAvisos.t75 = true;
+    showSinal({ id: 't75', nivel: 'media', titulo: 'Reserve o fechamento', fala: `${Math.round(frac * 100)}% do tempo planejado (${state.planMin} min)`,
+      dica: 'Conecte a síntese, confirme decisor e prepare a microdecisão. Não abra assunto novo.', diga: 'Pra gente aproveitar bem o tempo: deixa eu resumir o que entendi e ver se faz sentido pra você.' });
+  }
+  if (frac >= 0.9 && !state.tempoAvisos.t90 && !avancou) {
+    state.tempoAvisos.t90 = true;
+    showSinal({ id: 't90', nivel: 'alta', titulo: 'Feche agora', fala: `${Math.round(frac * 100)}% do tempo planejado`,
+      dica: 'Sem microdecisão, responsável e data, a reunião vira continuação.', diga: 'Antes de encerrar: qual é o próximo passo, quem participa e qual dia e horário a gente fecha isso?' });
+  }
+}
+
+// ================= perguntas do cliente =================
+function addClienteQ(speaker, text) {
+  const qs = text.split(/(?<=\?)/).map((x) => x.trim()).filter((x) => x.endsWith('?') && x.split(/\s+/).length >= 3);
+  qs.forEach((q) => {
+    if (state.clienteQs.some((c) => c.q === q)) return;
+    state.clienteQs.unshift({ q, speaker, t: fmt(elapsedSec()) });
+  });
+  state.clienteQs = state.clienteQs.slice(0, 4);
+  renderClienteQs();
+}
+function renderClienteQs() {
+  const ul = $('perguntou'); ul.innerHTML = '';
+  state.clienteQs.forEach((c, i) => {
+    const li = el('li', i === 0 ? 'q-new' : '');
+    li.append(el('span', 'dh-t', c.t), hl(el('span'), c.q));
+    li.title = 'Clique: o Mentor diz como responder';
+    li.onclick = () => maybeAnalyze(true, `${c.speaker} perguntou: "${c.q}". Como respondo agora, seguindo a doutrina e o degrau atual? Frase pronta.`);
+    ul.append(li);
+  });
+  $('perguntouBox').hidden = !state.clienteQs.length;
+}
 
 // ================= sinal instantâneo =================
 function showSinal(sg) {
