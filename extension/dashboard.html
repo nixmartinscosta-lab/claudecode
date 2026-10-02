@@ -72,7 +72,8 @@
 <!-- ================= TRILHOS + LINHA DO RACIOCÍNIO ================= -->
 <section class="rails card">
   <div class="rail"><span class="rail-label">Movimento</span><ol id="movimentos" class="steps"></ol></div>
-  <div class="rail"><span class="rail-label">Portões</span><ol id="portoes" class="steps gates"></ol></div>
+  <div class="rail"><span class="rail-label">Degraus</span><ol id="portoes" class="steps gates"></ol></div>
+  <div class="rail"><span class="rail-label">Dor</span><ol id="dorSteps" class="steps"></ol><span id="avancoPill" class="avpill" title="Avanço exige microdecisão + responsável + data"></span></div>
 </section>
 
 
@@ -122,6 +123,7 @@
     <div id="coach" class="card hero urg-baixa">
       <div class="card-h"><span class="tag-urg" id="urgTag">AGORA</span><span class="muted small"><span id="coachAge"></span> <span id="nextInfo"></span></span></div>
       <div id="proximo" class="hero-text">Ligue as legendas no Meet e clique em <b>▶ Começar</b>. Primeira vez? Clique em <b>Ver demonstração</b>.</div>
+      <div id="fontesHero" class="fontes"></div>
       <div id="digaBox" class="say" hidden title="Clique para copiar (C)">
         <span class="say-label">Diga</span>
         <span id="diga"></span>
@@ -133,6 +135,7 @@
       <div class="card-h"><span class="label">Resposta ao seu pedido</span><button id="ansClose" class="mini" title="Fechar">✕</button></div>
       <div id="ansQ" class="ans-q"></div>
       <div id="ansA" class="ans-a" title="Clique para copiar"></div>
+      <div id="ansFontes" class="fontes"></div>
     </div>
 
     <div id="objBox" class="card objcard" hidden>

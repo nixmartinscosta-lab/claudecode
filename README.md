@@ -48,6 +48,8 @@ O foco padrão é **vender combos com serviço (Business, Growth, Scale) e compo
 - **Correções oficiais** (Configurações): regras com prioridade sobre os arquivos da base (já vem com Start = R$ 1.350).
 - **Modo Foco** (botão ou tecla `F`): só AGORA, DIGA, objeção e resposta, em letra grande. `Esc` sai.
 
+- **Doutrina Mentor 2.0** (`src/doutrina.js`): hierarquia de fontes 01 a 08, ACR, 4 degraus da decisão, estágio da dor 0 a 3, avanço × continuação, marcadores de evidência ([INFERÊNCIA], [VALIDAR], [DADO NÃO INFORMADO], [CONTRADIÇÃO DE FONTE]), voz sem travessão. O briefing segue o modo PREPARAR e a ata segue a análise completa em 14 seções.
+
 ## Instalar (5 min, uma vez)
 
 1. Baixe esta pasta (Code → Download ZIP) e descompacte.

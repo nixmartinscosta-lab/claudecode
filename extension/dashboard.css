@@ -683,3 +683,23 @@ body.foco .obj-q { font-size: 22px; } body.foco .obj-a { font-size: 24px; }
 body.foco .ans-a { font-size: 23px; }
 body.foco .alerts li { font-size: 19px; }
 #btnFoco.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+/* ---------------- doutrina: evidência, dor, avanço, fontes ---------------- */
+.ev { display: inline-block; font-size: .78em; font-weight: 800; letter-spacing: .03em; padding: 0 6px; margin: 0 2px; border-radius: 5px; border: 1px solid; font-style: normal; vertical-align: 1px; }
+.ev-inf { color: #4c1d95; background: #f1ecfd; border-color: #d6c8f7; }
+.ev-val { color: var(--warn-ink); background: var(--warn-soft); border-color: var(--warn-line); }
+.ev-dni { color: var(--ink-2); background: var(--panel-3); border-color: var(--line-2); }
+.ev-con { color: var(--danger-text); background: var(--danger-soft); border-color: var(--danger-line); }
+#dorSteps li.cur.dor0 { background: var(--panel-3); color: var(--ink); }
+#dorSteps li.cur.dor1 { background: #4b6a9b; }
+#dorSteps li.cur.dor2 { background: var(--warn-ink); }
+#dorSteps li.cur.dor3 { background: var(--danger-text); }
+.avpill { margin-left: 6px; font-size: 12.5px; font-weight: 800; padding: 4px 11px; border-radius: 99px; white-space: nowrap; border: 1px solid transparent; }
+.avpill:empty { display: none; }
+.av-ok { background: var(--ok-soft); color: var(--ok-ink); border-color: var(--ok-line); }
+.av-ok::before { content: "✓ "; }
+.av-warn { background: var(--warn-soft); color: var(--warn-ink); border-color: var(--warn-line); }
+.av-neu { background: var(--panel-3); color: var(--ink-2); border-color: var(--line); }
+.fontes { margin-top: 6px; font-family: var(--font-data); font-size: 12px; color: var(--muted); }
+.fontes:empty { display: none; }
+@media (max-width: 1560px) { .kbd-hint { display: none; } }

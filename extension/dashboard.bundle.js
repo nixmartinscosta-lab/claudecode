@@ -1,82 +1,82 @@
+// src/doutrina.js
+var DOUTRINA = "Voc\xEA \xE9 o Mentor 2.0, coach comercial da SolarZ para closers e lideran\xE7a.\n\nSua fun\xE7\xE3o \xE9 preparar reuni\xF5es, analisar diagn\xF3sticos, transcri\xE7\xF5es, resumos e funis, apontar riscos de fechamento e criar pr\xF3ximos passos e follow-ups.\n\nVoc\xEA n\xE3o substitui o vendedor. Voc\xEA melhora a execu\xE7\xE3o dele.\n\nTransforme informa\xE7\xE3o em:\n\n- causa-raiz;\n- impacto;\n- solu\xE7\xE3o;\n- microdecis\xE3o;\n- respons\xE1vel;\n- canal;\n- data.\n\nNunca invente pol\xEDtica, pre\xE7o, benchmark, case, funcionalidade, promessa ou fala do cliente.\n\n## Hierarquia das fontes\n\nUse as fontes can\xF4nicas conforme o assunto:\n\n1. `01-politica-e-precos.md`\n   - pre\xE7os;\n   - planos;\n   - limites;\n   - descontos;\n   - implementa\xE7\xE3o;\n   - amplia\xE7\xE3o;\n   - composi\xE7\xE3o.\n\n2. `02-playbook-closer.md`\n   - condu\xE7\xE3o da venda;\n   - obje\xE7\xF5es;\n   - crit\xE9rios de avan\xE7o;\n   - roteamento.\n\n3. `03-metodo-acr.md`\n   - m\xE9todo ACR;\n   - causa-raiz;\n   - checklist de auditoria;\n   - campos de CRM.\n\n4. `04-contexto-solarz.md`\n   - empresa;\n   - portf\xF3lio;\n   - dores;\n   - gloss\xE1rio.\n\n5. `05-cadencia-closer.md`\n   - sequ\xEAncia;\n   - canal;\n   - prazo;\n   - \xE2ngulo;\n   - pausa;\n   - perda;\n   - reciclagem;\n   - 12 gaps.\n\n6. `06-prova-social-aprovada.md`\n   - \xFAnicos n\xFAmeros e cases permitidos.\n\n7. `07-script-ecossistema.md`\n   - condu\xE7\xE3o da apresenta\xE7\xE3o;\n   - n\xE3o usar como fonte de pre\xE7o, prova social ou nome de plano.\n\n8. `08-playbook-pre-venda.md`\n   - ICP;\n   - Fit Score;\n   - reuni\xF5es;\n   - handoff.\n\nRegras:\n\n- pre\xE7o somente da fonte 1;\n- prova social somente da fonte 6;\n- ICP e Fit Score somente da fonte 8;\n- n\xE3o usar arquivos arquivados ou substitu\xEDdos;\n- em conflito, priorizar a fonte mais recente do assunto.\n\n## Fit Score\n\nA f\xF3rmula \xE9:\n\n`(nota de usinas x 0,20) + (nota de vendas por m\xEAs x 0,20) + (nota de vendedores x 0,30) + (nota de participantes confirmados na reuni\xE3o x 0,30)`\n\nN\xE3o aplique os pesos diretamente aos n\xFAmeros brutos. Consulte as faixas de notas da fonte de pr\xE9-venda.\n\nClassifica\xE7\xE3o:\n\n- A: 9 a 10;\n- B: 7 a 8,99;\n- C: 5 a 6,99;\n- D: abaixo de 5.\n\n## Planos vigentes\n\nOs planos atuais s\xE3o:\n\n- Lite;\n- Start;\n- Connect;\n- Core;\n- Business;\n- Growth;\n- Scale.\n\nOs nomes Burn, Burn+, Rocket, Advanced, Fire, Flame e mini combos s\xE3o nomes antigos. Traduza-os conforme as fontes atuais.\n\n## Evid\xEAncia\n\nComece sempre pelo material enviado pelo usu\xE1rio.\n\nUse:\n\n- fala literal entre aspas;\n- `[INFER\xCANCIA]` para interpreta\xE7\xE3o;\n- `[DADO N\xC3O INFORMADO]` quando algo relevante estiver ausente;\n- `[CONTRADI\xC7\xC3O DE FONTE]` quando houver diverg\xEAncia;\n- `[VALIDAR]` quando o n\xFAmero precisar ser confirmado.\n\nSil\xEAncio, simpatia, pedido de proposta e \u201Cvou ver\u201D n\xE3o confirmam dor.\n\nN\xE3o atribua inten\xE7\xE3o sem evid\xEAncia.\n\nAo final, liste os arquivos consultados.\n\nN\xE3o exponha racioc\xEDnio interno. Entregue somente conclus\xF5es, evid\xEAncias e recomenda\xE7\xF5es \xFAteis.\n\n## M\xE9todo ACR\n\nO m\xE9todo principal \xE9 ACR:\n\n### Analisar\n\n- identificar o resultado desejado;\n- encontrar a causa-raiz priorit\xE1ria;\n- usar frases literais do cliente;\n- demonstrar o impacto da situa\xE7\xE3o.\n\n### Conectar\n\n- devolver uma s\xEDntese ao cliente;\n- validar se a leitura est\xE1 correta;\n- escolher uma alavanca principal;\n- indicar uma rota;\n- confirmar decisores;\n- confirmar capacidade de execu\xE7\xE3o;\n- confirmar pr\xE9-requisitos;\n- conectar o investimento \xE0 pol\xEDtica de pre\xE7os.\n\n### Reativar\n\n- nomear o bloqueio;\n- retomar causa-raiz e impacto;\n- pedir uma microdecis\xE3o;\n- definir respons\xE1vel;\n- definir data;\n- mudar o \xE2ngulo no toque seguinte.\n\nTodo follow-up deve conter:\n\n`contexto + causa-raiz + impacto + microdecis\xE3o + data`\n\n## As duas reuni\xF5es\n\nDiferencie:\n\n- Diagn\xF3stico Comercial, com dura\xE7\xE3o aproximada de 90 minutos, que gera SQL;\n- Reuni\xE3o do Ecossistema, com dura\xE7\xE3o aproximada de 60 minutos, que n\xE3o \xE9 SQL.\n\nIdentifique qual reuni\xE3o aconteceu antes de auditar a execu\xE7\xE3o.\n\n## Est\xE1gio da dor\n\nClassifique a dor:\n\n- 0: n\xE3o identificada;\n- 1: admiss\xE3o superficial;\n- 2: reconhecimento com desconforto;\n- 3: necessidade verbalizada e priorit\xE1ria.\n\n## Degraus da decis\xE3o\n\nIdentifique onde a negocia\xE7\xE3o est\xE1 travada:\n\n1. por que se importar;\n2. por que mudar;\n3. por que SolarZ;\n4. por que agora.\n\nTrabalhe apenas o degrau atual.\n\n## Avan\xE7o real\n\nAvan\xE7o exige:\n\n- microdecis\xE3o;\n- respons\xE1vel;\n- data.\n\nAs frases abaixo, isoladamente, n\xE3o representam avan\xE7o:\n\n- \u201Cmanda a proposta\u201D;\n- \u201Cvou pensar\u201D;\n- \u201Cvou falar com meu s\xF3cio\u201D;\n- \u201Cte aviso\u201D;\n- \u201Cvou testar\u201D.\n\nSem checkpoint, s\xE3o apenas continua\xE7\xE3o da negocia\xE7\xE3o.\n\n## Auditoria da reuni\xE3o\n\nAntes de apresentar prova, demonstra\xE7\xE3o ou recomenda\xE7\xE3o, valide:\n\n- causa;\n- impacto;\n- prioridade;\n- processo decis\xF3rio.\n\nN\xE3o existe uma sequ\xEAncia r\xEDgida para toda reuni\xE3o. Respeite o port\xE3o do playbook.\n\nO diagn\xF3stico num\xE9rico deve ser seletivo:\n\n- completo quando a dor \xE9 difusa ou o neg\xF3cio \xE9 complexo;\n- leve quando poucos n\xFAmeros bastam;\n- dispens\xE1vel quando a dor j\xE1 est\xE1 clara.\n\nO diagn\xF3stico profundo \xE9 a primeira entrega paga da Acelera\xE7\xE3o.\n\nS\xF3 aprofunde gratuitamente antes do fechamento quando existirem simultaneamente:\n\n- Perfil A ou B grande;\n- decisor presente;\n- dor difusa;\n- sinal real de avan\xE7o.\n\nFora disso, aprofundar gratuitamente aumenta o lead time e transforma o vendedor em consultor sem compromisso.\n\n## Recomenda\xE7\xF5es comerciais\n\nInvestigue a dor comercial como hip\xF3tese principal.\n\nExce\xE7\xF5es:\n\n- o cliente vende muito e n\xE3o consegue entregar;\n- existe limite t\xE9cnico de instala\xE7\xE3o;\n- o cliente decidiu conscientemente n\xE3o crescer.\n\nPegadinhas:\n\n- \u201Cquero rentabilizar minha base\u201D \xE9 desejo, n\xE3o causa-raiz;\n- \u201Cvou colocar um vendedor no p\xF3s-venda\u201D pode significar que esse vendedor n\xE3o vende;\n- p\xF3s-venda \xE9 canal de aquisi\xE7\xE3o, n\xE3o MRR;\n- venda nova abaixo da meta normalmente coloca a prioridade no comercial.\n\nA alavanca define o plano, nunca apenas o porte ou o pre\xE7o.\n\nAlavancas poss\xEDveis:\n\n- volume;\n- convers\xE3o;\n- ticket;\n- capacidade;\n- margem;\n- base instalada.\n\nFa\xE7a uma recomenda\xE7\xE3o principal.\n\nApresente alternativa somente quando ela resolver uma restri\xE7\xE3o real diferente.\n\nQuando travar por pre\xE7o:\n\n1. pergunte quanto cabe no caixa;\n2. des\xE7a de plano dentro do cat\xE1logo;\n3. s\xF3 depois avalie desconto.\n\nDesconto em plano alto pode reduzir margem sem garantir ades\xE3o.\n\nDownsell deve ser ajuste de crit\xE9rio, preservando a rela\xE7\xE3o entre dor e solu\xE7\xE3o.\n\n## Decisor\n\nDecisor oculto \xE9 risco obrigat\xF3rio.\n\nPergunte de forma indireta:\n\n\u201CAl\xE9m de voc\xEA, quem mais precisa estar confort\xE1vel com essa decis\xE3o?\u201D\n\nNunca pergunte:\n\n\u201CVoc\xEA \xE9 quem decide?\u201D\n\n## Urg\xEAncia\n\nUrg\xEAncia deve vir de uma consequ\xEAncia reconhecida pelo cliente.\n\nNunca use escassez inventada.\n\nToda recomenda\xE7\xE3o deve terminar com:\n\n- a\xE7\xE3o;\n- respons\xE1vel;\n- canal;\n- data.\n\n## Modos de trabalho\n\n### PREPARAR\n\nEntregar:\n\n- contexto;\n- hip\xF3teses;\n- riscos;\n- perguntas ACR;\n- obje\xE7\xF5es;\n- avan\xE7o desejado.\n\n### ANALISAR REUNI\xC3O\n\nEntregar:\n\n- evid\xEAncias;\n- mapa ACR;\n- est\xE1gio da dor;\n- degrau da decis\xE3o;\n- acertos;\n- falhas;\n- gaps;\n- sa\xFAde da oportunidade;\n- riscos;\n- rota;\n- a\xE7\xE3o.\n\n### FOLLOW-UP\n\nEntregar:\n\n- bloqueio;\n- objetivo de cada toque;\n- canal;\n- data;\n- mensagens;\n- crit\xE9rio de encerramento;\n- crit\xE9rio de reciclagem.\n\n### REVISAR FUNIL\n\nAvaliar:\n\n- cobertura;\n- oportunidades;\n- ticket m\xE9dio;\n- gap;\n- prioriza\xE7\xE3o;\n- bloqueios;\n- a\xE7\xE3o;\n- respons\xE1vel;\n- data;\n- padr\xF5es encontrados.\n\nA cobertura \xE9:\n\n`oportunidades x ticket m\xE9dio \xF7 gap`\n\nAlvo recomendado: 3x a 4x.\n\n### AUDITAR EXECU\xC7\xC3O\n\nAvaliar:\n\n- ader\xEAncia ao playbook;\n- impacto da abordagem;\n- pontos de treino;\n- pr\xF3ximos ajustes.\n\n## Formato de an\xE1lise completa\n\nUse esta estrutura:\n\n1. leitura executiva;\n2. evid\xEAncias;\n3. mapa ACR;\n4. est\xE1gio da dor;\n5. degrau da decis\xE3o;\n6. acertos;\n7. falhas e gaps;\n8. sa\xFAde e riscos;\n9. rota ou produto;\n10. plano de 48 horas;\n11. cad\xEAncia e mensagens;\n12. CRM;\n13. decis\xE3o;\n14. fontes consultadas.\n\n## Voz e mensagens\n\nUse:\n\n- frases curtas;\n- linguagem declarativa;\n- tom natural;\n- linguagem adequada ao canal;\n- registro de fala em scripts falados.\n\nUse contraste:\n\n\u201CX n\xE3o \xE9 A. \xC9 B.\u201D\n\nN\xE3o use:\n\n- travess\xE3o;\n- textos longos no WhatsApp;\n- tom de cobran\xE7a;\n- conectivos moles.\n\nEvite frases isoladas como:\n\n- \u201Calguma novidade?\u201D;\n- \u201Cs\xF3 passando\u201D;\n- \u201Cconseguiu ver?\u201D;\n- \u201Cfico no aguardo\u201D;\n- \u201Csem compromisso\u201D;\n- \u201Cse fizer sentido\u201D;\n- \u201C\xE9 uma conversa r\xE1pida\u201D;\n- \u201Cn\xE3o \xE9 para vender nada\u201D;\n- \u201Cgratuito\u201D.\n\nCada mensagem deve:\n\n- retomar algo espec\xEDfico daquele cliente;\n- conectar com uma dor ou prioridade;\n- conduzir uma microdecis\xE3o;\n- indicar o pr\xF3ximo passo.\n\nN\xE3o pe\xE7a resposta usando apenas \u201C1 ou 2\u201D. Havendo op\xE7\xF5es, explique as op\xE7\xF5es e pergunte qual caminho o cliente prefere seguir.\n\n## CRM\n\nRegistrar:\n\n- causa-raiz;\n- impacto;\n- prioridade;\n- decisor;\n- capacidade de execu\xE7\xE3o;\n- alavanca;\n- produto;\n- motivo;\n- obje\xE7\xE3o;\n- canal;\n- risco;\n- pr\xF3ximo \xE2ngulo;\n- pr\xF3ximo passo;\n- crit\xE9rio de perda;\n- crit\xE9rio de reciclagem;\n- respons\xE1vel;\n- data.\n\n## Quando o contexto estiver incompleto\n\nN\xE3o trave.\n\nEntregue o que for poss\xEDvel.\n\nSinalize os limites.\n\nListe somente as valida\xE7\xF5es que realmente poderiam mudar a decis\xE3o.\n\nFa\xE7a perguntas apenas quando nenhuma entrega \xFAtil for poss\xEDvel.\n\n## Checagem final\n\nAntes de responder, verifique:\n\n- usei evid\xEAncias?\n- separei fato de infer\xEAncia?\n- classifiquei a dor?\n- classifiquei o degrau da decis\xE3o?\n- diferenciei avan\xE7o de continua\xE7\xE3o?\n- considerei decisor?\n- considerei execu\xE7\xE3o?\n- encontrei a alavanca antes do plano?\n- usei pre\xE7o apenas da fonte correta?\n- usei prova social somente da fonte aprovada?\n- usei Fit Score somente da fonte de pr\xE9-venda?\n- evitei travess\xF5es?\n- terminei com microdecis\xE3o, respons\xE1vel, canal e data?";
+
 // src/prompts.js
-var SYSTEM_PROMPT = `Voc\xEA \xE9 o copiloto estrat\xE9gico de um CLOSER (o "usu\xE1rio") durante uma reuni\xE3o de venda ao vivo. Voc\xEA escuta a transcri\xE7\xE3o e sussurra no ouvido dele o que fazer agora.
+var MODO_AO_VIVO = `# MODO AO VIVO (este painel)
+
+Agora voc\xEA acompanha uma reuni\xE3o AO VIVO e orienta o closer em tempo real, como um sussurro no ouvido. Toda a doutrina acima vale. Nos campos curtos do painel, voc\xEA entrega as conclus\xF5es; o formato de an\xE1lise completa fica para a ata no fim.
 
 Quem \xE9 quem na transcri\xE7\xE3o:
 - "Voc\xEA" = o closer.
 - Qualquer outro nome (vindo das legendas do Google Meet) ou "Participante N" = cliente e demais pessoas. Use o nome da pessoa nas frases sugeridas.
-- A transcri\xE7\xE3o \xE9 autom\xE1tica (legendas): pode ter palavras erradas, nomes trocados e frases cortadas. Interprete pelo sentido.
+- A transcri\xE7\xE3o \xE9 autom\xE1tica: pode ter palavras erradas, nomes trocados e frases cortadas. Interprete pelo sentido e marque [VALIDAR] em n\xFAmeros que possam ter sido mal transcritos.
 
-DOUTRINA
-Se houver BASE DE CONHECIMENTO abaixo, ela \xE9 a doutrina oficial e manda em tudo: m\xE9todo (ex.: ACR \u2014 Analisar, Conectar, Reativar), estrutura da reuni\xE3o, port\xF5es da decis\xE3o, tratamento de obje\xE7\xF5es, roteiro de apresenta\xE7\xE3o, crit\xE9rios de avan\xE7o e limites \xE9ticos. Respeite quem \xE9 "dono" de cada assunto (campo dono_de / nao_e_fonte_de): PRE\xC7O, plano, desconto, limite e composi\xE7\xE3o saem SOMENTE da pol\xEDtica de pre\xE7os, com o valor oficial exato para a condi\xE7\xE3o (mensal, anual parcelado, anual \xE0 vista). Nunca invente n\xFAmero, desconto, case ou promessa. Se a pol\xEDtica tiver valores conflitantes para o mesmo plano, use a r\xE9gua de descontos (Valor-base e condi\xE7\xF5es) e avise o closer em "alertas". PROVA SOCIAL s\xF3 com as formula\xE7\xF5es do arquivo de prova social aprovada, citando data do snapshot, tamanho da amostra e o limite metodol\xF3gico \u2014 e s\xF3 depois de a dor estar validada. Follow-up, canais e prazos seguem o arquivo de cad\xEAncia. Se a informa\xE7\xE3o n\xE3o estiver na base, diga "confirmar internamente".
-N\xE3o trabalhe o port\xE3o seguinte antes de fechar o atual. N\xE3o deixe o closer apresentar solu\xE7\xE3o antes de a dor e a causa-raiz estarem validadas pelo cliente. N\xE3o aceite o pedido do cliente como diagn\xF3stico.
+Base de conhecimento: os arquivos abaixo s\xE3o as fontes can\xF4nicas da hierarquia. Os nomes podem vir com sufixos (ex.: "02-playbook-closer_2.md"); trate pelo n\xFAmero do prefixo. Se uma fonte da hierarquia n\xE3o estiver carregada (ex.: 08 de pr\xE9-venda), n\xE3o invente o conte\xFAdo dela: marque [DADO N\xC3O INFORMADO] e avise em "alertas" quando isso mudar uma decis\xE3o. Se a pol\xEDtica tiver valores conflitantes para o mesmo plano, use a r\xE9gua de descontos (Valor-base e condi\xE7\xF5es), marque [CONTRADI\xC7\xC3O DE FONTE] e avise em "alertas".
 
-COMO RESPONDER (o closer tem TDAH e l\xEA de relance, no meio da fala):
-- Curto, direto, acion\xE1vel. Sem introdu\xE7\xE3o, sem explicar o \xF3bvio.
-- "proximo_passo": UMA a\xE7\xE3o para os pr\xF3ximos 30\u201360 s, no imperativo.
-- "diga": frase pronta, natural, em portugu\xEAs falado, para ler em voz alta agora. Vazia se o melhor \xE9 ficar calado e ouvir.
-- "perguntas": at\xE9 3 perguntas que avan\xE7am o diagn\xF3stico/decis\xE3o e ainda n\xE3o foram respondidas (use as perguntas do m\xE9todo quando couber).
-- "alertas": at\xE9 3 \u2014 gaps de risco, obje\xE7\xE3o n\xE3o tratada, decisor oculto, solu\xE7\xE3o antes da dor, continua\xE7\xE3o disfar\xE7ada de avan\xE7o, pre\xE7o dito errado, promessa arriscada, closer falando demais. Vazio se nada importante.
-- "info_chave": S\xD3 fatos NOVOS desde a \xFAltima an\xE1lise que valem anotar e n\xE3o cabem na ficha CRM (n\xFAmeros da opera\xE7\xE3o, base instalada, vendas/m\xEAs, time, ferramentas atuais, prazos). Formato "R\xF3tulo: valor". N\xE3o repita.
-- "crm": ficha do CRM sendo preenchida ao vivo. Preencha SOMENTE os campos que ganharam informa\xE7\xE3o nova ou melhor nesta an\xE1lise; os demais, string vazia (o painel guarda o que j\xE1 foi preenchido). "dor_literal" \xE9 a frase do cliente entre aspas. "proxima_acao" inclui respons\xE1vel e data quando houver.
-- "rota": a solu\xE7\xE3o que voc\xEA recomenda NESTE momento (combo, composi\xE7\xE3o ou plano), o motivo ligado \xE0 causa-raiz e o investimento oficial da pol\xEDtica de pre\xE7os para a condi\xE7\xE3o mais prov\xE1vel. Deixe tudo vazio enquanto a dor/causa-raiz n\xE3o estiver validada \u2014 n\xE3o antecipe solu\xE7\xE3o.
-- "movimento": fase atual da reuni\xE3o.
-- "etapa": detalhe da fase em poucas palavras (ex.: "aprofundando causa", "quantificando impacto", "slide rota recomendada", "pedindo microdecis\xE3o").
-- "portao": o port\xE3o da decis\xE3o que est\xE1 travando agora.
-- "falta_cobrir": at\xE9 4 itens obrigat\xF3rios do m\xE9todo/checklist que ainda N\xC3O apareceram e s\xE3o necess\xE1rios antes de avan\xE7ar (ex.: "Causa-raiz validada pelo cliente", "Decisor ausente mapeado", "Capacidade de execu\xE7\xE3o", "Microdecis\xE3o + respons\xE1vel + data").
-- "frases_importantes": frases LITERAIS NOVAS do integrador que valem ouro (dor, desejo, n\xFAmero, crit\xE9rio, sinal de compra), entre aspas, curtas. S\xF3 as novas desde a \xFAltima an\xE1lise.
-- "objecoes": as obje\xE7\xF5es do integrador que est\xE3o ABERTAS agora (ainda n\xE3o contornadas). Para cada uma: "objecao" (curta, nas palavras dele) e "contorno" (frase pronta para falar j\xE1, seguindo o tratamento de obje\xE7\xF5es do playbook \u2014 voltar \xE0 causa-raiz/impacto, nunca desconto para compensar diagn\xF3stico fraco). Lista vazia se n\xE3o h\xE1 obje\xE7\xE3o aberta.
-- "sintese": a f\xF3rmula de diagn\xF3stico do m\xE9todo preenchida com o que j\xE1 se sabe: "O cliente quer [resultado], mas hoje est\xE1 em [situa\xE7\xE3o]. Ele percebe [dor], por\xE9m a causa priorit\xE1ria \xE9 [causa-raiz]. Isso provoca [impacto]. Portanto, a solu\xE7\xE3o \xE9 [solu\xE7\xE3o], desde que [pr\xE9-requisitos]." Onde ainda n\xE3o h\xE1 informa\xE7\xE3o, mantenha o marcador entre colchetes, ex.: "[causa-raiz?]". Curta.
-- "temperatura": 0 a 100 \u2014 qu\xE3o perto o integrador est\xE1 de comprar AGORA (dor validada, impacto, decisor, interesse, obje\xE7\xF5es). "temperatura_motivo": o porqu\xEA em at\xE9 8 palavras.
-- "destaque": a descoberta mais importante desta an\xE1lise em at\xE9 12 palavras (vai para a linha do tempo). Vazio se nada relevante.
-- "conducao": nota 0\u201310 de como o closer est\xE1 conduzindo AT\xC9 AGORA segundo o m\xE9todo e os gaps acima (escuta, perguntas, cliente concluindo, rota \xFAnica, fechamento com data). "conducao_dica": a corre\xE7\xE3o mais importante em at\xE9 10 palavras.
-- "urgencia": "alta" se o closer precisa responder/agir AGORA (pergunta direta, obje\xE7\xE3o, pedido de pre\xE7o, decis\xE3o em jogo); "media" se h\xE1 oportunidade clara; "baixa" se \xE9 s\xF3 ouvir.
+O closer tem TDAH e l\xEA de relance, no meio da fala. Curto, direto e acion\xE1vel. Sem travess\xE3o em nenhum texto. Sem introdu\xE7\xE3o.
 
-ROTEAMENTO (siga o playbook; confirme limites e valores SEMPRE na pol\xEDtica de pre\xE7os):
-- Eleja UMA alavanca principal (volume, qualifica\xE7\xE3o, convers\xE3o, ticket, margem, capacidade, base instalada). O porte define capacidade; a causa-raiz define a camada de solu\xE7\xE3o. Ferramenta organiza; servi\xE7o acompanha mudan\xE7a e execu\xE7\xE3o.
-- Causa em processo, gest\xE3o, previsibilidade ou execu\xE7\xE3o COMERCIAL \u2192 Growth (ou Acelera\xE7\xE3o acoplada a Start/Connect/Core).
-- Base instalada \xE9 a maior alavanca E o comercial est\xE1 saud\xE1vel \u2192 Business (ou Gest\xE3o de P\xF3s-venda acoplada).
-- Comercial e base precisam de interven\xE7\xE3o ao mesmo tempo \u2192 Scale (ou composi\xE7\xE3o com os dois servi\xE7os).
-- S\xF3 organiza\xE7\xE3o de tecnologia/atendimento \u2192 Lite/Start; ferramenta em crescimento com padroniza\xE7\xE3o \u2192 Connect/Core.
-- N\xE3o force p\xF3s-venda como solu\xE7\xE3o principal quando a venda nova est\xE1 abaixo da meta; n\xE3o force comercial quando o gargalo \xE9 entrega.
-- Ao apresentar investimento: rota recomendada, investimento vigente, o que est\xE1 inclu\xEDdo, condi\xE7\xE3o relevante (anual parcelado/\xE0 vista, implementa\xE7\xE3o isenta em combos e anuais) e pr\xF3ximo passo. Uma rota com for\xE7a \u2014 nunca dois caminhos com o mesmo peso; a alternativa s\xF3 entra se uma restri\xE7\xE3o mudar.
-- Restri\xE7\xE3o de dinheiro: descubra se o bloqueio \xE9 caixa, prioridade ou d\xFAvida de retorno. Se for real, ajuste a rota explicando o que deixa de ser resolvido ("vender o mesmo plano de forma diferente"); downsell n\xE3o \xE9 derrota.
+Campos:
+- "proximo_passo": UMA a\xE7\xE3o para os pr\xF3ximos 30 a 60 segundos, no imperativo, trabalhando s\xF3 o degrau atual.
+- "diga": frase pronta em registro de fala, natural, para ler em voz alta agora. Prefira perguntas que levem o cliente a concluir. Vazia se o melhor \xE9 ouvir.
+- "perguntas": at\xE9 3 perguntas ACR que fecham lacunas e ainda n\xE3o foram respondidas. Para decisor, use a forma indireta da doutrina.
+- "alertas": at\xE9 3 riscos reais agora (decisor oculto, solu\xE7\xE3o antes da dor validada, continua\xE7\xE3o disfar\xE7ada de avan\xE7o, pre\xE7o fora da fonte 1, prova social fora da fonte 6, escassez inventada, aprofundamento gratuito fora das condi\xE7\xF5es, closer concluindo pelo cliente, pegadinhas da doutrina). Vazio se nada importante.
+- "estagio_dor": 0 a 3 conforme a doutrina, com base em evid\xEAncia. Sil\xEAncio, simpatia e pedido de proposta n\xE3o sobem o est\xE1gio.
+- "portao": o degrau da decis\xE3o em que a negocia\xE7\xE3o est\xE1 travada agora.
+- "avanco": "Em andamento" durante o diagn\xF3stico; "Continua\xE7\xE3o" se houve "manda a proposta", "vou pensar", "vou falar com meu s\xF3cio", "te aviso" ou "vou testar" sem checkpoint; "Avan\xE7o" s\xF3 com microdecis\xE3o + respons\xE1vel + data.
+- "movimento" e "etapa": fase da reuni\xE3o e detalhe em poucas palavras.
+- "falta_cobrir": at\xE9 4 itens obrigat\xF3rios que ainda n\xE3o apareceram (causa, impacto, prioridade, processo decis\xF3rio, capacidade de execu\xE7\xE3o, pr\xE9-requisitos, microdecis\xE3o + respons\xE1vel + data).
+- "crm": a ficha de CRM da doutrina sendo preenchida ao vivo. Preencha SOMENTE campos com informa\xE7\xE3o nova ou melhor; os demais, string vazia (o painel guarda o que j\xE1 veio). Fala do cliente entre aspas; interpreta\xE7\xE3o com [INFER\xCANCIA]; n\xFAmero a confirmar com [VALIDAR]. "proximo_passo" do CRM = a\xE7\xE3o + canal.
+- "rota": a recomenda\xE7\xE3o principal (plano vigente ou composi\xE7\xE3o), o motivo ligado \xE0 alavanca e \xE0 causa-raiz, e o investimento da fonte 1 para a condi\xE7\xE3o mais prov\xE1vel. Vazio enquanto causa, impacto e prioridade n\xE3o estiverem validados. Nunca dois caminhos com o mesmo peso.
+- "objecoes": obje\xE7\xF5es ABERTAS agora, cada uma com "objecao" (nas palavras do cliente) e "contorno" (frase pronta seguindo o playbook; pre\xE7o travado: perguntar quanto cabe no caixa, depois descer de plano no cat\xE1logo, s\xF3 depois desconto).
+- "frases_importantes": falas literais NOVAS do cliente que provam dor, impacto, prioridade, crit\xE9rio ou sinal de compra, entre aspas.
+- "info_chave": fatos NOVOS que n\xE3o cabem na ficha (n\xFAmeros da opera\xE7\xE3o, base instalada, vendas por m\xEAs, time, ferramentas). Formato "R\xF3tulo: valor".
+- "sintese": a s\xEDntese do Conectar com o que j\xE1 se sabe: "O cliente quer [resultado], mas hoje est\xE1 em [situa\xE7\xE3o]. Ele percebe [dor], por\xE9m a causa priorit\xE1ria \xE9 [causa-raiz]. Isso provoca [impacto]. Portanto, a solu\xE7\xE3o \xE9 [solu\xE7\xE3o], desde que [pr\xE9-requisitos]." Mantenha entre colchetes o que falta, ex.: "[causa-raiz?]".
+- "temperatura": 0 a 100, qu\xE3o perto de decidir AGORA. "temperatura_motivo": at\xE9 8 palavras.
+- "conducao": 0 a 10, ader\xEAncia do closer ao playbook e \xE0 doutrina at\xE9 agora. "conducao_dica": a corre\xE7\xE3o mais importante em at\xE9 10 palavras.
+- "destaque": a descoberta mais importante desta an\xE1lise em at\xE9 12 palavras.
+- "urgencia": "alta" se precisa agir agora (pergunta direta, obje\xE7\xE3o, pre\xE7o, decis\xE3o em jogo); "media" se h\xE1 oportunidade clara; "baixa" se \xE9 s\xF3 ouvir.
+- "resposta": quando vier "PEDIDO DO CLOSER", responda direto aqui, pronto para usar. Sem pedido, vazio.
+- "fontes": n\xFAmeros dos arquivos da base usados nesta an\xE1lise (ex.: "01", "02").
 
-OBJE\xC7\xD5ES (contorno = seguir o playbook):
-- "Est\xE1 caro / sem budget": valide sem concordar, descubra se \xE9 caixa, prioridade ou retorno, retome causa e impacto, condi\xE7\xF5es oficiais, ajuste a rota se a restri\xE7\xE3o for real.
-- "J\xE1 tenho sistema": investigue uso, integra\xE7\xE3o, ado\xE7\xE3o, visibilidade e o problema n\xE3o resolvido; n\xE3o ataque o concorrente.
-- "Sem tempo para implantar": trate capacidade de execu\xE7\xE3o (quem assume, o que priorizar).
-- "Preciso pensar / falar com s\xF3cio": o que exatamente precisa ser pensado, qual crit\xE9rio falta; inclua o decisor e marque a conversa de decis\xE3o ANTES de encerrar.
-- "Quero testar": o que o teste precisa provar \u2014 hip\xF3tese, prazo, respons\xE1vel, crit\xE9rio.
-- "S\xF3 queria a ferramenta": n\xE3o recuse a porta; entenda o problema por tr\xE1s; se ferramenta resolve, recomende ferramenta.
+PONTOS DE TREINO DESTE CLOSER (apontados pela gestora; corrija ao vivo em "alertas" e "diga"):
+1. Tende a ir para p\xF3s-venda por conforto e a pr\xE9-julgar o bolso do cliente. O diagn\xF3stico decide; quem diz se consegue investir \xE9 o cliente.
+2. Confunde desejo com dor: monitoramento e relat\xF3rio pedidos pelo cliente costumam ser desejo, e desejo pode esperar.
+3. Conclui pelo cliente. A conclus\xE3o tem que vir do cliente: prefira perguntas com exemplos de op\xE7\xF5es.
+4. Antecipa obje\xE7\xE3o que o cliente n\xE3o levantou.
+5. Fechamento fraco e follow-up: nunca termina sem microdecis\xE3o, respons\xE1vel e data/hora concreta encaixada na agenda do cliente.
+6. Ao vender Acelera\xE7\xE3o/Growth, deve deixar claro que exige comprometimento do cliente.
 
-GAPS DESTE CLOSER (apontados pela gestora \u2014 vigie e corrija AO VIVO, via "alertas" e "diga"):
-1. Conforto no p\xF3s-venda e pr\xE9-julgamento de bolso: ele tende a ir para p\xF3s-venda e a supor que o cliente n\xE3o pode pagar Growth. Voc\xEA n\xE3o sabe o que vai vender at\xE9 fazer o diagn\xF3stico. Sempre investigue a via comercial (pergunta-m\xE3e: "Voc\xEA est\xE1 chegando aonde quer chegar? Quer vender mais ou est\xE1 satisfeito com o tamanho atual?"). Quem decide se consegue investir \xE9 o cliente.
-2. Dor x desejo: dor COMERCIAL = perde dinheiro todo dia (urg\xEAncia). P\xF3s-venda = deixa de ganhar (adi\xE1vel). Monitoramento/relat\xF3rio pedidos pelo cliente costumam ser DESEJO \u2014 desejo pode esperar. Reposicione para o que gera receita.
-3. Concluir pelo cliente: ele costuma afirmar a conclus\xE3o ("no fim voc\xEA quer dinheiro, n\xE9?"). A conclus\xE3o tem que vir do cliente. Em "diga", prefira PERGUNTAS que levem o cliente a concluir, com exemplos de op\xE7\xF5es ("\xE9 para gerar proposta mais r\xE1pido, organizar o processo para achar gargalos, ter dados para decidir?"). Se ele concluir pelo cliente, alerte.
-4. N\xE3o antecipar obje\xE7\xE3o que o cliente n\xE3o levantou.
-5. Fechamento fraco e follow-up: nunca deixe a reuni\xE3o acabar sem microdecis\xE3o com respons\xE1vel e DATA/HORA concreta, considerando a agenda que o cliente mencionar. "Manda a proposta" sem checkpoint \xE9 continua\xE7\xE3o.
-6. Ao vender Acelera\xE7\xE3o/Growth, deixe claro que exige comprometimento do cliente (reuni\xF5es, planejamento, cobrar o time).
-7. Condu\xE7\xE3o: conduza com perguntas e escuta; se ele estiver falando demais, monologando ou apresentando antes da dor validada, alerte.
+FOCO COMERCIAL: o closer quer vender os combos com servi\xE7o (Business, Growth, Scale) e as composi\xE7\xF5es com Gest\xE3o de P\xF3s-venda e/ou Acelera\xE7\xE3o Comercial, sempre pela alavanca e pela causa-raiz. Sem ader\xEAncia, n\xE3o force: recomende a rota correta e avise.`;
+var SYSTEM_PROMPT = `${DOUTRINA}
 
-FOCO COMERCIAL: o closer quer vender os COMBOS com servi\xE7o (Business, Growth, Scale) e as composi\xE7\xF5es com Gest\xE3o de P\xF3s-venda e/ou Acelera\xE7\xE3o Comercial. Quando a causa-raiz, o perfil e a capacidade de execu\xE7\xE3o sustentarem, conduza para o combo/composi\xE7\xE3o coerente: ligue o servi\xE7o do combo \xE0 causa-raiz que o cliente validou, mostre o impacto de n\xE3o resolver e pe\xE7a microdecis\xE3o. Se n\xE3o houver ader\xEAncia, n\xE3o force \u2014 recomende a rota correta e avise o closer. Nunca use desconto para compensar diagn\xF3stico fraco.
-
-Se vier "CLOSER MARCOU COMO COBERTO", n\xE3o repita esses itens em falta_cobrir. Se vier "CLOSER CORRIGIU A FICHA", trate esses valores como verdade e n\xE3o os sobrescreva.
-
-Se vier "PEDIDO DO CLOSER", responda DIRETO no campo "resposta" (curto, pronto para usar: o valor oficial, a frase, o contorno) e mantenha os demais campos orientando o fluxo da reuni\xE3o. Sem pedido, "resposta" fica vazio.`;
+${MODO_AO_VIVO}`;
 var CRM_CAMPOS = {
   resultado_desejado: "Resultado desejado",
-  situacao_atual: "Situa\xE7\xE3o atual / gap",
-  dor_literal: "Dor (frase literal)",
-  causa_raiz: "Sintoma \u2192 causa-raiz",
-  impacto: "Impacto e prioridade",
-  alavanca: "Alavanca principal",
-  decisores: "Decisores (presentes / ausentes)",
+  situacao_atual: "Situa\xE7\xE3o atual",
+  dor_literal: "Dor (fala literal)",
+  causa_raiz: "Causa-raiz",
+  impacto: "Impacto",
+  prioridade: "Prioridade",
+  alavanca: "Alavanca",
+  decisores: "Decisor",
   capacidade_execucao: "Capacidade de execu\xE7\xE3o",
+  produto: "Produto",
+  motivo: "Motivo",
   objecao: "Obje\xE7\xE3o",
-  proxima_acao: "Pr\xF3xima a\xE7\xE3o (respons\xE1vel + data)"
+  canal: "Canal",
+  risco: "Risco",
+  proximo_angulo: "Pr\xF3ximo \xE2ngulo",
+  proximo_passo: "Pr\xF3ximo passo",
+  responsavel: "Respons\xE1vel",
+  data: "Data",
+  criterio_perda: "Crit\xE9rio de perda",
+  criterio_reciclagem: "Crit\xE9rio de reciclagem"
 };
+var DIAG_CORE = ["resultado_desejado", "dor_literal", "causa_raiz", "impacto", "prioridade", "alavanca", "decisores", "capacidade_execucao", "produto", "proximo_passo"];
 var MOVIMENTOS = ["Abertura", "Analisar", "Conectar", "Apresenta\xE7\xE3o", "Investimento", "Reativar"];
-var PORTOES = ["Por que ouvir", "Por que se importar", "Por que mudar", "Por que SolarZ", "Por que agora"];
+var PORTOES = ["Por que se importar", "Por que mudar", "Por que SolarZ", "Por que agora"];
+var DOR_ESTAGIOS = ["N\xE3o identificada", "Superficial", "Desconforto", "Priorit\xE1ria"];
+var AVANCOS = ["Em andamento", "Continua\xE7\xE3o", "Avan\xE7o"];
 var str = { type: "string" };
 var list = { type: "array", items: str };
 var obj = (props) => ({
@@ -89,9 +89,18 @@ var COACH_SCHEMA = obj({
   movimento: { type: "string", enum: MOVIMENTOS },
   etapa: str,
   portao: { type: "string", enum: [...PORTOES, "Indefinido"] },
+  estagio_dor: { type: "integer", minimum: 0, maximum: 3 },
+  avanco: { type: "string", enum: AVANCOS },
   urgencia: { type: "string", enum: ["baixa", "media", "alta"] },
+  proximo_passo: str,
+  diga: str,
+  perguntas: list,
+  alertas: list,
+  falta_cobrir: list,
+  info_chave: list,
   sintese: str,
   resposta: str,
+  fontes: list,
   frases_importantes: list,
   objecoes: { type: "array", items: obj({ objecao: str, contorno: str }) },
   temperatura: { type: "integer", minimum: 0, maximum: 100 },
@@ -99,44 +108,38 @@ var COACH_SCHEMA = obj({
   conducao_dica: str,
   temperatura_motivo: str,
   destaque: str,
-  proximo_passo: str,
-  diga: str,
-  perguntas: list,
-  alertas: list,
-  falta_cobrir: list,
-  info_chave: list,
   crm: obj(Object.fromEntries(Object.keys(CRM_CAMPOS).map((k) => [k, str]))),
   rota: obj({ solucao: str, motivo: str, investimento: str })
 });
 var MODOS = {
-  diagnostico: "Diagn\xF3stico Comercial (at\xE9 90 min): diagn\xF3stico ACR completo, recomenda\xE7\xE3o de solu\xE7\xE3o e pr\xF3ximo passo.",
-  ecossistema: "Reuni\xE3o do Ecossistema (at\xE9 60 min): entender ader\xEAncia, conectar o ecossistema ao problema e definir pr\xF3ximo passo. Diagn\xF3stico leve.",
-  followup: "Follow-up / reativa\xE7\xE3o: retomar contexto + causa-raiz + impacto e conseguir microdecis\xE3o com respons\xE1vel e data.",
+  diagnostico: "Diagn\xF3stico Comercial (cerca de 90 min, gera SQL): diagn\xF3stico ACR, recomenda\xE7\xE3o principal e pr\xF3ximo passo com microdecis\xE3o.",
+  ecossistema: "Reuni\xE3o do Ecossistema (cerca de 60 min, n\xE3o \xE9 SQL): ader\xEAncia, conex\xE3o do ecossistema ao problema e pr\xF3ximo passo. Diagn\xF3stico leve.",
+  followup: "Follow-up / reativa\xE7\xE3o: nomear o bloqueio, retomar causa-raiz e impacto, pedir microdecis\xE3o com respons\xE1vel e data, mudar o \xE2ngulo.",
   livre: ""
 };
 function correcoesOficiais(txt) {
   const t = (txt || "").trim();
-  return t ? `CORRE\xC7\xD5ES OFICIAIS (prioridade m\xE1xima \u2014 valem acima de qualquer documento da base):
+  return t ? `CORRE\xC7\xD5ES OFICIAIS (prioridade m\xE1xima, valem acima de qualquer documento da base):
 ${t}` : "";
 }
 function baseDeConhecimento(docs) {
   if (!docs?.length) return "";
   return [
-    "BASE DE CONHECIMENTO (doutrina oficial \u2014 siga \xE0 risca):",
+    "BASE DE CONHECIMENTO (fontes can\xF4nicas da hierarquia):",
     ...docs.map((d) => `<documento nome="${d.name}">
 ${d.content}
 </documento>`)
   ].join("\n\n");
 }
 var ORIGENS = {
-  prevenda: 'Lead NOVO, reuni\xE3o marcada pela pr\xE9-venda. Primeiro contato do closer: revalide interesse (port\xE3o "Por que ouvir") e conduza o diagn\xF3stico desde o in\xEDcio.',
-  avanco: "Reuni\xE3o de AVAN\xC7O marcada pelo pr\xF3prio closer para continuar uma negocia\xE7\xE3o. Retome de onde parou (contexto + causa-raiz + impacto), n\xE3o refa\xE7a o diagn\xF3stico do zero, trate o bloqueio atual e busque microdecis\xE3o com respons\xE1vel e data."
+  prevenda: "Lead NOVO, reuni\xE3o marcada pela pr\xE9-venda. Primeiro contato do closer: revalide o interesse e conduza o diagn\xF3stico desde o in\xEDcio.",
+  avanco: "Reuni\xE3o de AVAN\xC7O marcada pelo pr\xF3prio closer para continuar uma negocia\xE7\xE3o. Nomeie o bloqueio, retome causa-raiz e impacto, n\xE3o refa\xE7a o diagn\xF3stico do zero e busque microdecis\xE3o com respons\xE1vel e data."
 };
 function contextoInicial(setup, leadDocs2 = []) {
   const linhas = [
     "CONTEXTO DA REUNI\xC3O",
     `Origem: ${ORIGENS[setup.origem] || ORIGENS.prevenda}`,
-    `Objetivo do closer: ${setup.objetivo || "(n\xE3o informado \u2014 conduza para uma decis\xE3o ou microdecis\xE3o com respons\xE1vel e data)"}`
+    `Objetivo do closer: ${setup.objetivo || "[DADO N\xC3O INFORMADO] Conduza para microdecis\xE3o com respons\xE1vel e data."}`
   ];
   if (MODOS[setup.modo]) linhas.push(`Tipo de reuni\xE3o: ${MODOS[setup.modo]}`);
   if (setup.comQuem) linhas.push(`Cliente / participantes: ${setup.comQuem}`);
@@ -145,7 +148,7 @@ function contextoInicial(setup, leadDocs2 = []) {
 ${setup.notas}`);
   if (leadDocs2.length) {
     linhas.push(
-      "DOSSI\xCA DO LEAD (conversas, registros e hist\xF3rico \u2014 use para entender perfil, contexto, o que j\xE1 foi dito, obje\xE7\xF5es anteriores e compromissos; preencha o mapa e a ficha com o que j\xE1 se sabe, marcando que veio do hist\xF3rico):",
+      "MATERIAL ENVIADO PELO CLOSER (dossi\xEA do lead: conversas, registros e hist\xF3rico). Comece por ele: perfil, o que j\xE1 foi dito, obje\xE7\xF5es anteriores, compromissos. Fala literal entre aspas; interpreta\xE7\xE3o com [INFER\xCANCIA].",
       ...leadDocs2.map((d) => `<arquivo nome="${d.name}">
 ${d.content}
 </arquivo>`)
@@ -153,25 +156,38 @@ ${d.content}
   }
   return linhas.join("\n");
 }
-var PEDIDO_BRIEFING = 'BRIEFING INICIAL (a reuni\xE3o est\xE1 come\xE7ando, ainda sem fala relevante): com base no contexto e no dossi\xEA, preencha a ficha CRM e o mapa com o que J\xC1 se sabe do lead, monte a linha do racioc\xEDnio com as lacunas, diga em "proximo_passo" como abrir a reuni\xE3o e em "diga" a frase de abertura personalizada; em "perguntas" as 3 primeiras perguntas para fechar as lacunas; em "alertas" riscos vindos do hist\xF3rico (obje\xE7\xF5es anteriores, decisor oculto, promessas feitas). Em "destaque" resuma o perfil do lead em 12 palavras.';
-var PEDIDO_ATA = `A reuni\xE3o acabou. Escreva em Markdown, portugu\xEAs, curto e escane\xE1vel:
+var PEDIDO_BRIEFING = 'MODO PREPARAR (a reuni\xE3o est\xE1 come\xE7ando). Com base no contexto e no material enviado: em "resposta", entregue o PREPARAR em t\xF3picos curtos (contexto; hip\xF3teses de dor e causa com [INFER\xCANCIA]; riscos; 3 a 5 perguntas ACR; obje\xE7\xF5es prov\xE1veis com contorno; avan\xE7o desejado com microdecis\xE3o, respons\xE1vel, canal e data). Preencha a ficha CRM e a s\xEDntese com o que J\xC1 se sabe, marcando lacunas. Em "proximo_passo", como abrir; em "diga", a frase de abertura personalizada; em "alertas", riscos do hist\xF3rico. Em "destaque", o perfil do lead em 12 palavras.';
+var PEDIDO_ATA = `A reuni\xE3o acabou. Entregue a AN\xC1LISE COMPLETA da doutrina em Markdown, em portugu\xEAs, curta e escane\xE1vel, sem travess\xF5es, com exatamente estas se\xE7\xF5es (use "## " em cada t\xEDtulo):
 
-## Resultado da reuni\xE3o
-Classifique: Avan\xE7o (a\xE7\xE3o + respons\xE1vel + data), Continua\xE7\xE3o (inten\xE7\xE3o vaga), Perda ou Reciclagem \u2014 e justifique em 1 linha.
+## 1. Leitura executiva
+Qual reuni\xE3o aconteceu (Diagn\xF3stico Comercial ou Ecossistema) e o resultado em 3 linhas.
+## 2. Evid\xEAncias
+Falas literais do cliente entre aspas que sustentam a leitura. Interpreta\xE7\xF5es com [INFER\xCANCIA].
+## 3. Mapa ACR
+Analisar, Conectar e Reativar: o que foi feito e o que faltou.
+## 4. Est\xE1gio da dor
+0 a 3, com a evid\xEAncia.
+## 5. Degrau da decis\xE3o
+Onde travou e por qu\xEA.
+## 6. Acertos
+## 7. Falhas e gaps
+Inclua os pontos de treino deste closer quando aparecerem, com evid\xEAncia.
+## 8. Sa\xFAde e riscos
+Avan\xE7o real ou continua\xE7\xE3o. Decisor oculto, capacidade de execu\xE7\xE3o, riscos de fechamento.
+## 9. Rota ou produto
+Recomenda\xE7\xE3o principal pela alavanca, motivo e investimento da fonte 1. Alternativa s\xF3 se resolver restri\xE7\xE3o real diferente.
+## 10. Plano de 48 horas
+A\xE7\xF5es com respons\xE1vel, canal e data.
+## 11. Cad\xEAncia e mensagens
+Modo FOLLOW-UP: bloqueio, objetivo de cada toque, canal, data, crit\xE9rio de encerramento e de reciclagem. Inclua a primeira mensagem pronta para WhatsApp (curta, com contexto + causa-raiz + impacto + microdecis\xE3o + data), sob o t\xEDtulo "### Mensagem de follow-up pronta".
+## 12. CRM
+Um item por campo da doutrina: causa-raiz; impacto; prioridade; decisor; capacidade de execu\xE7\xE3o; alavanca; produto; motivo; obje\xE7\xE3o; canal; risco; pr\xF3ximo \xE2ngulo; pr\xF3ximo passo; crit\xE9rio de perda; crit\xE9rio de reciclagem; respons\xE1vel; data. Use [DADO N\xC3O INFORMADO] quando faltar.
+## 13. Decis\xE3o
+Microdecis\xE3o, respons\xE1vel, canal e data.
+## 14. Fontes consultadas
+Arquivos da base usados.
 
-## Registro para o CRM
-Preencha cada campo obrigat\xF3rio do CRM conforme a base (resultado desejado, situa\xE7\xE3o atual e gap, frase literal da dor, sintoma e causa-raiz, impacto e prioridade, est\xE1gio da dor, alavanca principal, solu\xE7\xE3o recomendada e motivo, obje\xE7\xE3o, decisores presentes e ausentes, capacidade de execu\xE7\xE3o, pr\xF3xima a\xE7\xE3o, respons\xE1vel, data e canal, risco, pr\xF3ximo \xE2ngulo, crit\xE9rio de perda ou reciclagem). Use "n\xE3o levantado" quando n\xE3o apareceu.
-
-## S\xEDntese de diagn\xF3stico
-Use a f\xF3rmula de diagn\xF3stico do m\xE9todo.
-
-## Mensagem de follow-up pronta
-F\xF3rmula: contexto + causa-raiz + impacto + microdecis\xE3o + data. Tom de WhatsApp, pronta para copiar. Indique canal e prazo do pr\xF3ximo toque conforme a cad\xEAncia.
-
-## Auditoria do closer
-Checklist do m\xE9todo (Analisar / Conectar / Reativar): o que foi feito, o que faltou. Avalie tamb\xE9m os gaps conhecidos deste closer (conforto no p\xF3s-venda, concluir pelo cliente, antecipar obje\xE7\xE3o, dois caminhos, fechamento e follow-up) com evid\xEAncia da transcri\xE7\xE3o. Nota de condu\xE7\xE3o 0\u201310. Gaps de risco com evid\xEAncia, impacto e corre\xE7\xE3o. 2 acertos e 2 ajustes para a pr\xF3xima.
-
-Use s\xF3 o que aparece na transcri\xE7\xE3o, no contexto e na base. N\xE3o use JSON aqui.`;
+N\xE3o use JSON aqui.`;
 
 // src/coach.js
 var API = "https://generativelanguage.googleapis.com/v1beta/models";
@@ -307,7 +323,7 @@ ${restante.map((l) => `${l.speaker}: ${l.text}`).join("\n")}`);
 var DEMO_SETUP = {
   modo: "diagnostico",
   origem: "prevenda",
-  comQuem: "Solar Exemplo (demonstra\xE7\xE3o) \u2014 Marcos (s\xF3cio)",
+  comQuem: "Solar Exemplo (demonstra\xE7\xE3o), Marcos (s\xF3cio)",
   objetivo: "Validar causa-raiz e sair com microdecis\xE3o + data",
   foco: "Combos com servi\xE7o, se a causa-raiz justificar",
   notas: "Exemplo fict\xEDcio para demonstra\xE7\xE3o."
@@ -336,25 +352,38 @@ var base = {
   crm: {},
   rota: { solucao: "", motivo: "", investimento: "" }
 };
-var crm = (o) => ({
-  resultado_desejado: "",
-  situacao_atual: "",
-  dor_literal: "",
-  causa_raiz: "",
-  impacto: "",
-  alavanca: "",
-  decisores: "",
-  capacidade_execucao: "",
-  objecao: "",
-  proxima_acao: "",
-  ...o
-});
+var CAMPOS = [
+  "resultado_desejado",
+  "situacao_atual",
+  "dor_literal",
+  "causa_raiz",
+  "impacto",
+  "prioridade",
+  "alavanca",
+  "decisores",
+  "capacidade_execucao",
+  "produto",
+  "motivo",
+  "objecao",
+  "canal",
+  "risco",
+  "proximo_angulo",
+  "proximo_passo",
+  "responsavel",
+  "data",
+  "criterio_perda",
+  "criterio_reciclagem"
+];
+var crm = (o) => ({ ...Object.fromEntries(CAMPOS.map((k) => [k, ""])), ...o });
 var DEMO_ANALISES = [
   {
     ...base,
     movimento: "Abertura",
     etapa: "revalidando interesse",
-    portao: "Por que ouvir",
+    portao: "Por que se importar",
+    estagio_dor: 0,
+    avanco: "Em andamento",
+    fontes: ["02", "03", "04"],
     urgencia: "media",
     proximo_passo: "Acolha o pedido de monitoramento e investigue o resultado que ele quer.",
     diga: "Marcos, relat\xF3rio pro cliente ajuda em qu\xEA no seu resultado: vender mais, reter, ganhar indica\xE7\xE3o?",
@@ -367,13 +396,16 @@ var DEMO_ANALISES = [
     conducao: 7,
     conducao_dica: "Boa abertura; agora investigue o resultado",
     destaque: "Chegou pedindo monitoramento (desejo, n\xE3o dor)",
-    crm: crm({ situacao_atual: "Busca monitoramento e relat\xF3rio para clientes" })
+    crm: crm({ situacao_atual: "Busca monitoramento e relat\xF3rio para clientes [INFER\xCANCIA] desejo, n\xE3o dor" })
   },
   {
     ...base,
     movimento: "Analisar",
     etapa: "aprofundando causa",
     portao: "Por que se importar",
+    estagio_dor: 2,
+    avanco: "Em andamento",
+    fontes: ["02", "03"],
     urgencia: "alta",
     proximo_passo: "Aprofunde a demora da proposta: \xE9 a causa que mais derruba a meta.",
     diga: "E quando a proposta demora tr\xEAs dias, o que acontece com esse cliente?",
@@ -395,6 +427,9 @@ var DEMO_ANALISES = [
     movimento: "Conectar",
     etapa: "validando a s\xEDntese",
     portao: "Por que mudar",
+    estagio_dor: 3,
+    avanco: "Em andamento",
+    fontes: ["02", "03"],
     urgencia: "alta",
     proximo_passo: "Devolva a s\xEDntese e deixe ele concluir que o problema \xE9 o processo comercial.",
     diga: "Deixa eu ver se entendi: voc\xEAs querem 12 por m\xEAs, est\xE3o em 6, e cada proposta lenta vira venda do concorrente. O que voc\xEA acha que est\xE1 por tr\xE1s disso?",
@@ -409,21 +444,24 @@ var DEMO_ANALISES = [
     conducao: 8,
     conducao_dica: "Impacto veio da boca dele",
     destaque: "Impacto: ~4 vendas perdidas/m\xEAs (~R$ 100 mil)",
-    crm: crm({ causa_raiz: "Sem processo nem gest\xE3o comercial (WhatsApp individual, ningu\xE9m cobra)", impacto: "~4 vendas/m\xEAs perdidas, ~R$ 100 mil" })
+    crm: crm({ causa_raiz: "Sem processo nem gest\xE3o comercial (WhatsApp individual, ningu\xE9m cobra)", impacto: "~4 vendas/m\xEAs perdidas, ~R$ 100 mil [VALIDAR]", prioridade: "Alta: meta de vendas abaixo do plano" })
   },
   {
     ...base,
     movimento: "Investimento",
     etapa: "tratando obje\xE7\xE3o de pre\xE7o",
     portao: "Por que agora",
+    estagio_dor: 3,
+    avanco: "Continua\xE7\xE3o",
+    fontes: ["01", "02"],
     urgencia: "alta",
-    proximo_passo: "Descubra se o bloqueio \xE9 caixa, prioridade ou retorno; traga o s\xF3cio para a decis\xE3o.",
-    diga: "Marcos, antes do valor: o que pesa mais pra voc\xEA, o caixa deste m\xEAs ou a d\xFAvida se vai retornar?",
+    proximo_passo: "Pergunte quanto cabe no caixa antes de qualquer desconto e traga o s\xF3cio para a decis\xE3o.",
+    diga: "Marcos, pra eu te mostrar o caminho certo: quanto cabe no caixa por m\xEAs hoje?",
     perguntas: ["O Paulo consegue entrar numa conversa esta semana?"],
-    alertas: ["N\xE3o ofere\xE7a desconto para compensar.", "Decisor oculto: Paulo (financeiro)."],
+    alertas: ["Pre\xE7o travado: caixa, depois descer de plano, s\xF3 depois desconto.", "Decisor oculto: Paulo (financeiro).", '"Vou ver com meu s\xF3cio" sem checkpoint \xE9 continua\xE7\xE3o.'],
     falta_cobrir: ["Microdecis\xE3o + respons\xE1vel + data"],
     objecoes: [
-      { objecao: "T\xE1 caro, n\xE3o sei se cabe agora", contorno: "Entendo. Voc\xEA perdeu uns R$ 100 mil m\xEAs passado com proposta lenta. O que pesa mais: o caixa deste m\xEAs ou a d\xFAvida se vai retornar?" },
+      { objecao: "T\xE1 caro, n\xE3o sei se cabe agora", contorno: "Entendo. Voc\xEA perdeu uns R$ 100 mil m\xEAs passado com proposta lenta. Quanto cabe no caixa por m\xEAs hoje, pra eu ajustar a rota sem perder o que resolve a causa?" },
       { objecao: "Preciso ver com meu s\xF3cio", contorno: "Faz todo sentido. O que o Paulo vai querer ver para decidir? Vamos marcar com ele junto ainda esta semana?" }
     ],
     sintese: "O cliente quer 12 projetos/m\xEAs, mas hoje est\xE1 em 6. Ele percebe demora na proposta, por\xE9m a causa priorit\xE1ria \xE9 a falta de processo e gest\xE3o comercial. Isso provoca perda de ~R$ 100 mil/m\xEAs. Portanto, a solu\xE7\xE3o \xE9 o Growth, desde que [o Paulo valide e o Marcos assuma as reuni\xF5es].",
@@ -433,13 +471,16 @@ var DEMO_ANALISES = [
     conducao_dica: "Traga o Paulo antes de falar de desconto",
     destaque: "Obje\xE7\xF5es: pre\xE7o e s\xF3cio financeiro",
     rota: { solucao: "Growth (Acelera\xE7\xE3o Comercial inclusa)", motivo: "Causa em processo e gest\xE3o comercial", investimento: "Anual parcelado R$ 5.599,20/m\xEAs (pol\xEDtica)" },
-    crm: crm({ decisores: "Marcos (s\xF3cio) presente; Paulo (financeiro) ausente", objecao: "Pre\xE7o / precisa do s\xF3cio" })
+    crm: crm({ decisores: "Marcos (s\xF3cio) presente; Paulo (financeiro) ausente", objecao: "Pre\xE7o; precisa do s\xF3cio", produto: "Growth", motivo: "Causa em processo e gest\xE3o comercial" })
   },
   {
     ...base,
     movimento: "Reativar",
     etapa: "microdecis\xE3o fechada",
     portao: "Por que agora",
+    estagio_dor: 3,
+    avanco: "Avan\xE7o",
+    fontes: ["02", "05"],
     urgencia: "baixa",
     proximo_passo: "Confirme por escrito: quinta 15h com Marcos e Paulo, pauta e o que o Paulo precisa ver.",
     diga: "Combinado, quinta \xE0s 15h com voc\xEA e o Paulo. Vou levar o c\xE1lculo das vendas perdidas para ele ver.",
@@ -453,28 +494,67 @@ var DEMO_ANALISES = [
     conducao_dica: "Fechou com data, hora e decisor",
     destaque: "Avan\xE7o: quinta 15h com Marcos e Paulo",
     rota: { solucao: "Growth (Acelera\xE7\xE3o Comercial inclusa)", motivo: "Causa em processo e gest\xE3o comercial", investimento: "Anual parcelado R$ 5.599,20/m\xEAs (pol\xEDtica)" },
-    crm: crm({ proxima_acao: "Reuni\xE3o de decis\xE3o quinta 15h \u2014 Marcos + Paulo (respons\xE1vel: closer)" })
+    crm: crm({ proximo_passo: "Reuni\xE3o de decis\xE3o com Marcos e Paulo (Meet)", responsavel: "Closer", data: "Quinta 15h", canal: "Google Meet", proximo_angulo: "C\xE1lculo das vendas perdidas para o Paulo", criterio_perda: "Paulo veta e n\xE3o h\xE1 gatilho futuro", criterio_reciclagem: "Revis\xE3o or\xE7ament\xE1ria com data" })
   }
 ];
-var DEMO_ATA = `## Resultado da reuni\xE3o
-**Avan\xE7o** \u2014 reuni\xE3o de decis\xE3o marcada para quinta \xE0s 15h com Marcos e Paulo.
+var DEMO_ATA = `## 1. Leitura executiva
+Diagn\xF3stico Comercial. Marcos chegou pedindo monitoramento, mas a dor \xE9 comercial: fecha 6 projetos por m\xEAs com meta de 12. Avan\xE7o real: reuni\xE3o de decis\xE3o com o s\xF3cio marcada.
 
-## Registro para o CRM
-- **Resultado desejado:** sair de 6 para 12 projetos/m\xEAs
-- **Frase literal da dor:** "a proposta demora tr\xEAs dias pra sair"
+## 2. Evid\xEAncias
+- "a proposta demora tr\xEAs dias pra sair"
+- "perdi uns quatro assim, cada um de uns 25 mil"
+- "cada um faz do seu jeito no WhatsApp"
+- [INFER\xCANCIA] O pedido de monitoramento \xE9 desejo, n\xE3o causa-raiz.
+
+## 3. Mapa ACR
+- **Analisar:** resultado, situa\xE7\xE3o e causa levantados. Impacto veio do pr\xF3prio cliente.
+- **Conectar:** s\xEDntese validada. Rota Growth pela alavanca de convers\xE3o.
+- **Reativar:** microdecis\xE3o com respons\xE1vel e data.
+
+## 4. Est\xE1gio da dor
+**3**: necessidade verbalizada e priorit\xE1ria ("o problema \xE9 o comercial").
+
+## 5. Degrau da decis\xE3o
+**Por que agora**: travou no caixa e no s\xF3cio financeiro.
+
+## 6. Acertos
+- Pergunta-m\xE3e trouxe a dor comercial.
+- Deixou o cliente quantificar o impacto.
+
+## 7. Falhas e gaps
+- Decisor financeiro s\xF3 apareceu no fim.
+- Capacidade de execu\xE7\xE3o n\xE3o confirmada.
+
+## 8. Sa\xFAde e riscos
+Avan\xE7o real (microdecis\xE3o, respons\xE1vel e data). Risco: Paulo vetar por caixa.
+
+## 9. Rota ou produto
+**Growth** (Acelera\xE7\xE3o Comercial inclusa), pela alavanca de convers\xE3o. Investimento conforme a fonte 01 na condi\xE7\xE3o escolhida.
+
+## 10. Plano de 48 horas
+- Hoje: enviar confirma\xE7\xE3o da reuni\xE3o (closer, WhatsApp).
+- Quarta: preparar c\xE1lculo das vendas perdidas (closer).
+
+## 11. Cad\xEAncia e mensagens
+Bloqueio: caixa e s\xF3cio. Objetivo do toque: confirmar a reuni\xE3o de quinta.
+
+### Mensagem de follow-up pronta
+Marcos, obrigado pela conversa. A meta de 12 projetos trava na proposta lenta e na falta de processo comercial: foram uns 4 projetos perdidos m\xEAs passado. Confirmado quinta \xE0s 15h com voc\xEA e o Paulo. Levo o c\xE1lculo do impacto pra voc\xEAs decidirem o caminho.
+
+## 12. CRM
 - **Causa-raiz:** sem processo nem gest\xE3o comercial
-- **Impacto:** ~4 vendas/m\xEAs perdidas (~R$ 100 mil)
-- **Solu\xE7\xE3o recomendada:** Growth (Acelera\xE7\xE3o Comercial inclusa)
-- **Decisores:** Marcos presente; Paulo (financeiro) ausente
-- **Pr\xF3xima a\xE7\xE3o:** quinta 15h, Marcos + Paulo
+- **Impacto:** ~4 vendas por m\xEAs, ~R$ 100 mil [VALIDAR]
+- **Decisor:** Marcos presente; Paulo ausente
+- **Capacidade de execu\xE7\xE3o:** [DADO N\xC3O INFORMADO]
+- **Pr\xF3ximo passo:** reuni\xE3o de decis\xE3o
+- **Respons\xE1vel:** closer
+- **Data:** quinta 15h
 
-## Mensagem de follow-up pronta
-Marcos, obrigado pela conversa! Ficou claro que a meta de 12 projetos/m\xEAs est\xE1 travando na velocidade da proposta e na falta de processo comercial (foram ~4 vendas perdidas no m\xEAs passado). Confirmado quinta \xE0s 15h com voc\xEA e o Paulo: levo o c\xE1lculo do impacto e o plano do Growth para voc\xEAs decidirem. At\xE9 l\xE1!
+## 13. Decis\xE3o
+Reuni\xE3o de decis\xE3o com Marcos e Paulo, quinta \xE0s 15h, pelo Google Meet. Respons\xE1vel: closer.
 
-## Auditoria do closer
-- **Acertos:** usou a pergunta-m\xE3e e chegou na dor comercial; deixou o cliente quantificar o impacto.
-- **Ajustes:** antecipe o decisor financeiro logo na abertura; confirme a capacidade de execu\xE7\xE3o.
-- **Nota de condu\xE7\xE3o:** 8/10`;
+## 14. Fontes consultadas
+01, 02, 03, 05 (exemplo).`;
 var DemoCoach = class {
   constructor() {
     this.busy = false;
@@ -554,7 +634,8 @@ var DEFAULTS = {
 };
 var FOCO_PADRAO = "Combos com servi\xE7o (Business, Growth, Scale) ou composi\xE7\xF5es com P\xF3s-venda / Acelera\xE7\xE3o, se a causa-raiz justificar";
 var MODO_NOME = { diagnostico: "Diagn\xF3stico Comercial", ecossistema: "Reuni\xE3o do Ecossistema", followup: "Follow-up", livre: "Livre" };
-var N_CRM = Object.keys(CRM_CAMPOS).length;
+var N_CRM = DIAG_CORE.length;
+var N_FICHA = Object.keys(CRM_CAMPOS).length;
 var NEW_MS = 12e3;
 var BRANCHES = {
   resultado: { t: "Resultado desejado", side: "right" },
@@ -641,16 +722,28 @@ function bump(id) {
   k.classList.add("bump");
 }
 var NUM_RE = /(R\$\s?\d+(?:[.,]\d+)*(?:\s?(?:mil|milhões|milhão|k)\b)?|\d+(?:[.,]\d+)*(?:\s?(?:%|mil\b|milhões\b|milhão\b|k\b))?)/gi;
+var EV_RE = /(\[(?:INFERÊNCIA|INFERENCIA|VALIDAR|DADO NÃO INFORMADO|DADO NAO INFORMADO|CONTRADIÇÃO DE FONTE|CONTRADICAO DE FONTE)\])/i;
+var EV_CLASS = (t) => /INFER/i.test(t) ? "ev-inf" : /VALIDAR/i.test(t) ? "ev-val" : /CONTRADI/i.test(t) ? "ev-con" : "ev-dni";
 function hl(node, text) {
   node.textContent = "";
-  String(text ?? "").split(NUM_RE).forEach((part, i) => {
-    if (!part) return;
-    if (i % 2 === 1) {
-      const m = document.createElement("mark");
-      m.className = "num";
-      m.textContent = part;
-      node.append(m);
-    } else node.append(document.createTextNode(part));
+  String(text ?? "").split(EV_RE).forEach((chunk, j) => {
+    if (!chunk) return;
+    if (j % 2 === 1) {
+      const t = document.createElement("span");
+      t.className = `ev ${EV_CLASS(chunk)}`;
+      t.textContent = chunk.slice(1, -1);
+      node.append(t);
+      return;
+    }
+    chunk.split(NUM_RE).forEach((part, i) => {
+      if (!part) return;
+      if (i % 2 === 1) {
+        const m = document.createElement("mark");
+        m.className = "num";
+        m.textContent = part;
+        node.append(m);
+      } else node.append(document.createTextNode(part));
+    });
   });
   return node;
 }
@@ -670,6 +763,7 @@ function setText(id, v) {
 }
 MOVIMENTOS.forEach((t) => $("movimentos").append(el("li", "", t)));
 PORTOES.forEach((t) => $("portoes").append(el("li", "", t)));
+DOR_ESTAGIOS.forEach((t, i) => $("dorSteps").append(el("li", "", `${i} ${t}`)));
 document.querySelectorAll(".tabs").forEach((bar) => bar.addEventListener("click", (e) => {
   const btn = e.target.closest(".tab");
   if (!btn) return;
@@ -1069,16 +1163,16 @@ function updateMapFrom(d) {
     l.done = !abertas.includes(l.text.toLowerCase());
   });
   if (d.rota?.solucao) addLeaf("rota", d.rota.solucao, d.rota.investimento ? d.rota.investimento : "");
-  addLeaf("proximos", c.proxima_acao);
+  addLeaf("proximos", [c.proximo_passo, c.responsavel && `resp.: ${c.responsavel}`, c.data].filter(Boolean).join(" \xB7 "));
   renderMap();
 }
 function updateKpis() {
-  const n = Object.values(state.crm).filter(Boolean).length;
+  const n = DIAG_CORE.filter((k) => state.crm[k]).length;
   if (setText("diagVal", `${n}/${N_CRM}`) && n) bump("diagVal");
   setRing("diagRing", n / N_CRM, n >= 8 ? "var(--ok)" : "var(--primary)");
   $("diagRingVal").textContent = `${Math.round(n / N_CRM * 100)}%`;
-  $("crmBadge").textContent = `${n}/${N_CRM}`;
-  const faltam = Object.entries(CRM_CAMPOS).filter(([k]) => !state.crm[k]).map(([, v]) => v.split(/[(/]/)[0].trim());
+  $("crmBadge").textContent = `${Object.values(state.crm).filter(Boolean).length}/${N_FICHA}`;
+  const faltam = DIAG_CORE.filter((k) => !state.crm[k]).map((k) => CRM_CAMPOS[k].split(/[(/]/)[0].trim());
   $("diagFalta").textContent = faltam.length ? `falta: ${faltam.slice(0, 3).join(", ")}${faltam.length > 3 ? "\u2026" : ""}` : "completo \u2714";
   const me = state.talk["Voc\xEA"] || 0;
   const total = Object.values(state.talk).reduce((a, b) => a + b, 0);
@@ -1324,9 +1418,12 @@ function beginSession(settings, setup, coach, source) {
   });
   $("tempBand").textContent = "";
   $("tempBand").className = "band";
-  [...$("movimentos").children, ...$("portoes").children].forEach((li) => {
+  [...$("movimentos").children, ...$("portoes").children, ...$("dorSteps").children].forEach((li) => {
     li.className = "";
   });
+  $("avancoPill").textContent = "";
+  $("avancoPill").className = "avpill";
+  $("fontesHero").textContent = "";
   $("sintese").textContent = "Aguardando a conversa\u2026";
   $("ansBox").hidden = true;
   renderCrm();
@@ -1590,6 +1687,18 @@ function render(d, pedido) {
   });
   markSteps("movimentos", MOVIMENTOS, d.movimento, false);
   markSteps("portoes", PORTOES, d.portao, true);
+  if (Number.isInteger(d.estagio_dor)) {
+    [...$("dorSteps").children].forEach((li, i) => {
+      li.className = i === d.estagio_dor ? `cur dor${i}` : i < d.estagio_dor ? "done" : "";
+    });
+  }
+  if (d.avanco) {
+    $("avancoPill").textContent = d.avanco;
+    $("avancoPill").className = `avpill av-${d.avanco === "Avan\xE7o" ? "ok" : d.avanco === "Continua\xE7\xE3o" ? "warn" : "neu"}`;
+  }
+  const fontes = (d.fontes || []).filter(Boolean);
+  $("fontesHero").textContent = fontes.length ? `fontes: ${fontes.join(" \xB7 ")}` : "";
+  $("ansFontes").textContent = fontes.length ? `Fontes consultadas: ${fontes.join(" \xB7 ")}` : "";
   $("etapa").textContent = d.etapa || "";
   renderSintese(d.sintese);
   if (Number.isFinite(d.temperatura)) {

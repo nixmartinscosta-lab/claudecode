@@ -1,7 +1,7 @@
 import { Coach } from './coach.js';
 import { DemoCoach, DEMO_SETUP, DEMO_SCRIPT } from './demo.js';
 import { acharPolitica, lerPrecos } from './precos.js';
-import { CRM_CAMPOS, MOVIMENTOS, PORTOES, PEDIDO_BRIEFING } from './prompts.js';
+import { CRM_CAMPOS, DIAG_CORE, MOVIMENTOS, PORTOES, DOR_ESTAGIOS, PEDIDO_BRIEFING } from './prompts.js';
 
 const $ = (id) => document.getElementById(id);
 const SETUP_FIELDS = ['modo', 'comQuem', 'objetivo', 'foco', 'notas'];
@@ -12,7 +12,8 @@ const DEFAULTS = {
 };
 const FOCO_PADRAO = 'Combos com serviço (Business, Growth, Scale) ou composições com Pós-venda / Aceleração, se a causa-raiz justificar';
 const MODO_NOME = { diagnostico: 'Diagnóstico Comercial', ecossistema: 'Reunião do Ecossistema', followup: 'Follow-up', livre: 'Livre' };
-const N_CRM = Object.keys(CRM_CAMPOS).length;
+const N_CRM = DIAG_CORE.length;
+const N_FICHA = Object.keys(CRM_CAMPOS).length;
 const NEW_MS = 12000;
 
 // Mapa: lado direito = diagnóstico (A do ACR), lado esquerdo = decisão (C/R).
@@ -55,12 +56,18 @@ function setRing(id, frac, color) {
 function bump(id) { const k = $(id).closest('.kpi'); k.classList.remove('bump'); void k.offsetWidth; k.classList.add('bump'); }
 // Escreve o texto destacando números, valores e percentuais (marca-texto).
 const NUM_RE = /(R\$\s?\d+(?:[.,]\d+)*(?:\s?(?:mil|milhões|milhão|k)\b)?|\d+(?:[.,]\d+)*(?:\s?(?:%|mil\b|milhões\b|milhão\b|k\b))?)/gi;
+const EV_RE = /(\[(?:INFERÊNCIA|INFERENCIA|VALIDAR|DADO NÃO INFORMADO|DADO NAO INFORMADO|CONTRADIÇÃO DE FONTE|CONTRADICAO DE FONTE)\])/i;
+const EV_CLASS = (t) => (/INFER/i.test(t) ? 'ev-inf' : /VALIDAR/i.test(t) ? 'ev-val' : /CONTRADI/i.test(t) ? 'ev-con' : 'ev-dni');
 function hl(node, text) {
   node.textContent = '';
-  String(text ?? '').split(NUM_RE).forEach((part, i) => {
-    if (!part) return;
-    if (i % 2 === 1) { const m = document.createElement('mark'); m.className = 'num'; m.textContent = part; node.append(m); }
-    else node.append(document.createTextNode(part));
+  String(text ?? '').split(EV_RE).forEach((chunk, j) => {
+    if (!chunk) return;
+    if (j % 2 === 1) { const t = document.createElement('span'); t.className = `ev ${EV_CLASS(chunk)}`; t.textContent = chunk.slice(1, -1); node.append(t); return; }
+    chunk.split(NUM_RE).forEach((part, i) => {
+      if (!part) return;
+      if (i % 2 === 1) { const m = document.createElement('mark'); m.className = 'num'; m.textContent = part; node.append(m); }
+      else node.append(document.createTextNode(part));
+    });
   });
   return node;
 }
@@ -71,6 +78,7 @@ function setText(id, v) { if ($(id).textContent !== String(v)) { $(id).textConte
 // ================= montagem =================
 MOVIMENTOS.forEach((t) => $('movimentos').append(el('li', '', t)));
 PORTOES.forEach((t) => $('portoes').append(el('li', '', t)));
+DOR_ESTAGIOS.forEach((t, i) => $('dorSteps').append(el('li', '', `${i} ${t}`)));
 
 document.querySelectorAll('.tabs').forEach((bar) => bar.addEventListener('click', (e) => {
   const btn = e.target.closest('.tab'); if (!btn) return;
@@ -340,18 +348,18 @@ function updateMapFrom(d) {
   (d.objecoes || []).forEach((o) => addLeaf('objecoes', o.objecao, o.contorno));
   (state.map.objecoes || []).forEach((l) => { l.done = !abertas.includes(l.text.toLowerCase()); });
   if (d.rota?.solucao) addLeaf('rota', d.rota.solucao, d.rota.investimento ? d.rota.investimento : '');
-  addLeaf('proximos', c.proxima_acao);
+  addLeaf('proximos', [c.proximo_passo, c.responsavel && `resp.: ${c.responsavel}`, c.data].filter(Boolean).join(' · '));
   renderMap();
 }
 
 // ================= indicadores =================
 function updateKpis() {
-  const n = Object.values(state.crm).filter(Boolean).length;
+  const n = DIAG_CORE.filter((k) => state.crm[k]).length;
   if (setText('diagVal', `${n}/${N_CRM}`) && n) bump('diagVal');
   setRing('diagRing', n / N_CRM, n >= 8 ? 'var(--ok)' : 'var(--primary)');
   $('diagRingVal').textContent = `${Math.round((n / N_CRM) * 100)}%`;
-  $('crmBadge').textContent = `${n}/${N_CRM}`;
-  const faltam = Object.entries(CRM_CAMPOS).filter(([k]) => !state.crm[k]).map(([, v]) => v.split(/[(/]/)[0].trim());
+  $('crmBadge').textContent = `${Object.values(state.crm).filter(Boolean).length}/${N_FICHA}`;
+  const faltam = DIAG_CORE.filter((k) => !state.crm[k]).map((k) => CRM_CAMPOS[k].split(/[(/]/)[0].trim());
   $('diagFalta').textContent = faltam.length ? `falta: ${faltam.slice(0, 3).join(', ')}${faltam.length > 3 ? '…' : ''}` : 'completo ✔';
 
   const me = state.talk['Você'] || 0;
@@ -541,7 +549,8 @@ function beginSession(settings, setup, coach, source) {
   ['tempVal', 'condVal'].forEach((id) => { $(id).textContent = '—'; });
   ['tempMotivo', 'condDica', 'tempTrend', 'condTrend', 'etapa'].forEach((id) => { $(id).textContent = ''; });
   ['tempRing', 'condRing', 'diagRing'].forEach((r) => setRing(r, 0)); ['tempRingVal', 'condRingVal'].forEach((r) => { $(r).textContent = '—'; }); $('tempBand').textContent = ''; $('tempBand').className = 'band';
-  [...$('movimentos').children, ...$('portoes').children].forEach((li) => { li.className = ''; });
+  [...$('movimentos').children, ...$('portoes').children, ...$('dorSteps').children].forEach((li) => { li.className = ''; });
+  $('avancoPill').textContent = ''; $('avancoPill').className = 'avpill'; $('fontesHero').textContent = '';
   $('sintese').textContent = 'Aguardando a conversa…';
   $('ansBox').hidden = true;
   renderCrm(); renderMem(); renderMap(); updateKpis(); showContext();
@@ -735,6 +744,13 @@ function render(d, pedido) {
 
   markSteps('movimentos', MOVIMENTOS, d.movimento, false);
   markSteps('portoes', PORTOES, d.portao, true);
+  if (Number.isInteger(d.estagio_dor)) {
+    [...$('dorSteps').children].forEach((li, i) => { li.className = i === d.estagio_dor ? `cur dor${i}` : i < d.estagio_dor ? 'done' : ''; });
+  }
+  if (d.avanco) { $('avancoPill').textContent = d.avanco; $('avancoPill').className = `avpill av-${d.avanco === 'Avanço' ? 'ok' : d.avanco === 'Continuação' ? 'warn' : 'neu'}`; }
+  const fontes = (d.fontes || []).filter(Boolean);
+  $('fontesHero').textContent = fontes.length ? `fontes: ${fontes.join(' · ')}` : '';
+  $('ansFontes').textContent = fontes.length ? `Fontes consultadas: ${fontes.join(' · ')}` : '';
   $('etapa').textContent = d.etapa || '';
   renderSintese(d.sintese);
 
