@@ -18,7 +18,7 @@
   <span id="sigPill" class="sigpill" hidden title="Se o Mentor está recebendo a conversa"><i></i><span id="sigTxt">Ouvindo</span></span>
   <div class="who"><span id="clienteTop" class="cliente">Nova reunião</span><span id="modoTop" class="muted small"></span></div>
   <span class="spacer"></span>
-  <span class="kbd-hint muted small"><kbd>A</kbd> ajuda <kbd>/</kbd> pergunta <kbd>C</kbd> copia <kbd>M</kbd> mapa</span>
+  <span class="kbd-hint muted small"><kbd>A</kbd> ajuda <kbd>/</kbd> pergunta <kbd>C</kbd> copia <kbd>M</kbd> mapa <kbd>P</kbd> preços</span>
   <button id="btnSetup" class="ghost">Preparação</button>
   <a href="options.html" target="_blank" class="ghost btnlink" title="Configurações">⚙</a>
   <button id="btnDemo" class="ghost" title="Simula uma reunião de exemplo, sem Meet e sem API">Ver demonstração</button>
@@ -78,6 +78,12 @@
 <main class="layout">
   <!-- ================= ESQUERDA: AÇÃO ================= -->
   <aside class="col col-left">
+    <div id="resumeBox" class="card resume" hidden>
+      <div class="card-h"><span class="label">Reunião interrompida</span></div>
+      <p id="resumeTxt" class="resume-txt"></p>
+      <div class="resume-act"><button id="btnResume" class="primary">Retomar reunião</button><button id="btnDiscard">Descartar</button></div>
+    </div>
+
     <div id="setupBox" class="card setup">
       <div class="card-h"><h2>Preparação (30 s)</h2><span id="kbInfo" class="muted small"></span></div>
       <div id="ready" class="ready" aria-live="polite"></div>
@@ -184,7 +190,8 @@
         <button class="tab active" data-tab="tMapa">Mapa</button>
         <button class="tab" data-tab="tCrm">Ficha CRM <span id="crmBadge" class="badge">0/10</span></button>
         <button class="tab" data-tab="tMem">Memória <span id="memCount" class="badge" hidden></span></button>
-        <button class="tab" data-tab="tTimeline">Linha do tempo <span id="tlCount" class="badge" hidden></span></button>
+        <button class="tab" data-tab="tPrecos">Preços</button>
+        <button class="tab" data-tab="tTimeline">Linha <span id="tlCount" class="badge" hidden></span></button>
       </div>
         <div class="viewseg" id="viewSeg" role="group" aria-label="Visualização do mapa"><button data-v="quadro" class="on">Quadro</button><button data-v="mapa">Mapa</button></div>
       </div>
@@ -220,6 +227,9 @@
       <div id="tMem" class="tabpane" hidden>
         <div class="muted small pad">☆ fixa no topo · clique copia</div>
         <ul id="memoria" class="mem"></ul>
+      </div>
+      <div id="tPrecos" class="tabpane" hidden>
+        <div id="precosBox" class="precos"></div>
       </div>
       <div id="tTimeline" class="tabpane" hidden>
         <ol id="timeline" class="timeline"></ol>

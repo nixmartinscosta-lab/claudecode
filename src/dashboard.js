@@ -1,5 +1,6 @@
 import { Coach } from './coach.js';
 import { DemoCoach, DEMO_SETUP, DEMO_SCRIPT } from './demo.js';
+import { acharPolitica, lerPrecos } from './precos.js';
 import { CRM_CAMPOS, MOVIMENTOS, PORTOES, PEDIDO_BRIEFING } from './prompts.js';
 
 const $ = (id) => document.getElementById(id);
@@ -75,6 +76,7 @@ document.querySelectorAll('.tabs').forEach((bar) => bar.addEventListener('click'
   bar.querySelectorAll('.tab').forEach((b) => { b.classList.toggle('active', b === btn); $(b.dataset.tab).hidden = b !== btn; });
   
   if (btn.dataset.tab === 'tTimeline') { $('tlCount').hidden = true; $('tlCount').textContent = ''; }
+  $('viewSeg').hidden = btn.dataset.tab !== 'tMapa';
   if (btn.dataset.tab === 'tMapa') requestAnimationFrame(() => { fitIfAuto(); drawLinks(); });
 }));
 
@@ -468,29 +470,9 @@ $('btnStart').onclick = async () => {
     leadDocs = []; saveLead(); chrome.storage.local.remove('leadOwner');
   }
   $('btnStart').disabled = true;
-  try {
-    if (settings.source === 'meet') {
-      const tab = await findMeetTab();
-      if (!tab) throw new Error('Não achei nenhuma aba do Google Meet aberta. Entre na sala e tente de novo.');
-      state.meetTabId = tab.id;
-      try {
-        await chrome.tabs.sendMessage(tab.id, { target: 'meet', type: 'start' });
-      } catch {
-        await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['meet.js'] });
-        await chrome.tabs.sendMessage(tab.id, { target: 'meet', type: 'start' });
-      }
-      setStatus('Lendo as legendas do Meet. Se nada aparecer, aperte "c" no Meet (legendas em Português).', 'ok');
-    } else {
-      setStatus('Conectando ao áudio da reunião…');
-      const res = await chrome.runtime.sendMessage({ target: 'background', type: 'start-capture', settings });
-      if (res?.error) throw new Error(`${res.error} (Dica: vá na aba da reunião e clique no ícone da extensão.)`);
-    }
-  } catch (e) {
-    setStatus(e.message, 'error');
-    $('btnStart').disabled = false;
-    return;
-  }
+  const ok = await startCapture(settings);
   $('btnStart').disabled = false;
+  if (!ok) return;
 
   beginSession(settings, setup, new Coach(settings, setup, stored.docs || [], leadDocs), settings.source);
 };
@@ -512,9 +494,36 @@ $('btnStop').onclick = async () => {
     renderAta(state.ataMd);
     $('ataOverlay').hidden = false;
     if (state.source !== 'demo') saveHistory();
+    chrome.storage.local.remove('sessao');
     setStatus(leadDocs.length ? '📂 O dossiê deste lead continua carregado — em Preparação, “limpar dossiê” antes do próximo lead.' : '', 'warn');
   } catch (e) { setStatus(`Erro ao gerar ata: ${e.message}`, 'error'); }
 };
+
+// Liga a fonte da conversa (legendas do Meet ou áudio). Retorna false se falhar.
+async function startCapture(settings) {
+  try {
+    if (settings.source === 'meet') {
+      const tab = await findMeetTab();
+      if (!tab) throw new Error('Não achei nenhuma aba do Google Meet aberta. Entre na sala e tente de novo.');
+      state.meetTabId = tab.id;
+      try {
+        await chrome.tabs.sendMessage(tab.id, { target: 'meet', type: 'start' });
+      } catch {
+        await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['meet.js'] });
+        await chrome.tabs.sendMessage(tab.id, { target: 'meet', type: 'start' });
+      }
+      setStatus('Lendo as legendas do Meet. Se nada aparecer, aperte "c" no Meet (legendas em Português).', 'ok');
+    } else {
+      setStatus('Conectando ao áudio da reunião…');
+      const res = await chrome.runtime.sendMessage({ target: 'background', type: 'start-capture', settings });
+      if (res?.error) throw new Error(`${res.error} (Dica: vá na aba da reunião e clique no ícone da extensão.)`);
+    }
+  } catch (e) {
+    setStatus(e.message, 'error');
+    return false;
+  }
+  return true;
+}
 
 // Começa a sessão (reunião real ou demonstração) com o painel zerado.
 function beginSession(settings, setup, coach, source) {
@@ -540,7 +549,7 @@ function beginSession(settings, setup, coach, source) {
   $('btnStart').hidden = true; $('btnDemo').hidden = true; $('btnStop').hidden = false; $('dot').classList.add('on'); $('livePill').classList.add('on'); $('liveTag').textContent = 'AO VIVO';
   addTimeline(setup.origem === 'avanco' ? 'Reunião de avanço iniciada' : 'Reunião iniciada (lead novo)', 'Abertura', 'baixa');
   // Com dossiê ou notas: briefing imediato, o mapa já começa preenchido.
-  if (source !== 'demo' && (leadDocs.length || setup.notas)) {
+  if (source !== 'demo' && !state.quiet && (leadDocs.length || setup.notas)) {
     $('proximo').textContent = 'Lendo o dossiê do lead e montando o briefing…';
     maybeAnalyze(true, PEDIDO_BRIEFING);
   }
@@ -617,6 +626,7 @@ function onTranscript({ speaker, text, isFinal }) {
   }
   $('transcript').scrollTop = $('transcript').scrollHeight;
   updateKpis();
+  clearTimeout(state.snapT); state.snapT = setTimeout(saveSnapshot, 3000);
   if (!isMe && perguntas) { clearTimeout(state.questionTimer); state.questionTimer = setTimeout(() => maybeAnalyze(true), 1200); }
 }
 
@@ -639,7 +649,7 @@ async function maybeAnalyze(force = false, pedido = '') {
   $('btnAjuda').disabled = true; $('coach').classList.add('thinking');
   try {
     const res = await state.coach.analyze(novas, pedido, notas);
-    if (res) { render(res.data, pedido); state.lastAt = Date.now(); }
+    if (res) { state.lastData = res.data; render(res.data, pedido); state.lastAt = Date.now(); saveSnapshot(); }
   } catch (e) {
     state.sentUpTo = Math.min(from, state.sentUpTo);
     state.pendingNotes.unshift(...notas);
@@ -662,9 +672,11 @@ function markSteps(id, items, current, stuck) {
   const idx = items.indexOf(current); if (idx < 0) return;
   [...$(id).children].forEach((li, i) => { li.className = i === idx ? (stuck ? 'stuck' : 'cur') : i < idx ? 'done' : ''; });
 }
-function addTimeline(text, mov, urg) {
+function addTimeline(text, mov, urg, t = fmt(elapsedSec())) {
+  if (state.quiet) return;
+  (state.timeline ||= []).push({ text, mov, urg, t });
   const li = el('li', urg);
-  li.append(el('span', 't', fmt(elapsedSec())), el('span', 'm', mov || ''), el('div', 'd', text));
+  li.append(el('span', 't', t), el('span', 'm', mov || ''), el('div', 'd', text));
   $('timeline').prepend(li);
   if (!document.querySelector('[data-tab="tTimeline"]').classList.contains('active')) {
     const b = $('tlCount'); b.hidden = false; b.textContent = String((Number(b.textContent) || 0) + 1);
@@ -781,6 +793,7 @@ function render(d, pedido) {
     if (!state.memoria.some((m) => m.text.toLowerCase() === info.toLowerCase())) state.memoria.push({ text: info, at: Date.now() });
   }
   renderMem();
+  if (d.rota?.solucao) renderPrecos();
   updateMapFrom(d);
   updateKpis();
   if (d.destaque) addTimeline(d.destaque, d.movimento, urg);
@@ -871,6 +884,105 @@ $('ansClose').onclick = () => { $('ansBox').hidden = true; };
 const quickChips = [...document.querySelectorAll('.chip[data-q]')];
 quickChips.forEach((c, i) => { if (i < 9) { const k = el('kbd', 'chipkey', String(i + 1)); c.prepend(k); } });
 
+// ================= tabela de preços =================
+let precos = { grupos: [], condicoes: [] };
+const COND_CURTA = { 'Condição de lançamento': 'Base', '4 meses em 4x': '4x', '4 meses à vista': '4 à vista', '6 meses em 6x': '6x', '6 meses à vista': '6 à vista', '12 meses em 12x': '12x', '12 meses à vista': '12 à vista' };
+async function loadPrecos() {
+  const { docs = [] } = await chrome.storage.local.get('docs');
+  precos = lerPrecos(acharPolitica(docs));
+  renderPrecos();
+}
+function renderPrecos() {
+  const box = $('precosBox'); box.innerHTML = '';
+  if (!precos.grupos.length) { box.append(el('p', 'qempty', 'Não encontrei a tabela de preços na base. Suba a política de preços (.md) nas Configurações.')); return; }
+  const rota = (state.lastData?.rota?.solucao || '').toLowerCase();
+  const casa = (nome) => rota && nome.toLowerCase().split(' + ').every((p) => rota.includes(p.toLowerCase()));
+  // Destaca só a correspondência mais específica (ex.: "Gestão de Pós-venda + Connect", não "Connect").
+  const todos = precos.grupos.flatMap((g) => g.itens.map((i) => i.nome)).filter(casa);
+  const maior = Math.max(0, ...todos.map((n) => n.split(' + ').length));
+  const recomendado = (nome) => casa(nome) && nome.split(' + ').length === maior;
+  const wrap = el('div', 'ptable-wrap'); const t = el('table', 'ptable');
+  const thead = el('thead'); const hr = el('tr');
+  hr.append(el('th', '', 'Plano / composição'), ...precos.condicoes.map((c) => { const th = el('th', '', COND_CURTA[c] || c); th.title = c; return th; }));
+  thead.append(hr); t.append(thead);
+  const tb = el('tbody');
+  for (const g of precos.grupos) {
+    const gr = el('tr', 'pgroup'); const gt = el('td', '', g.nome); gt.colSpan = precos.condicoes.length + 1; gr.append(gt); tb.append(gr);
+    for (const it of g.itens) {
+      const tr = el('tr', recomendado(it.nome) ? 'prec' : '');
+      const nome = el('td', 'pname', it.nome);
+      if (recomendado(it.nome)) nome.append(el('span', 'ptag', 'rota'));
+      tr.append(nome);
+      precos.condicoes.forEach((c) => {
+        const v = it.cond[c] || '—';
+        const td = el('td', 'pval', v.replace(/^R\$\s*/, ''));
+        td.title = `${it.nome} — ${c}: ${v} (clique para copiar)`;
+        if (it.cond[c]) td.onclick = () => copy(`${it.nome} — ${c}: ${v}/mês`, 'Valor copiado ✔');
+        tr.append(td);
+      });
+      tb.append(tr);
+    }
+  }
+  t.append(tb); wrap.append(t); box.append(wrap);
+  box.append(el('p', 'pnote', 'Valores mensais (R$) da régua de descontos da sua política. Não acumule descontos. Clique num valor para copiar.'));
+}
+loadPrecos();
+chrome.storage.onChanged.addListener((ch) => { if (ch.docs) loadPrecos(); });
+
+// ================= retomar reunião =================
+function saveSnapshot() {
+  if (!state.running || state.source === 'demo') return;
+  chrome.storage.local.set({ sessao: {
+    savedAt: Date.now(), setup: state.setup, source: state.source, meetTabId: state.meetTabId, startedAt: state.startedAt,
+    lines: state.lines.map(({ speaker, text }) => ({ speaker, text })), map: state.map, crm: state.crm,
+    crmLocked: [...state.crmLocked], covered: [...state.covered], memoria: state.memoria, pinned: [...state.pinned],
+    objTotal: state.objTotal, talk: state.talk, qTimes: state.qTimes, temp: state.temp, cond: state.cond,
+    timeline: state.timeline || [], lastData: state.lastData || null, contents: state.coach?.contents || [],
+  } });
+}
+async function offerResume() {
+  const { sessao } = await chrome.storage.local.get('sessao');
+  if (!sessao || Date.now() - sessao.savedAt > 3 * 3600e3) { if (sessao) chrome.storage.local.remove('sessao'); return; }
+  const min = Math.max(1, Math.round((Date.now() - sessao.savedAt) / 60000));
+  $('resumeTxt').textContent = `Reunião com ${sessao.setup?.comQuem || 'o lead'} ficou aberta (há ${min} min, ${fmt(Math.floor((sessao.savedAt - sessao.startedAt) / 1000))} de conversa).`;
+  $('resumeBox').hidden = false;
+  $('btnResume').onclick = () => resumeSession(sessao);
+  $('btnDiscard').onclick = () => { chrome.storage.local.remove('sessao'); $('resumeBox').hidden = true; };
+}
+async function resumeSession(snap) {
+  const stored = await chrome.storage.local.get([...Object.keys(DEFAULTS), 'docs']);
+  const settings = { ...DEFAULTS, ...stored, source: snap.source };
+  if (snap.meetTabId) state.meetTabId = snap.meetTabId;
+  $('btnResume').disabled = true;
+  const ok = await startCapture(settings);
+  $('btnResume').disabled = false;
+  if (!ok) return;
+  SETUP_FIELDS.forEach((f) => { if (snap.setup?.[f] != null) $(f).value = snap.setup[f]; });
+  const coach = new Coach(settings, snap.setup, stored.docs || [], leadDocs);
+  coach.contents = snap.contents || [];
+  state.quiet = true;
+  beginSession(settings, snap.setup, coach, snap.source);
+  // reconstrói a conversa e os dados
+  snap.lines.forEach((l) => onTranscript({ speaker: l.speaker, text: l.text, isFinal: true }));
+  clearTimeout(state.questionTimer);
+  Object.assign(state, {
+    startedAt: snap.startedAt, sentUpTo: state.lines.length, map: snap.map || {}, crm: snap.crm || {},
+    crmLocked: new Set(snap.crmLocked), covered: new Set(snap.covered), memoria: snap.memoria || [], pinned: new Set(snap.pinned),
+    objTotal: snap.objTotal || 0, talk: snap.talk || {}, qTimes: snap.qTimes || [], timeline: snap.timeline || [], lastData: snap.lastData,
+  });
+  $('timeline').innerHTML = '';
+  if (snap.lastData) { state.openObj = (snap.lastData.objecoes || []).map((o) => o.objecao); render(snap.lastData, ''); }
+  state.temp = snap.temp; state.cond = snap.cond;
+  state.quiet = false;
+  state.timeline.forEach((e) => { const li = el('li', e.urg); li.append(el('span', 't', e.t), el('span', 'm', e.mov || ''), el('div', 'd', e.text)); $('timeline').prepend(li); });
+  renderCrm(); renderMem(); renderMap(); updateKpis(); showContext();
+  addTimeline('Reunião retomada', 'Retomada', 'media');
+  $('resumeBox').hidden = true;
+  setStatus('Reunião retomada. O Mentor lembra de tudo que foi analisado até aqui.', 'ok');
+  saveSnapshot();
+}
+offerResume();
+
 // ================= atalhos =================
 $('digaBox').onclick = () => copy($('diga').textContent, 'Frase copiada ✔');
 document.addEventListener('keydown', (e) => {
@@ -881,6 +993,7 @@ document.addEventListener('keydown', (e) => {
   else if (k === 'a') $('btnAjuda').click();
   else if (k === 'c' && $('diga').textContent) copy($('diga').textContent, 'Frase copiada ✔');
   else if (k === 'm') toggleMapFull();
+  else if (k === 'p') document.querySelector('[data-tab="tPrecos"]').click();
   else if (/^[1-9]$/.test(e.key) && quickChips[Number(e.key) - 1]) quickChips[Number(e.key) - 1].click();
   else if (e.key === 'Escape' && document.body.classList.contains('map-full')) toggleMapFull();
 });

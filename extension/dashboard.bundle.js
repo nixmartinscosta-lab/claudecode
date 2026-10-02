@@ -494,6 +494,44 @@ var DemoCoach = class {
   }
 };
 
+// src/precos.js
+function acharPolitica(docs = []) {
+  return docs.find((d) => /preco|preço|politica|política/i.test(d.name) && /Valor-base/i.test(d.content)) || docs.find((d) => /Valor-base/i.test(d.content));
+}
+function lerPrecos(doc) {
+  if (!doc) return { grupos: [], condicoes: [] };
+  const grupos = [];
+  const condicoes = [];
+  let grupo = null;
+  let item = null;
+  const fechaItem = () => {
+    if (item && item.base && Object.keys(item.cond).length) grupo.itens.push(item);
+    item = null;
+  };
+  for (const raw of doc.content.split("\n")) {
+    const line = raw.trim();
+    let m;
+    if (m = line.match(/^#\s+(.+)$/)) {
+      fechaItem();
+      grupo = { nome: m[1].replace(/\*/g, "").trim(), itens: [] };
+      grupos.push(grupo);
+    } else if (m = line.match(/^##\s+(.+)$/)) {
+      fechaItem();
+      if (grupo) item = { nome: m[1].replace(/\*/g, "").trim(), base: "", cond: {} };
+    } else if (item && (m = line.match(/^Valor-base:\s*\**\s*(R\$\s*[\d.,]+)/i))) {
+      item.base = m[1];
+    } else if (item && (m = line.match(/^[-*]\s*([^:]+):\s*\**\s*(R\$\s*[\d.,]+)/))) {
+      item.cond[m[1].trim()] = m[2];
+    }
+  }
+  fechaItem();
+  const validos = grupos.filter((g) => g.itens.length);
+  validos.forEach((g) => g.itens.forEach((i) => Object.keys(i.cond).forEach((c) => {
+    if (!condicoes.includes(c)) condicoes.push(c);
+  })));
+  return { grupos: validos, condicoes };
+}
+
 // src/dashboard.js
 var $ = (id) => document.getElementById(id);
 var SETUP_FIELDS = ["modo", "comQuem", "objetivo", "foco", "notas"];
@@ -637,6 +675,7 @@ document.querySelectorAll(".tabs").forEach((bar) => bar.addEventListener("click"
     $("tlCount").hidden = true;
     $("tlCount").textContent = "";
   }
+  $("viewSeg").hidden = btn.dataset.tab !== "tMapa";
   if (btn.dataset.tab === "tMapa") requestAnimationFrame(() => {
     fitIfAuto();
     drawLinks();
@@ -1186,29 +1225,9 @@ OK = usar \xB7 Cancelar = come\xE7ar sem dossi\xEA`)) {
     chrome.storage.local.remove("leadOwner");
   }
   $("btnStart").disabled = true;
-  try {
-    if (settings.source === "meet") {
-      const tab = await findMeetTab();
-      if (!tab) throw new Error("N\xE3o achei nenhuma aba do Google Meet aberta. Entre na sala e tente de novo.");
-      state.meetTabId = tab.id;
-      try {
-        await chrome.tabs.sendMessage(tab.id, { target: "meet", type: "start" });
-      } catch {
-        await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ["meet.js"] });
-        await chrome.tabs.sendMessage(tab.id, { target: "meet", type: "start" });
-      }
-      setStatus('Lendo as legendas do Meet. Se nada aparecer, aperte "c" no Meet (legendas em Portugu\xEAs).', "ok");
-    } else {
-      setStatus("Conectando ao \xE1udio da reuni\xE3o\u2026");
-      const res = await chrome.runtime.sendMessage({ target: "background", type: "start-capture", settings });
-      if (res?.error) throw new Error(`${res.error} (Dica: v\xE1 na aba da reuni\xE3o e clique no \xEDcone da extens\xE3o.)`);
-    }
-  } catch (e) {
-    setStatus(e.message, "error");
-    $("btnStart").disabled = false;
-    return;
-  }
+  const ok = await startCapture(settings);
   $("btnStart").disabled = false;
+  if (!ok) return;
   beginSession(settings, setup, new Coach(settings, setup, stored.docs || [], leadDocs), settings.source);
 };
 $("btnStop").onclick = async () => {
@@ -1234,11 +1253,36 @@ $("btnStop").onclick = async () => {
     renderAta(state.ataMd);
     $("ataOverlay").hidden = false;
     if (state.source !== "demo") saveHistory();
+    chrome.storage.local.remove("sessao");
     setStatus(leadDocs.length ? "\u{1F4C2} O dossi\xEA deste lead continua carregado \u2014 em Prepara\xE7\xE3o, \u201Climpar dossi\xEA\u201D antes do pr\xF3ximo lead." : "", "warn");
   } catch (e) {
     setStatus(`Erro ao gerar ata: ${e.message}`, "error");
   }
 };
+async function startCapture(settings) {
+  try {
+    if (settings.source === "meet") {
+      const tab = await findMeetTab();
+      if (!tab) throw new Error("N\xE3o achei nenhuma aba do Google Meet aberta. Entre na sala e tente de novo.");
+      state.meetTabId = tab.id;
+      try {
+        await chrome.tabs.sendMessage(tab.id, { target: "meet", type: "start" });
+      } catch {
+        await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ["meet.js"] });
+        await chrome.tabs.sendMessage(tab.id, { target: "meet", type: "start" });
+      }
+      setStatus('Lendo as legendas do Meet. Se nada aparecer, aperte "c" no Meet (legendas em Portugu\xEAs).', "ok");
+    } else {
+      setStatus("Conectando ao \xE1udio da reuni\xE3o\u2026");
+      const res = await chrome.runtime.sendMessage({ target: "background", type: "start-capture", settings });
+      if (res?.error) throw new Error(`${res.error} (Dica: v\xE1 na aba da reuni\xE3o e clique no \xEDcone da extens\xE3o.)`);
+    }
+  } catch (e) {
+    setStatus(e.message, "error");
+    return false;
+  }
+  return true;
+}
 function beginSession(settings, setup, coach, source) {
   const meetTabId = state.meetTabId;
   Object.assign(state, freshState(), {
@@ -1293,7 +1337,7 @@ function beginSession(settings, setup, coach, source) {
   $("livePill").classList.add("on");
   $("liveTag").textContent = "AO VIVO";
   addTimeline(setup.origem === "avanco" ? "Reuni\xE3o de avan\xE7o iniciada" : "Reuni\xE3o iniciada (lead novo)", "Abertura", "baixa");
-  if (source !== "demo" && (leadDocs.length || setup.notas)) {
+  if (source !== "demo" && !state.quiet && (leadDocs.length || setup.notas)) {
     $("proximo").textContent = "Lendo o dossi\xEA do lead e montando o briefing\u2026";
     maybeAnalyze(true, PEDIDO_BRIEFING);
   }
@@ -1380,6 +1424,8 @@ function onTranscript({ speaker, text, isFinal }) {
   }
   $("transcript").scrollTop = $("transcript").scrollHeight;
   updateKpis();
+  clearTimeout(state.snapT);
+  state.snapT = setTimeout(saveSnapshot, 3e3);
   if (!isMe && perguntas) {
     clearTimeout(state.questionTimer);
     state.questionTimer = setTimeout(() => maybeAnalyze(true), 1200);
@@ -1410,8 +1456,10 @@ async function maybeAnalyze(force = false, pedido = "") {
   try {
     const res = await state.coach.analyze(novas, pedido, notas);
     if (res) {
+      state.lastData = res.data;
       render(res.data, pedido);
       state.lastAt = Date.now();
+      saveSnapshot();
     }
   } catch (e) {
     state.sentUpTo = Math.min(from, state.sentUpTo);
@@ -1450,9 +1498,11 @@ function markSteps(id, items, current, stuck) {
     li.className = i === idx ? stuck ? "stuck" : "cur" : i < idx ? "done" : "";
   });
 }
-function addTimeline(text, mov, urg) {
+function addTimeline(text, mov, urg, t = fmt(elapsedSec())) {
+  if (state.quiet) return;
+  (state.timeline ||= []).push({ text, mov, urg, t });
   const li = el("li", urg);
-  li.append(el("span", "t", fmt(elapsedSec())), el("span", "m", mov || ""), el("div", "d", text));
+  li.append(el("span", "t", t), el("span", "m", mov || ""), el("div", "d", text));
   $("timeline").prepend(li);
   if (!document.querySelector('[data-tab="tTimeline"]').classList.contains("active")) {
     const b = $("tlCount");
@@ -1592,6 +1642,7 @@ function render(d, pedido) {
     if (!state.memoria.some((m) => m.text.toLowerCase() === info.toLowerCase())) state.memoria.push({ text: info, at: Date.now() });
   }
   renderMem();
+  if (d.rota?.solucao) renderPrecos();
   updateMapFrom(d);
   updateKpis();
   if (d.destaque) addTimeline(d.destaque, d.movimento, urg);
@@ -1715,6 +1766,163 @@ quickChips.forEach((c, i) => {
     c.prepend(k);
   }
 });
+var precos = { grupos: [], condicoes: [] };
+var COND_CURTA = { "Condi\xE7\xE3o de lan\xE7amento": "Base", "4 meses em 4x": "4x", "4 meses \xE0 vista": "4 \xE0 vista", "6 meses em 6x": "6x", "6 meses \xE0 vista": "6 \xE0 vista", "12 meses em 12x": "12x", "12 meses \xE0 vista": "12 \xE0 vista" };
+async function loadPrecos() {
+  const { docs = [] } = await chrome.storage.local.get("docs");
+  precos = lerPrecos(acharPolitica(docs));
+  renderPrecos();
+}
+function renderPrecos() {
+  const box = $("precosBox");
+  box.innerHTML = "";
+  if (!precos.grupos.length) {
+    box.append(el("p", "qempty", "N\xE3o encontrei a tabela de pre\xE7os na base. Suba a pol\xEDtica de pre\xE7os (.md) nas Configura\xE7\xF5es."));
+    return;
+  }
+  const rota = (state.lastData?.rota?.solucao || "").toLowerCase();
+  const casa = (nome) => rota && nome.toLowerCase().split(" + ").every((p) => rota.includes(p.toLowerCase()));
+  const todos = precos.grupos.flatMap((g) => g.itens.map((i) => i.nome)).filter(casa);
+  const maior = Math.max(0, ...todos.map((n) => n.split(" + ").length));
+  const recomendado = (nome) => casa(nome) && nome.split(" + ").length === maior;
+  const wrap = el("div", "ptable-wrap");
+  const t = el("table", "ptable");
+  const thead = el("thead");
+  const hr = el("tr");
+  hr.append(el("th", "", "Plano / composi\xE7\xE3o"), ...precos.condicoes.map((c) => {
+    const th = el("th", "", COND_CURTA[c] || c);
+    th.title = c;
+    return th;
+  }));
+  thead.append(hr);
+  t.append(thead);
+  const tb = el("tbody");
+  for (const g of precos.grupos) {
+    const gr = el("tr", "pgroup");
+    const gt = el("td", "", g.nome);
+    gt.colSpan = precos.condicoes.length + 1;
+    gr.append(gt);
+    tb.append(gr);
+    for (const it of g.itens) {
+      const tr = el("tr", recomendado(it.nome) ? "prec" : "");
+      const nome = el("td", "pname", it.nome);
+      if (recomendado(it.nome)) nome.append(el("span", "ptag", "rota"));
+      tr.append(nome);
+      precos.condicoes.forEach((c) => {
+        const v = it.cond[c] || "\u2014";
+        const td = el("td", "pval", v.replace(/^R\$\s*/, ""));
+        td.title = `${it.nome} \u2014 ${c}: ${v} (clique para copiar)`;
+        if (it.cond[c]) td.onclick = () => copy(`${it.nome} \u2014 ${c}: ${v}/m\xEAs`, "Valor copiado \u2714");
+        tr.append(td);
+      });
+      tb.append(tr);
+    }
+  }
+  t.append(tb);
+  wrap.append(t);
+  box.append(wrap);
+  box.append(el("p", "pnote", "Valores mensais (R$) da r\xE9gua de descontos da sua pol\xEDtica. N\xE3o acumule descontos. Clique num valor para copiar."));
+}
+loadPrecos();
+chrome.storage.onChanged.addListener((ch) => {
+  if (ch.docs) loadPrecos();
+});
+function saveSnapshot() {
+  if (!state.running || state.source === "demo") return;
+  chrome.storage.local.set({ sessao: {
+    savedAt: Date.now(),
+    setup: state.setup,
+    source: state.source,
+    meetTabId: state.meetTabId,
+    startedAt: state.startedAt,
+    lines: state.lines.map(({ speaker, text }) => ({ speaker, text })),
+    map: state.map,
+    crm: state.crm,
+    crmLocked: [...state.crmLocked],
+    covered: [...state.covered],
+    memoria: state.memoria,
+    pinned: [...state.pinned],
+    objTotal: state.objTotal,
+    talk: state.talk,
+    qTimes: state.qTimes,
+    temp: state.temp,
+    cond: state.cond,
+    timeline: state.timeline || [],
+    lastData: state.lastData || null,
+    contents: state.coach?.contents || []
+  } });
+}
+async function offerResume() {
+  const { sessao } = await chrome.storage.local.get("sessao");
+  if (!sessao || Date.now() - sessao.savedAt > 3 * 36e5) {
+    if (sessao) chrome.storage.local.remove("sessao");
+    return;
+  }
+  const min = Math.max(1, Math.round((Date.now() - sessao.savedAt) / 6e4));
+  $("resumeTxt").textContent = `Reuni\xE3o com ${sessao.setup?.comQuem || "o lead"} ficou aberta (h\xE1 ${min} min, ${fmt(Math.floor((sessao.savedAt - sessao.startedAt) / 1e3))} de conversa).`;
+  $("resumeBox").hidden = false;
+  $("btnResume").onclick = () => resumeSession(sessao);
+  $("btnDiscard").onclick = () => {
+    chrome.storage.local.remove("sessao");
+    $("resumeBox").hidden = true;
+  };
+}
+async function resumeSession(snap) {
+  const stored = await chrome.storage.local.get([...Object.keys(DEFAULTS), "docs"]);
+  const settings = { ...DEFAULTS, ...stored, source: snap.source };
+  if (snap.meetTabId) state.meetTabId = snap.meetTabId;
+  $("btnResume").disabled = true;
+  const ok = await startCapture(settings);
+  $("btnResume").disabled = false;
+  if (!ok) return;
+  SETUP_FIELDS.forEach((f) => {
+    if (snap.setup?.[f] != null) $(f).value = snap.setup[f];
+  });
+  const coach = new Coach(settings, snap.setup, stored.docs || [], leadDocs);
+  coach.contents = snap.contents || [];
+  state.quiet = true;
+  beginSession(settings, snap.setup, coach, snap.source);
+  snap.lines.forEach((l) => onTranscript({ speaker: l.speaker, text: l.text, isFinal: true }));
+  clearTimeout(state.questionTimer);
+  Object.assign(state, {
+    startedAt: snap.startedAt,
+    sentUpTo: state.lines.length,
+    map: snap.map || {},
+    crm: snap.crm || {},
+    crmLocked: new Set(snap.crmLocked),
+    covered: new Set(snap.covered),
+    memoria: snap.memoria || [],
+    pinned: new Set(snap.pinned),
+    objTotal: snap.objTotal || 0,
+    talk: snap.talk || {},
+    qTimes: snap.qTimes || [],
+    timeline: snap.timeline || [],
+    lastData: snap.lastData
+  });
+  $("timeline").innerHTML = "";
+  if (snap.lastData) {
+    state.openObj = (snap.lastData.objecoes || []).map((o) => o.objecao);
+    render(snap.lastData, "");
+  }
+  state.temp = snap.temp;
+  state.cond = snap.cond;
+  state.quiet = false;
+  state.timeline.forEach((e) => {
+    const li = el("li", e.urg);
+    li.append(el("span", "t", e.t), el("span", "m", e.mov || ""), el("div", "d", e.text));
+    $("timeline").prepend(li);
+  });
+  renderCrm();
+  renderMem();
+  renderMap();
+  updateKpis();
+  showContext();
+  addTimeline("Reuni\xE3o retomada", "Retomada", "media");
+  $("resumeBox").hidden = true;
+  setStatus("Reuni\xE3o retomada. O Mentor lembra de tudo que foi analisado at\xE9 aqui.", "ok");
+  saveSnapshot();
+}
+offerResume();
 $("digaBox").onclick = () => copy($("diga").textContent, "Frase copiada \u2714");
 document.addEventListener("keydown", (e) => {
   if (e.target.closest('input, textarea, select, [contenteditable="plaintext-only"]')) return;
@@ -1726,6 +1934,7 @@ document.addEventListener("keydown", (e) => {
   } else if (k === "a") $("btnAjuda").click();
   else if (k === "c" && $("diga").textContent) copy($("diga").textContent, "Frase copiada \u2714");
   else if (k === "m") toggleMapFull();
+  else if (k === "p") document.querySelector('[data-tab="tPrecos"]').click();
   else if (/^[1-9]$/.test(e.key) && quickChips[Number(e.key) - 1]) quickChips[Number(e.key) - 1].click();
   else if (e.key === "Escape" && document.body.classList.contains("map-full")) toggleMapFull();
 });

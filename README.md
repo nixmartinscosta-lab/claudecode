@@ -40,6 +40,9 @@ O foco padrão é **vender combos com serviço (Business, Growth, Scale) e compo
 - **Legibilidade máxima**: todo texto com contraste medido (WCAG AAA ≥ 7:1 no texto principal), sem texto apagado; fontes maiores; **números, R$ e % em marca-texto** em tudo (transcrição, mapa, ficha, respostas).
 - **Quadro** (padrão) ou **Mapa**: o Quadro mostra os 9 ramos do mapa em cartões com letra grande; o Mapa mostra as conexões.
 
+- **Preços** (aba ou tecla `P`): tabela da régua de descontos da sua política (base, 4x, 6x, 12x, à vista), com a rota recomendada destacada; clique copia o valor.
+- **Retomar reunião**: se a janela do painel fechar no meio, ao abrir de novo aparece **Retomar** com transcrição, mapa, ficha e memória do Mentor.
+
 ## Instalar (5 min, uma vez)
 
 1. Baixe esta pasta (Code → Download ZIP) e descompacte.

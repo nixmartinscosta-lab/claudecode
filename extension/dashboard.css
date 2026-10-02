@@ -28,6 +28,7 @@
 
 /* ---------------- base ---------------- */
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html, body { height: 100%; }
 body {
   margin: 0; color: var(--ink); display: flex; flex-direction: column; overflow: hidden;
@@ -620,3 +621,30 @@ mark.num { background: var(--sun-soft); color: var(--sun-ink); font-weight: 750;
 body.right-collapsed .layout { grid-template-columns: 380px minmax(0, 1fr); }
 @media (max-width: 1280px) { .layout { grid-template-columns: 350px minmax(0, 1fr); } }
 @media (max-width: 980px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------------- tabela de preços ---------------- */
+.precos { display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+.ptable-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 12px; }
+.ptable { width: 100%; border-collapse: collapse; font-size: 14px; }
+.ptable th { position: sticky; top: 0; z-index: 1; background: var(--ink); color: #fff; font-weight: 700; font-size: 12.5px; text-align: right; padding: 8px 10px; white-space: nowrap; }
+.ptable th:first-child { text-align: left; }
+.ptable td { padding: 8px 10px; border-top: 1px solid var(--line); color: var(--ink); }
+.ptable .pgroup td { background: var(--panel-3); font-weight: 800; font-size: 12.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-2); }
+.ptable .pname { font-weight: 700; white-space: nowrap; }
+.ptable .pval { text-align: right; font-family: var(--font-data); font-variant-numeric: tabular-nums; white-space: nowrap; cursor: pointer; }
+.ptable .pval:hover { background: var(--sun-soft); }
+.ptable tr.prec td { background: var(--ok-soft); }
+.ptable tr.prec .pname { color: var(--ok-ink); }
+.ptag { margin-left: 8px; font-size: 10.5px; font-weight: 800; color: #fff; background: var(--ok-ink); border-radius: 99px; padding: 1px 7px; letter-spacing: .05em; text-transform: uppercase; }
+.pnote { margin: 0; font-size: 13px; color: var(--muted); }
+/* ---------------- retomar ---------------- */
+.resume { border: 2px solid var(--primary); background: var(--primary-soft); }
+.resume .card-h .label { background: var(--primary); color: #fff; }
+.resume-txt { margin: 4px 0 10px; font-size: 15px; color: var(--ink); font-weight: 600; }
+.resume-act { display: flex; gap: 8px; flex-wrap: wrap; }
+.ptable { font-size: 13.5px; }
+.ptable th { padding: 7px 8px; font-size: 12px; }
+.ptable td { padding: 7px 8px; }
+.ptable .pname { white-space: normal; min-width: 140px; line-height: 1.3; }
+.ptable .pval { padding-left: 6px; padding-right: 8px; }
+.ptable .pname { min-width: 120px; }
