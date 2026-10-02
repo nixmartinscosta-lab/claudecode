@@ -55,6 +55,9 @@ O foco padrão é **vender combos com serviço (Business, Growth, Scale) e compo
 - **Sinal agora** (instantâneo, sem esperar a IA): pedido de preço, "vou pensar"/"manda a proposta" (continuação), sócio (decisor oculto), "já tenho sistema", "sem tempo", desejo (monitoramento/relatório) e sinal de compra viram um cartão com o que fazer e a frase pronta, seguindo a doutrina.
 - **Análise no fim do turno do cliente** (além do intervalo), **últimas frases do DIGA guardadas** e barra "analisando".
 
+- **Checklist ACR ao vivo** (centro): itens de Analisar, Conectar e Reativar ficam verdes conforme aparecem; clicar num item que falta pede ao Mentor como cobri-lo agora.
+- **Alerta de monólogo**: se você fala muito sem perguntar, o painel avisa e sugere uma pergunta.
+
 ## Instalar (5 min, uma vez)
 
 1. Baixe esta pasta (Code → Download ZIP) e descompacte.

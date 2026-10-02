@@ -360,6 +360,7 @@ function updateMapFrom(d) {
 
 // ================= indicadores =================
 function updateKpis() {
+  renderACR();
   const n = DIAG_CORE.filter((k) => state.crm[k]).length;
   if (setText('diagVal', `${n}/${N_CRM}`) && n) bump('diagVal');
   setRing('diagRing', n / N_CRM, n >= 8 ? 'var(--ok)' : 'var(--primary)');
@@ -643,7 +644,15 @@ function onTranscript({ speaker, text, isFinal }) {
   $('transcript').scrollTop = $('transcript').scrollHeight;
   updateKpis();
   clearTimeout(state.snapT); state.snapT = setTimeout(saveSnapshot, 3000);
-  if (!isMe) {
+  if (isMe) {
+    state.meRun = perguntas ? 0 : (state.meRun || 0) + text.split(/\s+/).filter(Boolean).length;
+    if (state.meRun >= 130 && (!state.sinaisUlt.monologo || Date.now() - state.sinaisUlt.monologo > 90000)) {
+      state.sinaisUlt.monologo = Date.now();
+      showSinal({ id: 'monologo', nivel: 'media', titulo: 'Você está em monólogo', fala: text,
+        dica: 'Devolva a palavra. Quem conclui é o cliente.', diga: 'Faz sentido pra você? Como isso aparece aí no seu dia a dia?' });
+    }
+  } else {
+    state.meRun = 0;
     // Sinais instantâneos (sem esperar a IA).
     const achados = detectar(text, { crm: state.crm }, state.sinaisUlt);
     if (achados.length) showSinal(achados[0]);
@@ -1069,6 +1078,36 @@ async function resumeSession(snap) {
   saveSnapshot();
 }
 offerResume();
+
+// ================= checklist ACR ao vivo =================
+const ACR = [
+  { m: 'A', nome: 'Analisar', itens: [
+    ['Resultado', (c) => c.resultado_desejado], ['Fala literal', (c) => c.dor_literal], ['Causa-raiz', (c) => c.causa_raiz], ['Impacto', (c) => c.impacto]] },
+  { m: 'C', nome: 'Conectar', itens: [
+    ['Síntese validada', (c, d) => d?.sintese && !/\[/.test(d.sintese)], ['Alavanca', (c) => c.alavanca], ['Rota', (c, d) => d?.rota?.solucao || c.produto],
+    ['Decisor', (c) => c.decisores], ['Capacidade', (c) => c.capacidade_execucao], ['Investimento', (c, d) => d?.rota?.investimento]] },
+  { m: 'R', nome: 'Reativar', itens: [
+    ['Bloqueio', (c) => c.objecao], ['Microdecisão', (c) => c.proximo_passo], ['Responsável', (c) => c.responsavel], ['Data', (c) => c.data], ['Próximo ângulo', (c) => c.proximo_angulo]] },
+];
+function renderACR() {
+  const box = $('acrBox'); box.innerHTML = '';
+  const c = state.crm || {}; const d = state.lastData;
+  for (const g of ACR) {
+    const grp = el('div', 'acr-g');
+    const feitos = g.itens.filter(([, f]) => f(c, d)).length;
+    grp.append(el('span', 'acr-m', g.m));
+    g.itens.forEach(([nome, f]) => {
+      const ok = !!f(c, d);
+      const b = el('button', `acr-i${ok ? ' ok' : ''}`, nome);
+      b.title = ok ? `${nome}: coberto` : `${nome}: falta. Clique para o Mentor dizer como cobrir agora.`;
+      if (!ok) b.onclick = () => maybeAnalyze(true, `Como cubro "${nome}" (movimento ${g.nome} do ACR) agora, sem pular o degrau atual? Frase pronta.`);
+      grp.append(b);
+    });
+    grp.append(el('span', 'acr-n', `${feitos}/${g.itens.length}`));
+    box.append(grp);
+  }
+}
+renderACR();
 
 // ================= sinal instantâneo =================
 function showSinal(sg) {
