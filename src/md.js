@@ -5,10 +5,11 @@ const EV_RE = /(\[(?:INFERÊNCIA|INFERENCIA|VALIDAR|DADO NÃO INFORMADO|DADO NAO
 const EV_CLASS = (t) => (/INFER/i.test(t) ? 'ev-inf' : /VALIDAR/i.test(t) ? 'ev-val' : /CONTRADI/i.test(t) ? 'ev-con' : 'ev-dni');
 const NUM_RE = /(R\$\s?\d+(?:[.,]\d+)*(?:\s?(?:mil|milhões|milhão|k)\b)?|\d+(?:[.,]\d+)*(?:\s?(?:%|mil\b|milhões\b|milhão\b|k\b))?)/gi;
 
-function text(node, t) {
+function text(node, t, nums = true) {
   t.split(EV_RE).forEach((chunk, j) => {
     if (!chunk) return;
     if (j % 2 === 1) { const s = document.createElement('span'); s.className = `ev ${EV_CLASS(chunk)}`; s.textContent = chunk.slice(1, -1); node.append(s); return; }
+    if (!nums) { node.append(document.createTextNode(chunk)); return; }
     chunk.split(NUM_RE).forEach((part, i) => {
       if (!part) return;
       if (i % 2 === 1) { const m = document.createElement('mark'); m.className = 'num'; m.textContent = part; node.append(m); }
@@ -16,10 +17,10 @@ function text(node, t) {
     });
   });
 }
-export function inline(node, t) {
+export function inline(node, t, nums = true) {
   t.split(/(\*\*[^*]+\*\*)/).forEach((part) => {
-    if (/^\*\*[^*]+\*\*$/.test(part)) { const b = document.createElement('strong'); text(b, part.slice(2, -2)); node.append(b); }
-    else if (part) text(node, part);
+    if (/^\*\*[^*]+\*\*$/.test(part)) { const b = document.createElement('strong'); text(b, part.slice(2, -2), nums); node.append(b); }
+    else if (part) text(node, part, nums);
   });
   return node;
 }
@@ -45,7 +46,7 @@ export function renderMarkdown(box, md) {
       continue;
     }
     let m;
-    if ((m = line.match(/^(#{1,4})\s+(.*)$/))) { ul = null; box.append(inline(mk(m[1].length >= 3 ? 'h4' : 'h3'), m[2])); continue; }
+    if ((m = line.match(/^(#{1,4})\s+(.*)$/))) { ul = null; box.append(inline(mk(m[1].length >= 3 ? 'h4' : 'h3'), m[2], false)); continue; }
     if (/^\s*([-*•]|\d+[.)])\s+/.test(line)) {
       if (!ul) { ul = mk('ul'); box.append(ul); }
       ul.append(inline(mk('li'), line.replace(/^\s*([-*•]|\d+[.)])\s+/, '')));

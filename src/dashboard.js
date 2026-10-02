@@ -2,6 +2,7 @@ import { Coach } from './coach.js';
 import { DemoCoach, DEMO_SETUP, DEMO_SCRIPT } from './demo.js';
 import { acharPolitica, lerPrecos } from './precos.js';
 import { detectar } from './sinais.js';
+import { renderMarkdown, followUp } from './md.js';
 import { CRM_CAMPOS, DIAG_CORE, MOVIMENTOS, PORTOES, DOR_ESTAGIOS, PEDIDO_BRIEFING } from './prompts.js';
 
 const $ = (id) => document.getElementById(id);
@@ -38,13 +39,14 @@ const freshState = () => ({
   memoria: [], pinned: new Set(), map: {}, collapsed: new Set(), expanded: new Set(), openObj: [], objTotal: 0,
   talk: {}, qTimes: [], talkWarned: false, clienteQs: [], tempoAvisos: {}, temp: null, cond: null, sinaisUlt: {}, clientWords: 0, digaHist: [], turnTimer: null, drawn: new Set(),
   view: { x: 0, y: 0, s: 1 }, userView: false,
+  lastData: null, sinal: null, meRun: 0, lastSignalAt: 0, captionsOn: null, ataMd: '', timeline: [], planMin: 0,
 });
 const state = { ...freshState(), meetTabId: Number(new URLSearchParams(location.search).get('tab')) || null };
 
 // ================= utilidades =================
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 function toast(msg) { const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => { t.hidden = true; }, 1700); }
-function copy(text, msg = 'Copiado ✔') { navigator.clipboard.writeText(text).then(() => toast(msg)); }
+function copy(text, msg = 'Copiado ✔') { navigator.clipboard.writeText(text).then(() => toast(msg)).catch(() => toast('Não consegui copiar: clique na janela do painel e tente de novo.')); }
 function setStatus(text, level = '') { const s = $('status'); s.hidden = !text; s.textContent = text || ''; s.className = `status ${level}`; }
 const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
 const elapsedSec = () => (state.startedAt ? Math.floor((Date.now() - state.startedAt) / 1000) : 0);
@@ -93,7 +95,7 @@ document.querySelectorAll('.tabs').forEach((bar) => bar.addEventListener('click'
 let leadDocs = [];
 chrome.storage.local.get(['setup', 'docs', 'leadDocs']).then(({ setup, docs, leadDocs: ld }) => {
   if (setup) SETUP_FIELDS.forEach((f) => { if (setup[f] != null) $(f).value = setup[f]; });
-  if (setup?.origem) document.querySelector(`input[name="origem"][value="${setup.origem}"]`).checked = true;
+  const origemEl = setup?.origem && document.querySelector(`input[name="origem"][value="${setup.origem}"]`); if (origemEl) origemEl.checked = true;
   leadDocs = ld || []; renderLeadFiles();
   if (!$('foco').value) $('foco').value = FOCO_PADRAO;
   $('kbInfo').textContent = docs?.length ? `${docs.length} arquivo(s) na base` : 'Suba seus .md nas configurações';
@@ -173,7 +175,8 @@ function renderCrm(novos = []) {
       if (v && v !== state.crm[k]) {
         state.crm[k] = v; state.crmLocked.add(k);
         state.pendingNotes.push(`CLOSER CORRIGIU A FICHA: ${rotulo} = ${v}`);
-        toast('Ficha corrigida — o Mentor vai respeitar');
+        toast('Ficha corrigida: o Mentor vai respeitar');
+        saveSnapshot();
       }
       renderCrm(); updateKpis();
     });
@@ -319,7 +322,7 @@ function zoomAt(f, cx, cy) {
 const vp = $('mapViewport');
 vp.addEventListener('wheel', (e) => { e.preventDefault(); const r = vp.getBoundingClientRect(); zoomAt(e.deltaY < 0 ? 1.1 : 1 / 1.1, e.clientX - r.left, e.clientY - r.top); }, { passive: false });
 vp.addEventListener('pointerdown', (e) => {
-  if (e.target.closest('.leaf, .branch-node, .more')) return;
+  if (e.target.closest('.leaf, .branch-node, .more, .mapctl, button')) return;
   const start = { x: e.clientX, y: e.clientY, vx: state.view.x, vy: state.view.y };
   vp.classList.add('dragging'); vp.setPointerCapture(e.pointerId);
   const move = (ev) => { state.view.x = start.vx + ev.clientX - start.x; state.view.y = start.vy + ev.clientY - start.y; state.userView = true; applyView(); };
@@ -376,7 +379,7 @@ function updateKpis() {
   $('talkTxt').textContent = total ? `${pct}% · ${100 - pct}%` : '—';
   const demais = total > 150 && pct > 55;
   $('talkTxt').closest('.kpi').classList.toggle('alert', demais);
-  if (demais && !state.talkWarned) { state.talkWarned = true; toast('🎙 Você está falando mais que o cliente — pergunte e escute'); }
+  if (demais && !state.talkWarned) { state.talkWarned = true; toast('Você está falando mais que o cliente: pergunte e escute'); }
   if (pct < 45) state.talkWarned = false;
 
   if (setText('qVal', state.qTimes.length) && state.qTimes.length) bump('qVal');
@@ -496,7 +499,7 @@ $('btnStart').onclick = async () => {
 
 $('btnStop').onclick = async () => {
   if (!state.running) return;
-  clearInterval(state.tick); clearTimeout(state.questionTimer);
+  clearInterval(state.tick); clearTimeout(state.questionTimer); clearTimeout(state.turnTimer);
   $('btnStop').disabled = true;
   if (state.source === 'meet') await chrome.tabs.sendMessage(state.meetTabId, { target: 'meet', type: 'stop' }).catch(() => {});
   else if (state.source === 'audio') await chrome.runtime.sendMessage({ target: 'background', type: 'stop-capture' });
@@ -559,6 +562,7 @@ function beginSession(settings, setup, coach, source) {
   [...$('movimentos').children, ...$('portoes').children, ...$('dorSteps').children].forEach((li) => { li.className = ''; });
   $('avancoPill').textContent = ''; $('avancoPill').className = 'avpill'; $('fontesHero').textContent = '';
   $('sintese').textContent = 'Aguardando a conversa…';
+  delete $('proximo').dataset.raw; delete $('diga').dataset.raw; $('diga').textContent = ''; $('tlCount').hidden = true; $('tlCount').textContent = '';
   $('perguntouBox').hidden = true; $('perguntou').innerHTML = ''; $('timeFill').style.width = '0';
   $('ansBox').hidden = true; $('sinalBox').hidden = true; $('digaHist').hidden = true; $('digaHist').innerHTML = '';
   renderCrm(); renderMem(); renderMap(); updateKpis(); showContext();
@@ -648,6 +652,7 @@ function onTranscript({ speaker, text, isFinal }) {
   $('transcript').scrollTop = $('transcript').scrollHeight;
   updateKpis();
   clearTimeout(state.snapT); state.snapT = setTimeout(saveSnapshot, 3000);
+  if (state.replay) return; // retomada: só reconstrói a conversa
   if (isMe) {
     state.meRun = perguntas ? 0 : (state.meRun || 0) + text.split(/\s+/).filter(Boolean).length;
     if (state.meRun >= 130 && (!state.sinaisUlt.monologo || Date.now() - state.sinaisUlt.monologo > 90000)) {
@@ -704,7 +709,7 @@ document.querySelectorAll('.chip[data-q]').forEach((b) => { b.onclick = () => ma
 // ================= render =================
 function fillList(id, items, onClick) {
   const ul = $(id); ul.innerHTML = '';
-  (items || []).forEach((t) => { const li = el('li', '', t); if (onClick) li.onclick = () => onClick(li, t); ul.append(li); });
+  (items || []).forEach((t) => { const li = hl(el('li'), t); if (onClick) li.onclick = () => onClick(li, t); ul.append(li); });
   $(`${id}Box`).hidden = !items?.length;
 }
 function markSteps(id, items, current, stuck) {
@@ -778,7 +783,7 @@ function render(d, pedido) {
   fillList('perguntas', d.perguntas, (li, t) => { li.classList.add('used'); copy(t, 'Pergunta copiada ✔'); });
   fillList('falta_cobrir', (d.falta_cobrir || []).filter((t) => !state.covered.has(t.toLowerCase())), (li, t) => {
     li.classList.add('done'); state.covered.add(t.toLowerCase());
-    state.pendingNotes.push(`CLOSER MARCOU COMO COBERTO: ${t}`); toast('✔ Marcado como coberto');
+    state.pendingNotes.push(`CLOSER MARCOU COMO COBERTO: ${t}`); toast('✔ Marcado como coberto'); saveSnapshot();
   });
 
   markSteps('movimentos', MOVIMENTOS, d.movimento, false);
@@ -862,7 +867,7 @@ function renderMem() {
     const li = el('li', state.pinned.has(m.text) ? 'pinned' : '');
     if (Date.now() - m.at < 8000) li.classList.add('flash');
     const pin = el('span', 'pin', state.pinned.has(m.text) ? '★' : '☆');
-    pin.onclick = (e) => { e.stopPropagation(); state.pinned.has(m.text) ? state.pinned.delete(m.text) : state.pinned.add(m.text); renderMem(); };
+    pin.onclick = (e) => { e.stopPropagation(); state.pinned.has(m.text) ? state.pinned.delete(m.text) : state.pinned.add(m.text); renderMem(); saveSnapshot(); };
     li.onclick = () => copy(m.text);
     li.append(pin, hl(el('span'), m.text)); ul.append(li);
   });
@@ -870,28 +875,9 @@ function renderMem() {
 }
 
 // ================= ata formatada =================
-function inline(el, text) {
-  text.split(/(\*\*[^*]+\*\*)/).forEach((part) => {
-    if (/^\*\*[^*]+\*\*$/.test(part)) el.append(Object.assign(document.createElement('strong'), { textContent: part.slice(2, -2) }));
-    else if (part) el.append(document.createTextNode(part));
-  });
-}
 function renderAta(md) {
-  const box = $('ata'); box.innerHTML = '';
-  let ul = null;
-  for (const raw of (md || '').split('\n')) {
-    const line = raw.trimEnd();
-    if (/^#{1,4}\s/.test(line)) { ul = null; const h = el('h3'); inline(h, line.replace(/^#+\s*/, '')); box.append(h); continue; }
-    if (/^\s*[-*•]\s+/.test(line)) { if (!ul) { ul = el('ul'); box.append(ul); } const li = el('li'); inline(li, line.replace(/^\s*[-*•]\s+/, '')); ul.append(li); continue; }
-    ul = null;
-    if (line.trim()) { const p = el('p'); inline(p, line); box.append(p); }
-  }
+  renderMarkdown($('ata'), md);
   $('btnCopyFollow').hidden = !followUp(md);
-}
-// Extrai a seção "follow-up" da ata.
-function followUp(md) {
-  const m = (md || '').match(/#+[^\n]*follow[^\n]*\n([\s\S]*?)(?=\n#+\s|$)/i);
-  return m ? m[1].trim() : '';
 }
 $('btnCopyFollow').onclick = () => copy(followUp(state.ataMd), 'Follow-up copiado ✔');
 
@@ -1039,6 +1025,7 @@ function saveSnapshot() {
     crmLocked: [...state.crmLocked], covered: [...state.covered], memoria: state.memoria, pinned: [...state.pinned],
     objTotal: state.objTotal, talk: state.talk, qTimes: state.qTimes, temp: state.temp, cond: state.cond,
     timeline: state.timeline || [], lastData: state.lastData || null, contents: state.coach?.contents || [],
+    pendingNotes: state.pendingNotes || [], clienteQs: state.clienteQs || [],
   } });
 }
 async function offerResume() {
@@ -1064,19 +1051,22 @@ async function resumeSession(snap) {
   state.quiet = true;
   beginSession(settings, snap.setup, coach, snap.source);
   // reconstrói a conversa e os dados
+  state.replay = true;
   snap.lines.forEach((l) => onTranscript({ speaker: l.speaker, text: l.text, isFinal: true }));
-  clearTimeout(state.questionTimer);
+  state.replay = false;
+  clearTimeout(state.questionTimer); clearTimeout(state.turnTimer); state.clientWords = 0; state.meRun = 0;
   Object.assign(state, {
     startedAt: snap.startedAt, sentUpTo: state.lines.length, map: snap.map || {}, crm: snap.crm || {},
     crmLocked: new Set(snap.crmLocked), covered: new Set(snap.covered), memoria: snap.memoria || [], pinned: new Set(snap.pinned),
     objTotal: snap.objTotal || 0, talk: snap.talk || {}, qTimes: snap.qTimes || [], timeline: snap.timeline || [], lastData: snap.lastData,
+    pendingNotes: snap.pendingNotes || [], clienteQs: snap.clienteQs || [],
   });
   $('timeline').innerHTML = '';
   if (snap.lastData) { state.openObj = (snap.lastData.objecoes || []).map((o) => o.objecao); render(snap.lastData, ''); }
   state.temp = snap.temp; state.cond = snap.cond;
   state.quiet = false;
   state.timeline.forEach((e) => { const li = el('li', e.urg); li.append(el('span', 't', e.t), el('span', 'm', e.mov || ''), el('div', 'd', e.text)); $('timeline').prepend(li); });
-  renderCrm(); renderMem(); renderMap(); updateKpis(); showContext();
+  renderCrm(); renderMem(); renderMap(); updateKpis(); showContext(); renderClienteQs();
   addTimeline('Reunião retomada', 'Retomada', 'media');
   $('resumeBox').hidden = true;
   setStatus('Reunião retomada. O Mentor lembra de tudo que foi analisado até aqui.', 'ok');
@@ -1165,11 +1155,13 @@ function showSinal(sg) {
   hl($('sinalDiga'), sg.diga);
   $('sinalPrecos').hidden = sg.acao !== 'precos';
   $('sinalBox').hidden = false;
+  document.body.classList.add('has-sinal');
   animate('sinalTitulo');
   $('coach').closest('.col').scrollTo({ top: 0, behavior: 'smooth' });
   addTimeline(`Sinal: ${sg.titulo}`, 'Sinal', sg.nivel === 'alta' ? 'alta' : 'media');
 }
 $('sinalClose').onclick = () => { $('sinalBox').hidden = true; };
+new MutationObserver(() => document.body.classList.toggle('has-sinal', !$('sinalBox').hidden)).observe($('sinalBox'), { attributes: true, attributeFilter: ['hidden'] });
 $('sinalDiga').onclick = () => copy(state.sinal?.diga || '', 'Frase copiada ✔');
 $('sinalPrecos').onclick = () => document.querySelector('[data-tab="tPrecos"]').click();
 setInterval(() => {
@@ -1202,6 +1194,7 @@ $('btnFoco').onclick = toggleFoco;
 // ================= atalhos =================
 $('digaBox').onclick = () => copy($('diga').textContent, 'Frase copiada ✔');
 document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !$('ataOverlay').hidden) { $('btnFecharAta').click(); return; }
   if (e.target.closest('input, textarea, select, [contenteditable="plaintext-only"]')) return;
   if (e.ctrlKey || e.metaKey || e.altKey) return; // não atrapalha Ctrl+C, Ctrl+A etc.
   const k = e.key.toLowerCase();
@@ -1217,7 +1210,11 @@ document.addEventListener('keydown', (e) => {
 });
 
 $('btnCopyAta').onclick = () => copy(buildMarkdown(), 'Ata copiada ✔');
-$('btnFecharAta').onclick = () => { $('ataOverlay').hidden = true; if (state.source === 'demo') { endDemo(); setStatus(''); } };
+$('btnFecharAta').onclick = () => {
+  $('ataOverlay').hidden = true;
+  if (state.source === 'demo') { endDemo(); setStatus(''); }
+  if (!state.running) { $('setupBox').hidden = false; renderHistory(); } // pronto para a próxima reunião
+};
 $('btnBaixar').onclick = () => {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([buildMarkdown()], { type: 'text/markdown' }));

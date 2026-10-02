@@ -352,7 +352,7 @@ ${restante.map((l) => `${l.speaker}: ${l.text}`).join("\n")}`);
 var EV_RE = /(\[(?:INFERÊNCIA|INFERENCIA|VALIDAR|DADO NÃO INFORMADO|DADO NAO INFORMADO|CONTRADIÇÃO DE FONTE|CONTRADICAO DE FONTE)\])/i;
 var EV_CLASS = (t) => /INFER/i.test(t) ? "ev-inf" : /VALIDAR/i.test(t) ? "ev-val" : /CONTRADI/i.test(t) ? "ev-con" : "ev-dni";
 var NUM_RE = /(R\$\s?\d+(?:[.,]\d+)*(?:\s?(?:mil|milhões|milhão|k)\b)?|\d+(?:[.,]\d+)*(?:\s?(?:%|mil\b|milhões\b|milhão\b|k\b))?)/gi;
-function text(node, t) {
+function text(node, t, nums = true) {
   t.split(EV_RE).forEach((chunk, j) => {
     if (!chunk) return;
     if (j % 2 === 1) {
@@ -360,6 +360,10 @@ function text(node, t) {
       s.className = `ev ${EV_CLASS(chunk)}`;
       s.textContent = chunk.slice(1, -1);
       node.append(s);
+      return;
+    }
+    if (!nums) {
+      node.append(document.createTextNode(chunk));
       return;
     }
     chunk.split(NUM_RE).forEach((part, i) => {
@@ -373,13 +377,13 @@ function text(node, t) {
     });
   });
 }
-function inline(node, t) {
+function inline(node, t, nums = true) {
   t.split(/(\*\*[^*]+\*\*)/).forEach((part) => {
     if (/^\*\*[^*]+\*\*$/.test(part)) {
       const b = document.createElement("strong");
-      text(b, part.slice(2, -2));
+      text(b, part.slice(2, -2), nums);
       node.append(b);
-    } else if (part) text(node, part);
+    } else if (part) text(node, part, nums);
   });
   return node;
 }
@@ -418,7 +422,7 @@ function renderMarkdown(box, md) {
     let m;
     if (m = line.match(/^(#{1,4})\s+(.*)$/)) {
       ul = null;
-      box.append(inline(mk(m[1].length >= 3 ? "h4" : "h3"), m[2]));
+      box.append(inline(mk(m[1].length >= 3 ? "h4" : "h3"), m[2], false));
       continue;
     }
     if (/^\s*([-*•]|\d+[.)])\s+/.test(line)) {

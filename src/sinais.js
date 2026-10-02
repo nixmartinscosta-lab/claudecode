@@ -37,6 +37,11 @@ export const SINAIS = [
     gerar: () => ({ titulo: 'Pode ser desejo, não dor', nivel: 'media', dica: 'Desejo pode esperar. Puxe para o resultado e para a via comercial.', diga: 'E isso ajuda em quê no seu resultado: vender mais, reter cliente ou ganhar indicação?' }),
   },
   {
+    id: 'aceite',
+    re: /pode marcar|t[áa] marcado|fechado\b|combinado\b|vamos fechar|bora fechar|pode mandar o contrato|manda o contrato|pode agendar|d[áa] sim,? (pode|marca)/i,
+    gerar: () => ({ titulo: 'Microdecisão aceita', nivel: 'alta', dica: 'Confirme em voz alta responsável, data, horário e canal. Avanço só com os três.', diga: 'Perfeito. Então fica assim: eu te mando o convite agora pra esse horário, com você e quem mais precisa decidir. Certo?' }),
+  },
+  {
     id: 'compra',
     re: /como (funciona|seria) (a |o )?(implanta|contrat|come[çc])|quando (come[çc]a|daria pra come[çc]ar|consigo come[çc]ar)|qual o pr[óo]ximo passo|como a gente faz pra/i,
     gerar: () => ({ titulo: 'Sinal de compra', nivel: 'alta', dica: 'Peça a microdecisão agora, com responsável e data.', diga: 'Ótimo. Então vamos definir o próximo passo: quem precisa aprovar e até quando a gente fecha essa definição?' }),
