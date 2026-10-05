@@ -8,6 +8,7 @@ Agora voc\xEA acompanha uma reuni\xE3o AO VIVO e orienta o closer em tempo real,
 
 Quem \xE9 quem na transcri\xE7\xE3o:
 - "Voc\xEA" = o closer.
+- Nome terminado em "(SolarZ)" = colega do closer (pr\xE9-venda, SDR, gestora). N\xC3O \xE9 o cliente: fala dela n\xE3o conta como dor, obje\xE7\xE3o, desejo ou decis\xE3o do cliente. Use s\xF3 como contexto (ex.: condi\xE7\xE3o j\xE1 oferecida, hist\xF3rico).
 - Qualquer outro nome (vindo das legendas do Google Meet) ou "Participante N" = cliente e demais pessoas. Use o nome da pessoa nas frases sugeridas.
 - A transcri\xE7\xE3o \xE9 autom\xE1tica: pode ter palavras erradas, nomes trocados e frases cortadas. Interprete pelo sentido e marque [VALIDAR] em n\xFAmeros que possam ter sido mal transcritos.
 
@@ -143,6 +144,7 @@ function contextoInicial(setup, leadDocs2 = []) {
   ];
   if (MODOS[setup.modo]) linhas.push(`Tipo de reuni\xE3o: ${MODOS[setup.modo]}`);
   if (setup.comQuem) linhas.push(`Cliente / participantes: ${setup.comQuem}`);
+  if (setup.equipe) linhas.push(`Time SolarZ na call (n\xE3o \xE9 cliente): ${setup.equipe}`);
   if (setup.foco) linhas.push(`Foco comercial desta reuni\xE3o: ${setup.foco}`);
   if (setup.notas) linhas.push(`Informa\xE7\xF5es da pr\xE9-venda / hip\xF3teses:
 ${setup.notas}`);
@@ -636,14 +638,14 @@ function lerPrecos(doc) {
 }
 
 // src/sinais.js
-var validou = (crm2) => !!(crm2.causa_raiz && crm2.impacto);
+var validou = (ctx) => ctx.avanco || !!(ctx.crm.causa_raiz && ctx.crm.impacto);
 var SINAIS = [
   {
     id: "preco",
     // Só pedido/objeção de preço da SolarZ. "Agregar valor", "briga de preço" ou o orçamento
     // que o integrador faz pro cliente dele não contam.
     re: /\bquanto ([ée] que )?(custa|fica|[ée]|seria|sai|vai ficar|vai sair)\b|qua(l|is) (seria |[ée] )?(o |os )?(valor|pre[cç]o|investimento)(?! que (eu|a gente))|(t[áa]|muito|bem|meio|ficou|ficando) caro\b|(t[áa]|muito|bem) puxado|pesado (pra|para) mim|(tem|teria|rola|consegue|faz|me d[áa]) (um |algum )?desconto|baixar (teu|seu|esse|um pouco (o|esse)) (valor|pre[cç]o)|menor valor|contraproposta|minha proposta [ée]|cabe no (meu )?(caixa|bolso|or[cç]amento)|fora do (meu )?or[cç]amento|valor que voc[êe] (t[áa] )?(me )?cobr|esse valor (de|que)/i,
-    gerar: (ctx) => validou(ctx.crm) ? { titulo: "Travou em pre\xE7o", nivel: "alta", dica: "Ordem da doutrina: quanto cabe no caixa, depois descer de plano, s\xF3 depois desconto.", diga: "Quanto cabe no caixa por m\xEAs hoje, pra eu te mostrar o caminho certo?", acao: "precos" } : { titulo: "Pediu pre\xE7o cedo", nivel: "alta", dica: "Causa e impacto ainda n\xE3o est\xE3o validados. Valor agora vira compara\xE7\xE3o de pre\xE7o.", diga: "J\xE1 chego no valor. Antes, me ajuda a dimensionar: quanto isso custa pra voc\xEAs hoje por m\xEAs?", acao: "precos" }
+    gerar: (ctx) => validou(ctx) ? { titulo: "Travou em pre\xE7o", nivel: "alta", dica: "Ordem da doutrina: quanto cabe no caixa, depois descer de plano, s\xF3 depois desconto.", diga: "Quanto cabe no caixa por m\xEAs hoje, pra eu te mostrar o caminho certo?", acao: "precos" } : { titulo: "Pediu pre\xE7o cedo", nivel: "alta", dica: "Causa e impacto ainda n\xE3o est\xE3o validados. Valor agora vira compara\xE7\xE3o de pre\xE7o.", diga: "J\xE1 chego no valor. Antes, me ajuda a dimensionar: quanto isso custa pra voc\xEAs hoje por m\xEAs?", acao: "precos" }
   },
   {
     id: "socio",
@@ -1135,19 +1137,28 @@ function renderCrm(novos = []) {
     dl.append(el("dt", state.crm[k] ? "filled" : "", rotulo), dd);
   }
 }
+var chave = (t) => semAcento(t).replace(/[^a-z0-9$%]+/g, " ").trim();
+function parecido(a, b) {
+  const ka = chave(a), kb = chave(b);
+  return ka === kb || Math.min(ka.length, kb.length) >= 14 && (ka.includes(kb) || kb.includes(ka));
+}
 function addLeaf(k, text2, sub = "") {
   text2 = (text2 || "").trim();
   if (!text2) return;
   const list2 = state.map[k] ||= [];
-  const found = list2.find((l) => l.text.toLowerCase() === text2.toLowerCase());
+  const k1 = chave(text2);
+  const found = list2.find((l) => parecido(l.text, text2));
   if (found) {
+    if (chave(found.text).length < k1.length) found.text = text2;
     if (sub && sub !== found.sub) {
       found.sub = sub;
       found.at = Date.now();
     }
-    return;
+    return found;
   }
-  list2.push({ text: text2, sub, at: Date.now(), done: false });
+  const leaf = { text: text2, sub, at: Date.now(), done: false };
+  list2.push(leaf);
+  return leaf;
 }
 function renderMap() {
   const now = Date.now();
@@ -1366,10 +1377,9 @@ function updateMapFrom(d) {
   addLeaf("impacto", c.impacto);
   addLeaf("decisores", c.decisores);
   if (c.capacidade_execucao) addLeaf("decisores", `Execu\xE7\xE3o: ${c.capacidade_execucao}`);
-  const abertas = (d.objecoes || []).map((o) => o.objecao.toLowerCase());
-  (d.objecoes || []).forEach((o) => addLeaf("objecoes", o.objecao, o.contorno));
+  const abertas = new Set((d.objecoes || []).map((o) => addLeaf("objecoes", o.objecao, o.contorno)));
   (state.map.objecoes || []).forEach((l) => {
-    l.done = !abertas.includes(l.text.toLowerCase());
+    l.done = !abertas.has(l);
   });
   if (d.rota?.solucao) addLeaf("rota", d.rota.solucao, d.rota.investimento ? d.rota.investimento : "");
   addLeaf("proximos", [c.proximo_passo, c.responsavel && `resp.: ${c.responsavel}`, c.data].filter(Boolean).join(" \xB7 "));
@@ -1777,7 +1787,7 @@ function onTranscript({ speaker, text: text2, isFinal }) {
   } else {
     state.meRun = 0;
     if (perguntas) addClienteQ(speaker, text2);
-    const achados = detectar(text2, { crm: state.crm }, state.sinaisUlt);
+    const achados = detectar(text2, { crm: state.crm, avanco: state.setup?.origem === "avanco" || state.setup?.modo === "followup" }, state.sinaisUlt);
     if (achados.length) showSinal(achados[0]);
     state.clientWords += text2.split(/\s+/).filter(Boolean).length;
     clearTimeout(state.turnTimer);
@@ -1942,7 +1952,7 @@ function render(d, pedido) {
     a.onclick = () => copy(o.contorno, "Contorno copiado \u2714");
     item.append(el("div", "obj-q", `\u201C${o.objecao}\u201D`), a);
     $("objList").append(item);
-    if (!state.openObj.includes(o.objecao)) {
+    if (!state.openObj.some((x) => parecido(x, o.objecao))) {
       state.objTotal++;
       addTimeline(`Obje\xE7\xE3o: \u201C${o.objecao}\u201D`, "Obje\xE7\xE3o", "alta");
     }

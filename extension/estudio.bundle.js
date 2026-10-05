@@ -8,6 +8,7 @@ Agora voc\xEA acompanha uma reuni\xE3o AO VIVO e orienta o closer em tempo real,
 
 Quem \xE9 quem na transcri\xE7\xE3o:
 - "Voc\xEA" = o closer.
+- Nome terminado em "(SolarZ)" = colega do closer (pr\xE9-venda, SDR, gestora). N\xC3O \xE9 o cliente: fala dela n\xE3o conta como dor, obje\xE7\xE3o, desejo ou decis\xE3o do cliente. Use s\xF3 como contexto (ex.: condi\xE7\xE3o j\xE1 oferecida, hist\xF3rico).
 - Qualquer outro nome (vindo das legendas do Google Meet) ou "Participante N" = cliente e demais pessoas. Use o nome da pessoa nas frases sugeridas.
 - A transcri\xE7\xE3o \xE9 autom\xE1tica: pode ter palavras erradas, nomes trocados e frases cortadas. Interprete pelo sentido e marque [VALIDAR] em n\xFAmeros que possam ter sido mal transcritos.
 
@@ -141,6 +142,7 @@ function contextoInicial(setup, leadDocs = []) {
   ];
   if (MODOS[setup.modo]) linhas.push(`Tipo de reuni\xE3o: ${MODOS[setup.modo]}`);
   if (setup.comQuem) linhas.push(`Cliente / participantes: ${setup.comQuem}`);
+  if (setup.equipe) linhas.push(`Time SolarZ na call (n\xE3o \xE9 cliente): ${setup.equipe}`);
   if (setup.foco) linhas.push(`Foco comercial desta reuni\xE3o: ${setup.foco}`);
   if (setup.notas) linhas.push(`Informa\xE7\xF5es da pr\xE9-venda / hip\xF3teses:
 ${setup.notas}`);

@@ -1,7 +1,8 @@
 // Sinais instantâneos: falas críticas do cliente reconhecidas localmente, sem esperar a IA.
 // Cada sinal segue a doutrina do Mentor 2.0. `ctx` traz o que já se sabe (ficha CRM).
 
-const validou = (crm) => !!(crm.causa_raiz && crm.impacto);
+// Em reunião de avanço/follow-up o preço já esteve na mesa: não é "cedo".
+const validou = (ctx) => ctx.avanco || !!(ctx.crm.causa_raiz && ctx.crm.impacto);
 
 export const SINAIS = [
   {
@@ -9,7 +10,7 @@ export const SINAIS = [
     // Só pedido/objeção de preço da SolarZ. "Agregar valor", "briga de preço" ou o orçamento
     // que o integrador faz pro cliente dele não contam.
     re: /\bquanto ([ée] que )?(custa|fica|[ée]|seria|sai|vai ficar|vai sair)\b|qua(l|is) (seria |[ée] )?(o |os )?(valor|pre[cç]o|investimento)(?! que (eu|a gente))|(t[áa]|muito|bem|meio|ficou|ficando) caro\b|(t[áa]|muito|bem) puxado|pesado (pra|para) mim|(tem|teria|rola|consegue|faz|me d[áa]) (um |algum )?desconto|baixar (teu|seu|esse|um pouco (o|esse)) (valor|pre[cç]o)|menor valor|contraproposta|minha proposta [ée]|cabe no (meu )?(caixa|bolso|or[cç]amento)|fora do (meu )?or[cç]amento|valor que voc[êe] (t[áa] )?(me )?cobr|esse valor (de|que)/i,
-    gerar: (ctx) => (validou(ctx.crm)
+    gerar: (ctx) => (validou(ctx)
       ? { titulo: 'Travou em preço', nivel: 'alta', dica: 'Ordem da doutrina: quanto cabe no caixa, depois descer de plano, só depois desconto.', diga: 'Quanto cabe no caixa por mês hoje, pra eu te mostrar o caminho certo?', acao: 'precos' }
       : { titulo: 'Pediu preço cedo', nivel: 'alta', dica: 'Causa e impacto ainda não estão validados. Valor agora vira comparação de preço.', diga: 'Já chego no valor. Antes, me ajuda a dimensionar: quanto isso custa pra vocês hoje por mês?', acao: 'precos' }),
   },

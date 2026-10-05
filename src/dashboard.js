@@ -192,12 +192,25 @@ function renderCrm(novos = []) {
 }
 
 // ================= MAPA MENTAL =================
+// A IA reescreve o mesmo dado com outra pontuação ou mais detalhe: trata como o mesmo item.
+const chave = (t) => semAcento(t).replace(/[^a-z0-9$%]+/g, ' ').trim();
+function parecido(a, b) {
+  const ka = chave(a), kb = chave(b);
+  return ka === kb || (Math.min(ka.length, kb.length) >= 14 && (ka.includes(kb) || kb.includes(ka)));
+}
 function addLeaf(k, text, sub = '') {
   text = (text || '').trim(); if (!text) return;
   const list = (state.map[k] ||= []);
-  const found = list.find((l) => l.text.toLowerCase() === text.toLowerCase());
-  if (found) { if (sub && sub !== found.sub) { found.sub = sub; found.at = Date.now(); } return; }
-  list.push({ text, sub, at: Date.now(), done: false });
+  const k1 = chave(text);
+  const found = list.find((l) => parecido(l.text, text));
+  if (found) {
+    if (chave(found.text).length < k1.length) found.text = text; // fica a versão mais completa
+    if (sub && sub !== found.sub) { found.sub = sub; found.at = Date.now(); }
+    return found;
+  }
+  const leaf = { text, sub, at: Date.now(), done: false };
+  list.push(leaf);
+  return leaf;
 }
 
 function renderMap() {
@@ -360,9 +373,8 @@ function updateMapFrom(d) {
   addLeaf('impacto', c.impacto);
   addLeaf('decisores', c.decisores);
   if (c.capacidade_execucao) addLeaf('decisores', `Execução: ${c.capacidade_execucao}`);
-  const abertas = (d.objecoes || []).map((o) => o.objecao.toLowerCase());
-  (d.objecoes || []).forEach((o) => addLeaf('objecoes', o.objecao, o.contorno));
-  (state.map.objecoes || []).forEach((l) => { l.done = !abertas.includes(l.text.toLowerCase()); });
+  const abertas = new Set((d.objecoes || []).map((o) => addLeaf('objecoes', o.objecao, o.contorno)));
+  (state.map.objecoes || []).forEach((l) => { l.done = !abertas.has(l); });
   if (d.rota?.solucao) addLeaf('rota', d.rota.solucao, d.rota.investimento ? d.rota.investimento : '');
   addLeaf('proximos', [c.proximo_passo, c.responsavel && `resp.: ${c.responsavel}`, c.data].filter(Boolean).join(' · '));
   renderMap();
@@ -678,7 +690,7 @@ function onTranscript({ speaker, text, isFinal }) {
     state.meRun = 0;
     if (perguntas) addClienteQ(speaker, text);
     // Sinais instantâneos (sem esperar a IA).
-    const achados = detectar(text, { crm: state.crm }, state.sinaisUlt);
+    const achados = detectar(text, { crm: state.crm, avanco: state.setup?.origem === 'avanco' || state.setup?.modo === 'followup' }, state.sinaisUlt);
     if (achados.length) showSinal(achados[0]);
     // Fim de um trecho relevante do cliente: analisa já, sem esperar o intervalo.
     state.clientWords += text.split(/\s+/).filter(Boolean).length;
@@ -791,7 +803,7 @@ function render(d, pedido) {
     const item = el('div', 'obj-item'); const a = hl(el('div', 'obj-a'), o.contorno);
     a.onclick = () => copy(o.contorno, 'Contorno copiado ✔');
     item.append(el('div', 'obj-q', `“${o.objecao}”`), a); $('objList').append(item);
-    if (!state.openObj.includes(o.objecao)) { state.objTotal++; addTimeline(`Objeção: “${o.objecao}”`, 'Objeção', 'alta'); }
+    if (!state.openObj.some((x) => parecido(x, o.objecao))) { state.objTotal++; addTimeline(`Objeção: “${o.objecao}”`, 'Objeção', 'alta'); }
   });
   state.openObj = obj.map((o) => o.objecao);
 

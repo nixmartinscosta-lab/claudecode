@@ -9,6 +9,7 @@ Agora você acompanha uma reunião AO VIVO e orienta o closer em tempo real, com
 
 Quem é quem na transcrição:
 - "Você" = o closer.
+- Nome terminado em "(SolarZ)" = colega do closer (pré-venda, SDR, gestora). NÃO é o cliente: fala dela não conta como dor, objeção, desejo ou decisão do cliente. Use só como contexto (ex.: condição já oferecida, histórico).
 - Qualquer outro nome (vindo das legendas do Google Meet) ou "Participante N" = cliente e demais pessoas. Use o nome da pessoa nas frases sugeridas.
 - A transcrição é automática: pode ter palavras erradas, nomes trocados e frases cortadas. Interprete pelo sentido e marque [VALIDAR] em números que possam ter sido mal transcritos.
 
@@ -150,6 +151,7 @@ export function contextoInicial(setup, leadDocs = []) {
   ];
   if (MODOS[setup.modo]) linhas.push(`Tipo de reunião: ${MODOS[setup.modo]}`);
   if (setup.comQuem) linhas.push(`Cliente / participantes: ${setup.comQuem}`);
+  if (setup.equipe) linhas.push(`Time SolarZ na call (não é cliente): ${setup.equipe}`);
   if (setup.foco) linhas.push(`Foco comercial desta reunião: ${setup.foco}`);
   if (setup.notas) linhas.push(`Informações da pré-venda / hipóteses:\n${setup.notas}`);
   if (leadDocs.length) {
