@@ -276,11 +276,29 @@ ${JSON.stringify(SCHEMA)}`;
       }
       this.contents.push({ role: "user", parts: [{ text: userText }] });
       this.contents.push(cand.content);
+      this.condensar();
       const text2 = cand.content.parts.filter((p) => p.text && !p.thought).map((p) => p.text).join("");
       return { text: text2, usage: data.usageMetadata };
     } finally {
       this.busy = false;
     }
+  }
+  // Reunião longa: as análises antigas (JSON grande) incham cada chamada. Mantém as
+  // últimas trocas inteiras e junta as antigas num bloco só com a transcrição e os
+  // pedidos (nada da conversa se perde), mais a última análise antiga como referência.
+  condensar(manter = 6, limite = 14) {
+    if (this.contents.length <= limite * 2) return;
+    const velhas = this.contents.slice(0, this.contents.length - manter * 2);
+    const textoDe = (c) => c.parts.filter((p) => p.text && !p.thought).map((p) => p.text).join("");
+    const historico = velhas.filter((c) => c.role === "user").map(textoDe).join("\n\n");
+    const ultimaAnalise = textoDe(velhas[velhas.length - 1]);
+    this.contents = [
+      { role: "user", parts: [{ text: `HIST\xD3RICO DA REUNI\xC3O AT\xC9 AQUI (trocas antigas condensadas):
+
+${historico}` }] },
+      { role: "model", parts: [{ text: ultimaAnalise }] },
+      ...this.contents.slice(-manter * 2)
+    ];
   }
   // newLines: [{speaker, text}] desde a última análise. pedido: pergunta livre do closer.
   async analyze(newLines, pedido, notas = []) {
@@ -622,22 +640,26 @@ var validou = (crm2) => !!(crm2.causa_raiz && crm2.impacto);
 var SINAIS = [
   {
     id: "preco",
-    re: /quanto (custa|fica|é|seria|sai)|\bpre[cç]o\b|\bvalor(es)?\b|investimento|t[áa] caro|muito caro|or[cç]amento|cabe no (caixa|bolso)|desconto/i,
+    // Só pedido/objeção de preço da SolarZ. "Agregar valor", "briga de preço" ou o orçamento
+    // que o integrador faz pro cliente dele não contam.
+    re: /\bquanto ([ée] que )?(custa|fica|[ée]|seria|sai|vai ficar|vai sair)\b|qua(l|is) (seria |[ée] )?(o |os )?(valor|pre[cç]o|investimento)(?! que (eu|a gente))|(t[áa]|muito|bem|meio|ficou|ficando) caro\b|(t[áa]|muito|bem) puxado|pesado (pra|para) mim|(tem|teria|rola|consegue|faz|me d[áa]) (um |algum )?desconto|baixar (teu|seu|esse|um pouco (o|esse)) (valor|pre[cç]o)|menor valor|contraproposta|minha proposta [ée]|cabe no (meu )?(caixa|bolso|or[cç]amento)|fora do (meu )?or[cç]amento|valor que voc[êe] (t[áa] )?(me )?cobr|esse valor (de|que)/i,
     gerar: (ctx) => validou(ctx.crm) ? { titulo: "Travou em pre\xE7o", nivel: "alta", dica: "Ordem da doutrina: quanto cabe no caixa, depois descer de plano, s\xF3 depois desconto.", diga: "Quanto cabe no caixa por m\xEAs hoje, pra eu te mostrar o caminho certo?", acao: "precos" } : { titulo: "Pediu pre\xE7o cedo", nivel: "alta", dica: "Causa e impacto ainda n\xE3o est\xE3o validados. Valor agora vira compara\xE7\xE3o de pre\xE7o.", diga: "J\xE1 chego no valor. Antes, me ajuda a dimensionar: quanto isso custa pra voc\xEAs hoje por m\xEAs?", acao: "precos" }
   },
   {
     id: "socio",
-    re: /\b(s[óo]ci[oa]|meu marido|minha esposa|diretoria|financeiro|meu chefe|aprovar com)\b/i,
+    re: /(?<!nem |n[ãa]o [ée] |n[ãa]o tenho )\b(s[óo]ci[oa]|meu marido|minha esposa|diretoria|meu chefe|aprovar com|ver com (o|a) (meu|minha)?)\b/i,
+    janela: 3e5,
     gerar: () => ({ titulo: "Decisor oculto", nivel: "alta", dica: "Risco obrigat\xF3rio. Inclua o decisor e marque a conversa de decis\xE3o antes de encerrar.", diga: "Al\xE9m de voc\xEA, quem mais precisa estar confort\xE1vel com essa decis\xE3o? Vamos marcar com essa pessoa junto ainda esta semana?" })
   },
   {
     id: "continuacao",
-    re: /vou pensar|te aviso|a gente se fala|manda (a|uma) proposta|me manda (a proposta|por e-?mail|no whats)|vou ver (isso|aqui|com)|vou analisar|vou testar|depois eu (vejo|te falo)/i,
+    re: /vou pensar|te aviso|a gente se fala|manda (a|uma) proposta|me manda (a proposta|por e-?mail|no whats)|vou ver (isso|aqui|com)|vou analisar|vou digerir|vou testar|depois eu (vejo|te falo)|stand ?by|m[êe]s que vem|pr[óo]ximo m[êe]s|mais (um|uns) m[êe]s|mais pra frente|n[ãa]o [ée] o momento|agora n[ãa]o d[áa]|deixa(r)? pra depois/i,
     gerar: () => ({ titulo: "Continua\xE7\xE3o, n\xE3o avan\xE7o", nivel: "alta", dica: "Sem checkpoint isso n\xE3o \xE9 avan\xE7o. Pe\xE7a microdecis\xE3o, respons\xE1vel e data.", diga: "Combinado. Pra n\xE3o ficar solto: o que precisa ficar claro pra voc\xEA decidir, e quando a gente conversa de novo? Quinta \xE0s 15h funciona?" })
   },
   {
     id: "sistema",
-    re: /j[áa] (tenho|tem|uso|usa|temos|usamos|trabalho com|trabalha com|trabalhamos com) (um |uma |o |a )?(sistema|crm|ferramenta|plataforma|software|outro)/i,
+    re: /j[áa] (tenho|tem|uso|usa|temos|usamos|trabalho com|trabalha com|trabalhamos com) (um |uma |o |a )?(sistema|crm|ferramenta|plataforma|software|outro)|(pago|uso|usamos|tenho|temos) (um |o |uma )?(crm|software|sistema)\b|j[áa] tem integrado/i,
+    janela: 3e5,
     gerar: () => ({ titulo: '"J\xE1 tenho sistema"', nivel: "media", dica: "Investigue uso, ado\xE7\xE3o, integra\xE7\xE3o e o problema n\xE3o resolvido. N\xE3o ataque o concorrente.", diga: "Legal. E o que ele ainda n\xE3o resolve pra voc\xEAs hoje?" })
   },
   {
@@ -648,24 +670,28 @@ var SINAIS = [
   {
     id: "desejo",
     re: /monitoramento|relat[óo]rio|rentabilizar (a |minha )?base|acompanhar as usinas/i,
+    janela: 6e5,
+    pular: (ctx) => !!(ctx.crm.dor_literal || ctx.crm.causa_raiz),
+    // dor já achada: desejo não é mais o assunto
     gerar: () => ({ titulo: "Pode ser desejo, n\xE3o dor", nivel: "media", dica: "Desejo pode esperar. Puxe para o resultado e para a via comercial.", diga: "E isso ajuda em qu\xEA no seu resultado: vender mais, reter cliente ou ganhar indica\xE7\xE3o?" })
   },
   {
     id: "aceite",
-    re: /pode marcar|t[áa] marcado|fechado\b|combinado\b|vamos fechar|bora fechar|pode mandar o contrato|manda o contrato|pode agendar|d[áa] sim,? (pode|marca)/i,
+    // Só aceite explícito. "Quase fechado" ou "se der certo, tá fechado" não é microdecisão.
+    re: /pode marcar|t[áa] marcado|(^|[.!,] ?)(ent[ãa]o )?(t[áa] )?(fechado|combinado)[.!]?$|fica combinado|vamos fechar (ent[ãa]o|hoje|agora)|bora fechar|pode mandar o contrato|manda o contrato|pode agendar|d[áa] sim,? (pode|marca)/i,
     gerar: () => ({ titulo: "Microdecis\xE3o aceita", nivel: "alta", dica: "Confirme em voz alta respons\xE1vel, data, hor\xE1rio e canal. Avan\xE7o s\xF3 com os tr\xEAs.", diga: "Perfeito. Ent\xE3o fica assim: eu te mando o convite agora pra esse hor\xE1rio, com voc\xEA e quem mais precisa decidir. Certo?" })
   },
   {
     id: "compra",
-    re: /como (funciona|seria) (a |o )?(implanta|contrat|come[çc])|quando (come[çc]a|daria pra come[çc]ar|consigo come[çc]ar)|qual o pr[óo]ximo passo|como a gente faz pra/i,
+    re: /como (funciona|seria) (a |o )?(implanta|contrat|come[çc])|quando (a gente )?(come[çc]a|daria pra come[çc]ar|consigo come[çc]ar)\b|qual o pr[óo]ximo passo|como a gente faz pra|(vou|posso|j[áa]) (te )?(fazer|programar|mandar) o pagamento|fa[çc]o o pagamento|programa[çc][ãa]o de pagamento|me manda o (pix|boleto|link)|como (eu )?(pago|fa[çc]o o pagamento)|quero (fazer|fechar) o (anual|plano)/i,
     gerar: () => ({ titulo: "Sinal de compra", nivel: "alta", dica: "Pe\xE7a a microdecis\xE3o agora, com respons\xE1vel e data.", diga: "\xD3timo. Ent\xE3o vamos definir o pr\xF3ximo passo: quem precisa aprovar e at\xE9 quando a gente fecha essa defini\xE7\xE3o?" })
   }
 ];
 function detectar(texto, ctx, ultimos, agora = Date.now(), janelaMs = 6e4) {
   const achados = [];
   for (const s of SINAIS) {
-    if (!s.re.test(texto)) continue;
-    if (ultimos[s.id] && agora - ultimos[s.id] < janelaMs) continue;
+    if (!s.re.test(texto) || s.pular?.(ctx)) continue;
+    if (ultimos[s.id] && agora - ultimos[s.id] < (s.janela || janelaMs)) continue;
     ultimos[s.id] = agora;
     achados.push({ id: s.id, ...s.gerar(ctx), fala: texto });
   }
@@ -768,7 +794,13 @@ function followUp(md) {
 
 // src/dashboard.js
 var $ = (id) => document.getElementById(id);
-var SETUP_FIELDS = ["modo", "comQuem", "objetivo", "foco", "notas"];
+var SETUP_FIELDS = ["modo", "comQuem", "equipe", "objetivo", "foco", "notas"];
+var semAcento = (t) => (t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+function ehDoTime(speaker) {
+  const nome = semAcento(speaker).split(/\s+/)[0];
+  if (!nome) return false;
+  return ($("equipe").value || "").split(/[,;/]|\se\s/).map((n) => semAcento(n.replace(/\(.*?\)/g, "")).split(/\s+/)[0]).some((n) => n && n === nome);
+}
 var DEFAULTS = {
   geminiKey: "",
   deepgramKey: "",
@@ -808,6 +840,7 @@ var freshState = () => ({
   startedAt: 0,
   tick: null,
   questionTimer: null,
+  lastCallAt: 0,
   sinceAnalysis: 0,
   intervalSec: 25,
   lastAt: 0,
@@ -1351,7 +1384,7 @@ function updateKpis() {
   $("crmBadge").textContent = `${Object.values(state.crm).filter(Boolean).length}/${N_FICHA}`;
   const faltam = DIAG_CORE.filter((k) => !state.crm[k]).map((k) => CRM_CAMPOS[k].split(/[(/]/)[0].trim());
   $("diagFalta").textContent = faltam.length ? `falta: ${faltam.slice(0, 3).join(", ")}${faltam.length > 3 ? "\u2026" : ""}` : "completo \u2714";
-  const me = state.talk["Voc\xEA"] || 0;
+  const me = Object.entries(state.talk).reduce((n2, [k, w]) => n2 + (k === "Voc\xEA" || /\(SolarZ\)$/.test(k) ? w : 0), 0);
   const total = Object.values(state.talk).reduce((a, b) => a + b, 0);
   const pct = total ? Math.round(me / total * 100) : 0;
   $("talkMe").style.width = `${pct}%`;
@@ -1385,7 +1418,11 @@ function updateKpis() {
   const sp = $("speakers");
   sp.innerHTML = "";
   Object.entries(state.talk).sort((a, b) => b[1] - a[1]).forEach(([name, w]) => {
-    const c = el("span", "spk", name);
+    const time = /\(SolarZ\)$/.test(name);
+    const curto = name === "Voc\xEA" ? name : name.replace(/ \(SolarZ\)$/, "").split(/\s+/)[0];
+    const c = el("span", `spk${name === "Voc\xEA" || time ? " nos" : ""}`, curto);
+    c.title = name;
+    if (time) c.append(el("small", "", "time"));
     c.append(el("i", "", `${total ? Math.round(w / total * 100) : 0}%`));
     sp.append(c);
   });
@@ -1700,6 +1737,8 @@ function onTranscript({ speaker, text: text2, isFinal }) {
   state.interim[speaker] = "";
   $("interim").textContent = Object.values(state.interim).filter(Boolean).join("  \xB7  ");
   const isMe = speaker === "Voc\xEA";
+  const time = !isMe && ehDoTime(speaker);
+  if (time && !/\(SolarZ\)$/.test(speaker)) speaker = `${speaker} (SolarZ)`;
   state.talk[speaker] = (state.talk[speaker] || 0) + text2.split(/\s+/).filter(Boolean).length;
   const perguntas = (text2.match(/\?/g) || []).length;
   if (isMe) for (let i = 0; i < perguntas; i++) state.qTimes.push(elapsedSec());
@@ -1707,9 +1746,9 @@ function onTranscript({ speaker, text: text2, isFinal }) {
   if (last && last.speaker === speaker && state.lines.length > state.sentUpTo) {
     last.text += ` ${text2}`;
     hl(last.el.querySelector(".tx"), last.text);
-    if (perguntas && !isMe) last.el.classList.add("q");
+    if (perguntas && !isMe && !time) last.el.classList.add("q");
   } else {
-    const p = el("p", `${isMe ? "me" : "them"}${perguntas && !isMe ? " q" : ""}`);
+    const p = el("p", `${isMe ? "me" : time ? "time" : "them"}${perguntas && !isMe && !time ? " q" : ""}`);
     p.append(el("b", "", `${speaker}: `), hl(el("span", "tx"), text2));
     const line = { speaker, text: text2, el: p };
     p.title = "Clique: o Mentor analisa este trecho";
@@ -1721,7 +1760,7 @@ function onTranscript({ speaker, text: text2, isFinal }) {
   updateKpis();
   clearTimeout(state.snapT);
   state.snapT = setTimeout(saveSnapshot, 3e3);
-  if (state.replay) return;
+  if (state.replay || time) return;
   if (isMe) {
     state.meRun = perguntas ? 0 : (state.meRun || 0) + text2.split(/\s+/).filter(Boolean).length;
     if (state.meRun >= 130 && (!state.sinaisUlt.monologo || Date.now() - state.sinaisUlt.monologo > 9e4)) {
@@ -1742,10 +1781,11 @@ function onTranscript({ speaker, text: text2, isFinal }) {
     if (achados.length) showSinal(achados[0]);
     state.clientWords += text2.split(/\s+/).filter(Boolean).length;
     clearTimeout(state.turnTimer);
+    const espera = (ms, gap) => Math.max(ms, (state.lastCallAt || 0) + gap - Date.now());
     if (perguntas || achados.some((a) => a.nivel === "alta")) {
       clearTimeout(state.questionTimer);
-      state.questionTimer = setTimeout(() => maybeAnalyze(true), 1e3);
-    } else if (state.clientWords >= 25) state.turnTimer = setTimeout(() => maybeAnalyze(true), 1500);
+      state.questionTimer = setTimeout(() => maybeAnalyze(true), espera(1e3, 6e3));
+    } else if (state.clientWords >= 25) state.turnTimer = setTimeout(() => maybeAnalyze(true), espera(1500, 15e3));
   }
 }
 function takeNewLines() {
@@ -1770,6 +1810,7 @@ async function maybeAnalyze(force = false, pedido = "") {
   state.sinceAnalysis = 0;
   state.clientWords = 0;
   clearTimeout(state.turnTimer);
+  state.lastCallAt = Date.now();
   $("btnAjuda").disabled = true;
   $("coach").classList.add("thinking");
   try {

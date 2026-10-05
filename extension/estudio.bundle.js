@@ -305,11 +305,29 @@ ${JSON.stringify(SCHEMA)}`;
       }
       this.contents.push({ role: "user", parts: [{ text: userText }] });
       this.contents.push(cand.content);
+      this.condensar();
       const text2 = cand.content.parts.filter((p) => p.text && !p.thought).map((p) => p.text).join("");
       return { text: text2, usage: data.usageMetadata };
     } finally {
       this.busy = false;
     }
+  }
+  // Reunião longa: as análises antigas (JSON grande) incham cada chamada. Mantém as
+  // últimas trocas inteiras e junta as antigas num bloco só com a transcrição e os
+  // pedidos (nada da conversa se perde), mais a última análise antiga como referência.
+  condensar(manter = 6, limite = 14) {
+    if (this.contents.length <= limite * 2) return;
+    const velhas = this.contents.slice(0, this.contents.length - manter * 2);
+    const textoDe = (c) => c.parts.filter((p) => p.text && !p.thought).map((p) => p.text).join("");
+    const historico = velhas.filter((c) => c.role === "user").map(textoDe).join("\n\n");
+    const ultimaAnalise = textoDe(velhas[velhas.length - 1]);
+    this.contents = [
+      { role: "user", parts: [{ text: `HIST\xD3RICO DA REUNI\xC3O AT\xC9 AQUI (trocas antigas condensadas):
+
+${historico}` }] },
+      { role: "model", parts: [{ text: ultimaAnalise }] },
+      ...this.contents.slice(-manter * 2)
+    ];
   }
   // newLines: [{speaker, text}] desde a última análise. pedido: pergunta livre do closer.
   async analyze(newLines, pedido, notas = []) {

@@ -88,11 +88,28 @@ export class Coach {
       // Guarda a resposta inteira (inclui assinaturas de pensamento) — exigido no multi-turno.
       this.contents.push({ role: 'user', parts: [{ text: userText }] });
       this.contents.push(cand.content);
+      this.condensar();
       const text = cand.content.parts.filter((p) => p.text && !p.thought).map((p) => p.text).join('');
       return { text, usage: data.usageMetadata };
     } finally {
       this.busy = false;
     }
+  }
+
+  // Reunião longa: as análises antigas (JSON grande) incham cada chamada. Mantém as
+  // últimas trocas inteiras e junta as antigas num bloco só com a transcrição e os
+  // pedidos (nada da conversa se perde), mais a última análise antiga como referência.
+  condensar(manter = 6, limite = 14) {
+    if (this.contents.length <= limite * 2) return;
+    const velhas = this.contents.slice(0, this.contents.length - manter * 2);
+    const textoDe = (c) => c.parts.filter((p) => p.text && !p.thought).map((p) => p.text).join('');
+    const historico = velhas.filter((c) => c.role === 'user').map(textoDe).join('\n\n');
+    const ultimaAnalise = textoDe(velhas[velhas.length - 1]);
+    this.contents = [
+      { role: 'user', parts: [{ text: `HISTÓRICO DA REUNIÃO ATÉ AQUI (trocas antigas condensadas):\n\n${historico}` }] },
+      { role: 'model', parts: [{ text: ultimaAnalise }] },
+      ...this.contents.slice(-manter * 2),
+    ];
   }
 
   // newLines: [{speaker, text}] desde a última análise. pedido: pergunta livre do closer.

@@ -6,7 +6,14 @@ import { renderMarkdown, followUp } from './md.js';
 import { CRM_CAMPOS, DIAG_CORE, MOVIMENTOS, PORTOES, DOR_ESTAGIOS, PEDIDO_BRIEFING } from './prompts.js';
 
 const $ = (id) => document.getElementById(id);
-const SETUP_FIELDS = ['modo', 'comQuem', 'objetivo', 'foco', 'notas'];
+const SETUP_FIELDS = ['modo', 'comQuem', 'equipe', 'objetivo', 'foco', 'notas'];
+// Colegas da SolarZ na call (pré-venda, gestora): não são cliente. Casa pelo primeiro nome, sem acento.
+const semAcento = (t) => (t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+function ehDoTime(speaker) {
+  const nome = semAcento(speaker).split(/\s+/)[0];
+  if (!nome) return false;
+  return ($('equipe').value || '').split(/[,;/]|\se\s/).map((n) => semAcento(n.replace(/\(.*?\)/g, '')).split(/\s+/)[0]).some((n) => n && n === nome);
+}
 const DEFAULTS = {
   geminiKey: '', deepgramKey: '', source: 'meet', model: 'gemini-3.5-flash', thinking: 'low',
   intervalSec: 25, useMic: true, dgModel: 'nova-2', dgLanguage: 'pt-BR',
@@ -34,7 +41,7 @@ const MAX_LEAVES = 3;
 
 const freshState = () => ({
   running: false, coach: null, source: 'meet', lines: [], sentUpTo: 0, interim: {}, startedAt: 0, tick: null,
-  questionTimer: null, sinceAnalysis: 0, intervalSec: 25, lastAt: 0,
+  questionTimer: null, lastCallAt: 0, sinceAnalysis: 0, intervalSec: 25, lastAt: 0,
   crm: {}, crmLocked: new Set(), covered: new Set(), pendingNotes: [],
   memoria: [], pinned: new Set(), map: {}, collapsed: new Set(), expanded: new Set(), openObj: [], objTotal: 0,
   talk: {}, qTimes: [], talkWarned: false, clienteQs: [], tempoAvisos: {}, temp: null, cond: null, sinaisUlt: {}, clientWords: 0, digaHist: [], turnTimer: null, drawn: new Set(),
@@ -372,7 +379,8 @@ function updateKpis() {
   const faltam = DIAG_CORE.filter((k) => !state.crm[k]).map((k) => CRM_CAMPOS[k].split(/[(/]/)[0].trim());
   $('diagFalta').textContent = faltam.length ? `falta: ${faltam.slice(0, 3).join(', ')}${faltam.length > 3 ? '…' : ''}` : 'completo ✔';
 
-  const me = state.talk['Você'] || 0;
+  // Lado SolarZ = você + colegas do time.
+  const me = Object.entries(state.talk).reduce((n, [k, w]) => n + (k === 'Você' || /\(SolarZ\)$/.test(k) ? w : 0), 0);
   const total = Object.values(state.talk).reduce((a, b) => a + b, 0);
   const pct = total ? Math.round((me / total) * 100) : 0;
   $('talkMe').style.width = `${pct}%`; $('talkThem').style.width = `${total ? 100 - pct : 0}%`;
@@ -397,7 +405,11 @@ function updateKpis() {
   // participantes
   const sp = $('speakers'); sp.innerHTML = '';
   Object.entries(state.talk).sort((a, b) => b[1] - a[1]).forEach(([name, w]) => {
-    const c = el('span', 'spk', name); c.append(el('i', '', `${total ? Math.round((w / total) * 100) : 0}%`)); sp.append(c);
+    const time = /\(SolarZ\)$/.test(name);
+    const curto = name === 'Você' ? name : name.replace(/ \(SolarZ\)$/, '').split(/\s+/)[0];
+    const c = el('span', `spk${name === 'Você' || time ? ' nos' : ''}`, curto); c.title = name;
+    if (time) c.append(el('small', '', 'time'));
+    c.append(el('i', '', `${total ? Math.round((w / total) * 100) : 0}%`)); sp.append(c);
   });
 }
 
@@ -631,6 +643,8 @@ function onTranscript({ speaker, text, isFinal }) {
   state.interim[speaker] = '';
   $('interim').textContent = Object.values(state.interim).filter(Boolean).join('  ·  ');
   const isMe = speaker === 'Você';
+  const time = !isMe && ehDoTime(speaker);
+  if (time && !/\(SolarZ\)$/.test(speaker)) speaker = `${speaker} (SolarZ)`; // a IA sabe que não é o cliente
   state.talk[speaker] = (state.talk[speaker] || 0) + text.split(/\s+/).filter(Boolean).length;
   const perguntas = (text.match(/\?/g) || []).length;
   if (isMe) for (let i = 0; i < perguntas; i++) state.qTimes.push(elapsedSec());
@@ -639,9 +653,9 @@ function onTranscript({ speaker, text, isFinal }) {
   if (last && last.speaker === speaker && state.lines.length > state.sentUpTo) {
     last.text += ` ${text}`;
     hl(last.el.querySelector('.tx'), last.text);
-    if (perguntas && !isMe) last.el.classList.add('q');
+    if (perguntas && !isMe && !time) last.el.classList.add('q');
   } else {
-    const p = el('p', `${isMe ? 'me' : 'them'}${perguntas && !isMe ? ' q' : ''}`);
+    const p = el('p', `${isMe ? 'me' : time ? 'time' : 'them'}${perguntas && !isMe && !time ? ' q' : ''}`);
     p.append(el('b', '', `${speaker}: `), hl(el('span', 'tx'), text));
     const line = { speaker, text, el: p };
     p.title = 'Clique: o Mentor analisa este trecho';
@@ -652,7 +666,7 @@ function onTranscript({ speaker, text, isFinal }) {
   $('transcript').scrollTop = $('transcript').scrollHeight;
   updateKpis();
   clearTimeout(state.snapT); state.snapT = setTimeout(saveSnapshot, 3000);
-  if (state.replay) return; // retomada: só reconstrói a conversa
+  if (state.replay || time) return; // retomada só reconstrói; fala do time não é sinal do cliente
   if (isMe) {
     state.meRun = perguntas ? 0 : (state.meRun || 0) + text.split(/\s+/).filter(Boolean).length;
     if (state.meRun >= 130 && (!state.sinaisUlt.monologo || Date.now() - state.sinaisUlt.monologo > 90000)) {
@@ -669,8 +683,10 @@ function onTranscript({ speaker, text, isFinal }) {
     // Fim de um trecho relevante do cliente: analisa já, sem esperar o intervalo.
     state.clientWords += text.split(/\s+/).filter(Boolean).length;
     clearTimeout(state.turnTimer);
-    if (perguntas || achados.some((a) => a.nivel === 'alta')) { clearTimeout(state.questionTimer); state.questionTimer = setTimeout(() => maybeAnalyze(true), 1000); }
-    else if (state.clientWords >= 25) state.turnTimer = setTimeout(() => maybeAnalyze(true), 1500);
+    // Intervalo mínimo entre chamadas automáticas: cliente falante não vira rajada de chamadas.
+    const espera = (ms, gap) => Math.max(ms, (state.lastCallAt || 0) + gap - Date.now());
+    if (perguntas || achados.some((a) => a.nivel === 'alta')) { clearTimeout(state.questionTimer); state.questionTimer = setTimeout(() => maybeAnalyze(true), espera(1000, 6000)); }
+    else if (state.clientWords >= 25) state.turnTimer = setTimeout(() => maybeAnalyze(true), espera(1500, 15000));
   }
 }
 
@@ -689,7 +705,7 @@ async function maybeAnalyze(force = false, pedido = '') {
   const from = state.sentUpTo;
   const novas = takeNewLines();
   const notas = state.pendingNotes.splice(0);
-  state.sinceAnalysis = 0; state.clientWords = 0; clearTimeout(state.turnTimer);
+  state.sinceAnalysis = 0; state.clientWords = 0; clearTimeout(state.turnTimer); state.lastCallAt = Date.now();
   $('btnAjuda').disabled = true; $('coach').classList.add('thinking');
   try {
     const res = await state.coach.analyze(novas, pedido, notas);

@@ -326,6 +326,7 @@ body.map-full .leaves, body.map-full .leaf { max-width: 300px; }
 .transcript p:hover { border-color: var(--line-2); }
 .transcript p.them { border-left: 3px solid var(--primary); }
 .transcript p.me { border-left: 3px solid var(--ok); background: var(--ok-soft); }
+.transcript p.time { border-left: 3px dashed var(--ok); } .transcript p.time b { color: var(--ok-ink); }
 .transcript p.q { background: var(--warn-soft); }
 .transcript b { color: var(--primary-ink); } .transcript p.me b { color: var(--ok-ink); }
 .interim { color: var(--muted); font-size: 13px; font-style: italic; min-height: 1.4em; padding: 4px 10px; }
@@ -767,3 +768,9 @@ body.has-sinal .hero { padding-top: 9px; padding-bottom: 9px; }
 .col-left .askbar .chip { padding: 3px 9px; font-size: 12.5px; }
 .col-left .askbar .ask input { padding: 7px 10px; }
 .col-left .askbar .ask button { padding: 7px 12px; }
+
+/* participantes: uma linha, primeiro nome; lado SolarZ em verde */
+.speakers { flex-wrap: wrap; }
+.spk { white-space: nowrap; flex-shrink: 0; }
+.spk.nos { background: var(--ok-soft); border-color: var(--ok); }
+.spk small { font-size: 10px; font-weight: 700; color: var(--ok-ink); margin-left: 4px; text-transform: uppercase; letter-spacing: .04em; }
